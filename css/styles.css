@@ -19,6 +19,26 @@ h1 {
 	float: left;
 }
 
+.floorPlanZone{
+	display: flex;
+	justify-content: flex-start;
+}
+
+.informationContainer{
+	margin-left: 3%;
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: column;
+}
+
+.formWrapper{
+	width: 100%;
+}
+
+.nodeInfoWrapper{
+	width: 100%;
+}
+
 #TestCompleteButton {
 	padding: 15px 24px;
 	text-align: center;

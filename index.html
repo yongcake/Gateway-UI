@@ -5,35 +5,51 @@
 <title>UI</title>
 
 <body>
-	<div class="topContainer">
-		<h1>Gateway Signal Test Kit</h1>
-
-		<div class="complete">
-			<input type="button" id="TestCompleteButton" value="Test Complete">
-		</div>	
-	</div>
-
-	<label><i>*Insert Area*</i></label> <br><br>
-
-	<div class="floor">
-		<input type="button" id="button" value="Test">
-		<input type="button" id="button" value="Test1">
-		<input type="button" id="button" value="Test2">
-		<input type="button" id="button" value="Test3">
-		<input type="button" id="button" value="Test4">
-	</div>
-	<br>
-	<div class="floorPlanZone">
-		<div class ="floorPlan">
-			<img></img>
+	<div class="bodyContainer">
+		<div class="topContainer">
+			<h1>Gateway Signal Test Kit</h1>
+	
+			<div class="complete">
+				<input type="button" id="TestCompleteButton" value="Test Complete">
+			</div>	
 		</div>
-		<label for="LocalName">Please enter the Location Name:</label> <br>
-		<input type="text" id="fname" name="fname"><br><br>
-		<label for="NodeID">Pleae enter the Node ID:</label> <br>
-  		<input type="text" id="fname" name="fname"><br><br>
+	
+	
+	
+		<label><i>*Insert Area*</i></label> <br><br>
+	
+	
+	
+		<div class="floor">
+			<input type="button" id="button" value="Test">
+			<input type="button" id="button" value="Test1">
+			<input type="button" id="button" value="Test2">
+			<input type="button" id="button" value="Test3">
+			<input type="button" id="button" value="Test4">
+		</div>
+	
+		<br>
+	
+		<div class="floorPlanZone">
+			<img src="Image/dummy.png" alt="Dummy Image" width="60%" id="Image"></img>
+
+			<div class="informationContainer">
+
+				<div class="formWrapper">
+					<label for="LocalName">Please enter the Location Name:</label> <br>
+					<input type="text" id="locationName" name="fname"><br><br>
+					<label for="NodeID">Pleae enter the Node ID:</label> <br>
+					<input type="text" id="nodeID" name="fname"><br><br>
+				</div>
+				
+				<div class="NodeInfoWrapper">
+					
+				</div>
+
+			</div>
+		</div>
+	
 	</div>
-
-
 </body>
 
 </html>
