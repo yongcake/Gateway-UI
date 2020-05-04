@@ -15,38 +15,56 @@
 		</div>
 	
 	
-	
 		<label><i>*Insert Area*</i></label> <br><br>
 	
 	
-	
 		<div class="floor">
-			<input type="button" id="button" value="Test">
 			<input type="button" id="button" value="Test1">
 			<input type="button" id="button" value="Test2">
 			<input type="button" id="button" value="Test3">
 			<input type="button" id="button" value="Test4">
+			<input type="button" id="button" value="Test5">
 		</div>
 	
 		<br>
 	
 		<div class="floorPlanZone">
-			<img src="Image/dummy.png" alt="Dummy Image" width="60%" id="Image"></img>
+			<img src="Image/dummy.png" alt="Dummy Image" width="55%" id="Image"></img>
 
 			<div class="informationContainer">
 
-				<div class="formWrapper">
-					<label for="LocalName">Please enter the Location Name:</label> <br>
-					<input type="text" id="locationName" name="fname"><br><br>
-					<label for="NodeID">Pleae enter the Node ID:</label> <br>
-					<input type="text" id="nodeID" name="fname"><br><br>
+				<div class="formContainer">
+					<div class="inputWrapper">
+						<label for="LocalName">Location Name:</label> <br>
+						<input type="text" class ="formInput" id="locationName" name="fname"><br><br>
+						<label for="NodeID">Node ID:</label> <br>
+						<input type="text" class ="formInput" id="nodeID" name="fname"><br><br>
+					</div>
+					<div class="addButtonWrapper">
+						<input type="button" id="addNode" value="Add">
+					</div>
 				</div>
 				
-				<div class="NodeInfoWrapper">
-					
+				<div class="nodeInfoContainer" id="nodeContainer">
+					<div class="nodeInfoWrapper" id="nodeInfo">
+						ID: A000000001 <br>
+						Location: Test Location 1 <br>
+						Signal Strength: High <br>
+						Status: Connected
+					</div>
+					<div class="nodeButtonWrapper" id="nodeButton">
+						<input type="button" class="nodeButton" id="editNode" value="Edit"><br>
+						<input type="button" class="nodeButton" id="deleteNode" value="Delete"><br>
+						<input type="button" class="nodeButton" id="noSignalNode" value="No Signal">
+
+					</div>
 				</div>
 
 			</div>
+		</div>
+		<div>
+			- Tap on a new location to indicate the new node location <br>
+			- Tap on an existing location to view node activity
 		</div>
 	
 	</div>

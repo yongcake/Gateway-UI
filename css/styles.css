@@ -3,16 +3,22 @@ body {
 	background-color: ghostwhite;
 }
 
-.topContainer{
-	display: flex;
-}
-
 h1 {
 	flex-grow: 1;
 }
 
+.topContainer{
+	display: flex;
+	height: 4rem;
+}
+
 .complete {
 	float: right;
+}
+
+.formInput {
+	width: 20vw;
+	height: 1.5vw;	
 }
 
 .floorPlan {
@@ -31,11 +37,24 @@ h1 {
 	flex-direction: column;
 }
 
-.formWrapper{
+.formContainer{
 	width: 100%;
+	display: flex;	
 }
 
-.nodeInfoWrapper{
+.addButtonWrapper{
+	align-self: flex-end;
+	margin: 6%;
+}
+
+.nodeInfoContainer{
+	width: 100%;
+	border: black solid 1px;
+	padding: 2%;
+	display: flex;
+}
+
+.nodeButton{
 	width: 100%;
 }
 
@@ -54,4 +73,11 @@ h1 {
 	padding: 10px;
 	text-align: center;
 	border: none;
+}
+
+#addNode{
+	padding: 5px;
+	float: right;
+	align-self: flex-end;
+	width: 3rem;
 }
