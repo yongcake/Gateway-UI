@@ -1,11 +1,3 @@
-//import React from "react"
-//import ReactDOM from "react-dom"
-
-//ReactDOM.render(
-//    <h1>Hello, world!</h1>,
-//    document.getElementById('root')
-//  );
-
 //document.getElementById("btnTxt").onclick = function() {appendText()};
 
 function appendText(){
@@ -22,3 +14,11 @@ function appendButton(){
   $("#testArea").append(buttonTest);   // Append new elements
 }
 
+function showCoords(event) {
+  var x = event.clientX;
+  var y = event.clientY;
+  var coords = "X coords: " + x + ", Y coords: " + y;
+  //document.getElementById("instruction").innerHTML = coords;
+  alert(coords);
+}
+  
