@@ -1,18 +1,10 @@
 //document.getElementById("btnTxt").onclick = function() {appendText()};
-var buttonArray = [], textArray = [], text;
 //Global varible 
 var xCoord = 0;
 var yCoord = 0;
+var buttonArray = [], textArray = [], text;
 
-document.getElementById("btnTxt").onclick = function() {appendText()};
-
-function showCoords(event) {
-  var x = event.clientX;
-  var y = event.clientY;
-  var coords = "X coords: " + x + ", Y coords: " + y;
-  //document.getElementById("instruction").innerHTML = coords;
-  alert(coords);
-}
+document.getElementById("btnTxt").onclick = function() {appendText()}; 
 
 function addText(value){
   text+= value.id + " "
@@ -84,6 +76,15 @@ function removeText(name){
     }
   }
 }
+
+function removeBtn(name){
+  for (i = 0; i < buttonArray.length; i++){
+    if(buttonArray[i].id == name){
+      buttonArray.splice(i,1);
+    }
+  }
+}
+
 function showCoords(event) {
   xCoord = event.clientX; 
   yCoord = event.clientY;
@@ -101,12 +102,5 @@ function moveMarker(){
   var yPosition = event.clientY - container.getBoundingClientRect().top - (marker.clientHeight/ 2);
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
-}
-function removeBtn(name){
-  for (i = 0; i < buttonArray.length; i++){
-    if(buttonArray[i].id == name){
-      buttonArray.splice(i,1);
-    }
-  }
 }
 
