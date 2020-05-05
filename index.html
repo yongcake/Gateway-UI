@@ -29,9 +29,12 @@
 		</div>
 	
 		<br>
-	
-		<div class="floorPlanZone">
-			<img src="Image/dummy.png" alt="Dummy Image" width="60%" id="image" onclick="showCoords(event)"></img>
+
+		<div class="floorPlanZoneContainer">
+
+			<div class="imageContainer" id="imageSource" onclick="moveMarker(); showCoords(event);">
+				<div id="marker"></div>
+			</div>
 
 			<div class="informationContainer">
 
@@ -42,7 +45,7 @@
 						<label for="NodeID">Node ID:</label> <br>
 						<input type="text" class ="formInput" id="nodeID" name="fname"><br><br>
 					</div>
-					<div class="addButtonWrapper">
+					<div class="addButtonWrapper" id="addButton"> 
 						<input type="button" id="addNode" value="Add">
 					</div>
 				</div>
@@ -74,7 +77,7 @@
 
 			</div>
 		</div>
-		<div id="instruction">
+		<div id="instructions">
 			- Tap on a new location to indicate the new node location <br>
 			- Tap on an existing location to view node activity
 		</div>
