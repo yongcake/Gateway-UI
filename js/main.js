@@ -2,9 +2,9 @@
 //Global varible 
 var xCoord = 0;
 var yCoord = 0;
-var buttonArray = [], textArray = [], text;
+var buttonArray = [], textArray = [], markerArray = [], text;
 var enableMarker = true;
-document.getElementById("btnTxt").onclick = function() {appendText()}; 
+markerArray.push(document.getElementById("marker"));
 
 function addText(value){
   text+= value.id + " "
@@ -99,6 +99,21 @@ function toggleMarker(){
   markerStat.innerText = enableMarker + "";
 }
 
+function createNewMarker(){
+  if(enableMarker){
+    var container = document.querySelector("#imageSource");
+    var newMarker = document.createElement("div");
+    container.append(newMarker); 
+    newMarker.classList.toggle("marker");
+    var xPosition = event.clientX - container.getBoundingClientRect().left + (newMarker.clientWidth / 2);
+    var yPosition = event.clientY ;
+    newMarker.style.left = xPosition + "px";
+    newMarker.style.top = yPosition + "px";
+    //alert("new marker created");
+  }
+
+}
+
 function showCoords(event) {
   xCoord = event.clientX; 
   yCoord = event.clientY;
@@ -107,7 +122,7 @@ function showCoords(event) {
   //alert(coords);
 }
 
-document.getElementById("#imageSource").addEventListener("click", moveMarker);
+//document.getElementById("#imageSource").addEventListener("click", createNewMarker);
 
 function moveMarker(){
   if(!enableMarker){
