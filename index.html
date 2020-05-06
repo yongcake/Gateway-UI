@@ -33,7 +33,7 @@
 		<div class="floorPlanZoneContainer">
 
 			<div class="imageContainer" id="imageSource" onclick="moveMarker(); showCoords(event);">
-				<div id="marker"></div>
+				<div id="marker" class="marker"></div>
 			</div>
 
 			<div class="informationContainer">
@@ -86,9 +86,11 @@
 	<hr>
 	<b>Testing different codes/functions below</b>
 	<br>
-
+	<p>
 	<button id="btnTxt" onclick="appendText()">Click to add Text</button>
 	<button id="btnBtn" onclick="appendButton()">Click to add Button</button>
+	<button id="btnColor" onclick="toggleMarker()">Toggle Marker</button>
+	Marker Status: <b id="markerStatus">true</b></p>
 	<br>
 	<button id="btnCheckTxt" onclick="checkIDTxt()">Show Text IDs</button>
 	<button id="btnCheckBtn" onclick="checkIDBtn()">Show Button IDs</button>

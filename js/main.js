@@ -3,7 +3,7 @@
 var xCoord = 0;
 var yCoord = 0;
 var buttonArray = [], textArray = [], text;
-
+var enableMarker = true;
 document.getElementById("btnTxt").onclick = function() {appendText()}; 
 
 function addText(value){
@@ -85,6 +85,20 @@ function removeBtn(name){
   }
 }
 
+//Markers
+function toggleMarker(){
+  if(enableMarker){
+    enableMarker = false;
+  }
+  else{
+    enableMarker = true;
+  }
+  var marker = document.getElementById("marker");
+  marker.classList.toggle("marker")
+  var markerStat = document.getElementById("markerStatus");
+  markerStat.innerText = enableMarker + "";
+}
+
 function showCoords(event) {
   xCoord = event.clientX; 
   yCoord = event.clientY;
@@ -96,6 +110,10 @@ function showCoords(event) {
 document.getElementById("#imageSource").addEventListener("click", moveMarker);
 
 function moveMarker(){
+  if(!enableMarker){
+    alert("Enable marker to move markers");
+    return
+  }
   var marker = document.querySelector("#marker");
   var container = document.querySelector("#imageSource");
   var xPosition = event.clientX - container.getBoundingClientRect().left - (marker.clientWidth / 2);
