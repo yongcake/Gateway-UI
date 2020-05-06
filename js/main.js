@@ -1,9 +1,9 @@
 //document.getElementById("btnTxt").onclick = function() {appendText()};
-//Global varible 
+//Global varibles
 var xCoord = 0;
 var yCoord = 0;
 var buttonArray = [], textArray = [], text;
-var enableMarker = true;
+var enableMarker = false;
 document.getElementById("btnTxt").onclick = function() {appendText()}; 
 
 function addText(value){
@@ -23,7 +23,8 @@ function checkIDTxt(){ // used to check ids of all txts added
   }
   
 }
-function checkIDBtn(){ // used to check ids of all buttonss added
+
+function checkIDBtn(){ // used to check ids of all buttons added
   text = "";
   if (buttonArray.length != 0){
     buttonArray.forEach(addText);
@@ -85,29 +86,32 @@ function removeBtn(name){
   }
 }
 
-//Markers
+
+
+
+//Markers 
 function toggleMarker(){
-  if(enableMarker){
-    enableMarker = false;
-  }
-  else{
+  if(!enableMarker){
     enableMarker = true;
   }
+  else{
+    enableMarker = false;
+  }
   var marker = document.getElementById("marker");
-  marker.classList.toggle("marker")
+  marker.classList.toggle("markerTrue")
   var markerStat = document.getElementById("markerStatus");
   markerStat.innerText = enableMarker + "";
 }
 
 function showCoords(event) {
-  xCoord = event.clientX; 
+  xCoord = event.clientX;
   yCoord = event.clientY;
   var coords = "X coords: " + xCoord + ", Y coords: " + yCoord;
   document.getElementById("instructions").innerHTML = coords;
   //alert(coords);
 }
 
-document.getElementById("#imageSource").addEventListener("click", moveMarker);
+document.getElementById("imageSource").addEventListener("click", moveMarker);
 
 function moveMarker(){
   if(!enableMarker){
