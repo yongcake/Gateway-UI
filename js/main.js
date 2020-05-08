@@ -154,8 +154,8 @@ function moveMarker(marker){ //Used to move a Marker around
   var container = document.querySelector("#imageSource");
   //var xPosition = event.clientX - container.getBoundingClientRect().left - (marker.clientWidth / 2); //container.scrollLeft is for when the div is scrollable
   //var yPosition = event.clientY + window.pageYOffset; ; //container.scrollTop is for when the div is scrollable
-  var xPosition = event.clientX - container.scrollLeft - (newMarker.clientWidth); //container.scrollLeft is for when the div is scrollable
-  var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (newMarker.clientHeight); //container.scrollTop is for when the div is scrollable
+  var xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
+  var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
 }
