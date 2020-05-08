@@ -4,9 +4,10 @@ var xCoord = 0;
 var yCoord = 0;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var enableMarker = true;
+var movingMarker = false;
 markerArray.push(document.getElementById("marker"));
 
-function addText(value){
+function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
 
@@ -36,29 +37,29 @@ function checkIDBtn(){ // used to check ids of all buttons added
   }
 }
 //Addings Elements
-function appendText(){
+function appendText(){ //Add a new p
   //var txt1 = "<p>Text.</p>";        // Create text with HTML
   //var txt2 = $("<p></p>").text("Text.");  // Create text with jQuery
 
   var txt3 = document.createElement("p");
   txt3.innerHTML = "Text";         // Create text with DOM
   txt3.id = "txt" + (textArray.length + 1);
-  textArray.push(txt3);
+  textArray.push(txt3); //Push to an Array
   $("#testArea").append(txt3);   // Append new elements
   checkIDTxt();
 }
 
-function appendButton(){
+function appendButton(){ //Add a new button
   var buttonTest = document.createElement("button");
   buttonTest.innerHTML = "This is a button";
   buttonTest.id = "btn" + (buttonArray.length + 1);
-  buttonArray.push(buttonTest);
+  buttonArray.push(buttonTest); //Push to an Array
   $("#testArea").append(buttonTest);   // Append new elements
   checkIDBtn();
 }
 
 //Removing Items
-function removeElements(){
+function removeElements(){ //Remove element based on the id typed in textbox
   //alert(textArray);
   var elementID = document.getElementById("removeID").value;
   //alert(elementID);
@@ -70,7 +71,7 @@ function removeElements(){
   checkIDTxt();
 }
 
-function removeText(name){
+function removeText(name){ //Remove text
   for (i = 0; i < textArray.length; i++){
     if(textArray[i].id == name){
       textArray.splice(i,1);
@@ -78,7 +79,7 @@ function removeText(name){
   }
 }
 
-function removeBtn(name){
+function removeBtn(name){ //Remove Btn
   for (i = 0; i < buttonArray.length; i++){
     if(buttonArray[i].id == name){
       buttonArray.splice(i,1);
@@ -86,39 +87,52 @@ function removeBtn(name){
   }
 }
 
-
-
-
 //Markers 
-function toggleMarker(){
+function toggleMarkers(){ //Toggle all markers
   if(!enableMarker){
     enableMarker = true;
   }
   else{
     enableMarker = false;
   }
-  var marker = document.getElementById("marker");
-  marker.classList.toggle("markerTrue")
+  alert(markerArray.length);
+  markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
+
+}
+
+function toggleOneMarkers(marker){ //toggle one marker
+  marker.classList.toggle("marker");
   var markerStat = document.getElementById("markerStatus");
   markerStat.innerText = enableMarker + "";
 }
 
-function createNewMarker(){
-  if(enableMarker){
-    var container = document.querySelector("#imageSource");
-    var newMarker = document.createElement("div");
-    container.append(newMarker); 
-    newMarker.classList.toggle("marker");
-    var xPosition = event.clientX - container.getBoundingClientRect().left + (newMarker.clientWidth / 2);
-    var yPosition = event.clientY ;
-    newMarker.style.left = xPosition + "px";
-    newMarker.style.top = yPosition + "px";
-    //alert("new marker created");
+function createNewMarker(){ //add or move a a marker
+  var newMarker;
+  if (enableMarker){ //Check if markers is currently shown
+    if(!movingMarker){ //Create marker if not in moving mode
+      var container = document.querySelector("#imageSource");
+      newMarker = document.createElement("div");
+      container.append(newMarker); 
+      newMarker.classList.toggle("marker");
+      newMarker.id = "marker" + (markerArray.length + 1);
+      newMarker.onclick = displayCurrentMarker(newMarker.id);
+      markerArray.push(newMarker);
+      //alert("new marker created");
+    }
+    else{
+      
+    }
   }
 
+  moveMarker(newMarker);
 }
 
-function showCoords(event) {
+function displayCurrentMarker(markerID){
+  var textSelectedMarker = document.getElementById("selectedMarker");
+  textSelectedMarker.innerText = markerID;
+}
+
+function showCoords(event) { //Display location of previously placed marker
   xCoord = event.clientX;
   yCoord = event.clientY;
   var coords = "X coords: " + xCoord + ", Y coords: " + yCoord;
@@ -128,15 +142,15 @@ function showCoords(event) {
 
 //document.getElementById("#imageSource").addEventListener("click", createNewMarker);
 
-function moveMarker(){
+function moveMarker(marker){ //Used to move a Marker around
   if(!enableMarker){
     alert("Enable marker to move markers");
     return
   }
-  var marker = document.querySelector("#marker");
+  //var marker = document.querySelector("#marker");
   var container = document.querySelector("#imageSource");
   var xPosition = event.clientX - container.getBoundingClientRect().left - (marker.clientWidth / 2);
-  var yPosition = event.clientY - container.getBoundingClientRect().top - (marker.clientHeight/ 2);
+  var yPosition = event.clientY + window.pageYOffset; ;
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
 }

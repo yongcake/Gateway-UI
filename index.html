@@ -75,7 +75,6 @@
 					- Moving the Node to a more optimal position <br>
 					- Checking if you have entered the right location for the node 
 				</div>
-
 			</div>
 		</div>
 		<div id="instructions">
@@ -87,11 +86,14 @@
 	<hr>
 	<b>Testing different codes/functions below</b>
 	<br>	
+	<p><b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
+
+	</p>
 	<p>
 	<button id="btnTxt" onclick="appendText()">Click to add Text</button>
 	<button id="btnBtn" onclick="appendButton()">Click to add Button</button>
-	<button id="btnColor" onclick="toggleMarker()">Toggle Marker</button>
-	Marker Status: <b id="markerStatus">false</b></p>
+	<button id="btnColor" onclick="toggleMarkers()">Toggle Marker</button>
+	Marker Status: <b id="markerStatus">true</b></p>
 	<br>
 	<button id="btnCheckTxt" onclick="checkIDTxt()">Show Text IDs</button>
 	<button id="btnCheckBtn" onclick="checkIDBtn()">Show Button IDs</button>
