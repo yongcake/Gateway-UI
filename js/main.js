@@ -5,7 +5,6 @@ var markerCount = 0;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var enableMarker = true;
 var movingMarker = false;
-markerArray.push(document.getElementById("marker"));
 
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
@@ -89,15 +88,20 @@ function removeBtn(name){ //Remove Btn
 
 //Markers 
 function toggleMarkers(){ //Toggle all markers
-  if(!enableMarker){
-    enableMarker = true;
+  if(markerArray.length != 0){
+    if(!enableMarker){
+      enableMarker = true;
+    }
+    else{
+      enableMarker = false;
+    }
+  
+    markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
+  
   }
   else{
-    enableMarker = false;
+    alert("No Marker to toggle");
   }
-  alert(markerArray.length);
-  markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
-
 }
 
 function toggleOneMarkers(marker){ //toggle one marker
