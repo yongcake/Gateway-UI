@@ -4,6 +4,7 @@ body {
 	height: 100%;
 	max-width: 100%;
 	overflow-x: hidden;
+	position: relative;
 }
 
 h1 {
@@ -154,3 +155,4 @@ img{
 	top: 20px;
 	background-color: red;
 }
+
