@@ -1,9 +1,10 @@
-//document.getElementById("btnTxt").onclick = function() {appendText()};
 //Global varibles
 var xCoord = 0;
 var yCoord = 0;
+var markerCount = 0;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var enableMarker = true;
+var newMarker;
 markerArray.push(document.getElementById("marker"));
 
 function addText(value){
@@ -106,22 +107,28 @@ function toggleMarker(){
 function createNewMarker(){
   if(enableMarker){
     var container = document.querySelector("#imageSource");
-    var newMarker = document.createElement("div");
-    container.append(newMarker); 
-    newMarker.classList.toggle("marker");
-    var xPosition = event.clientX - container.getBoundingClientRect().left + (newMarker.clientWidth / 2);
-    var yPosition = event.clientY ;
+    newMarker = document.createElement("div");
+    container.append(newMarker); //create new div in #imageSource
+    newMarker.classList.toggle("marker"); // give .marker class css to the new div
+    newMarker.id = "marker" + markerCount; // assign each new div a unique ID 
+    var xPosition = event.clientX - container.scrollLeft - (newMarker.clientWidth); //container.scrollLeft is for when the div is scrollable
+    var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (newMarker.clientHeight); //container.scrollTop is for when the div is scrollable
     newMarker.style.left = xPosition + "px";
     newMarker.style.top = yPosition + "px";
+    //document.getElementById("marker" + markerCount).style.position = "absolute";
     //alert("new marker created");
+    markerCount += 1;
   }
 
 }
 
 function showCoords(event) {
-  xCoord = event.clientX;
-  yCoord = event.clientY;
-  var coords = "X coords: " + xCoord + ", Y coords: " + yCoord;
+  var container = document.querySelector("#imageSource");
+  xCoord = event.clientX - container.getBoundingClientRect().left;
+  yCoord = event.clientY - container.getBoundingClientRect().top;
+  var pagexCoord = event.clientX;
+  var pageyCoord = event.clientY;
+  var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " + yCoord + "<br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord;
   document.getElementById("instructions").innerHTML = coords;
   //alert(coords);
 }
