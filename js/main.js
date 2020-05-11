@@ -110,6 +110,19 @@ function toggleOneMarkers(marker){ //toggle one marker
   markerStat.innerText = enableMarker + "";
 }
 
+function toggleMode(){
+  var mode;
+  if(!movingMarker){
+    movingMarker =true;
+    mode = "Moving";
+  }
+  else{
+    movingMarker = false;
+    mode = "Adding";
+  }
+  document.getElementById("Mode").innerText = mode;
+}
+
 function createNewMarker(){ //add or move a a marker
   var newMarker;
   if (enableMarker){ //Check if markers is currently shown
@@ -124,7 +137,10 @@ function createNewMarker(){ //add or move a a marker
       //alert("new marker created");
     }
     else{
+      //alert(document.getElementById("selectedMarker").text);
+      newMarker = document.getElementById(document.getElementById("selectedMarker").text);
       
+      //alert(newMarker.id);
     }
   }
 
