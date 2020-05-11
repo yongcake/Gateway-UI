@@ -2,6 +2,7 @@
 var xCoord = 0;
 var yCoord = 0;
 var markerCount = 0;
+var markerAdded = false;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
@@ -131,6 +132,8 @@ function toggleMode(){
 
 function createNewMarker(){ //add or move a a marker
   var newMarker;
+  var location = document.getElementById("locationName").value;
+  var identification = document.getElementById("nodeID").value;
   if (modeArray.enabled){ //Check if markers is currently shown
     if(modeArray.addingMode){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
@@ -138,20 +141,21 @@ function createNewMarker(){ //add or move a a marker
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (markerArray.length + 1);
-      newMarker.setAttribute("onclick","displayCurrentMarker(this.id)") ;
+      newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
       markerArray.push(newMarker);
       //alert("new marker created");
       moveMarker(newMarker);
+      //markerAdded = true;
     }
     else{
       //alert(document.getElementById("selectedMarker").text);
       newMarker = document.getElementById(document.getElementById("selectedMarker").text);
-      
       //alert(newMarker.id);
     }
+    if(modeArray.addingMode && markerAdded == true){
+      moveMarker(newMarker);
+    }
   }
-
-  
 }
 
 function displayCurrentMarker(markerID){

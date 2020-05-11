@@ -24,16 +24,16 @@ function remove_marker(ev) {
     return false;
 }
 
-$(document).ready(function (){
-    $('.floorPlanZoneContainer').bind('click', function (ev) {
-        var $img = $(ev.target);
-        var coord = get_click_position(ev);
-        
-        var new_marker = $("<img src='Image/marker.png' id='marker"+marker_counter+"' class='marker' oncontextmenu='return false;'/>");
-        new_marker.css({position: 'absolute', left: coord[0]-25, top: coord[1]-25});
-        $('.imageContainer').append(new_marker);
-        $('#marker'+marker_counter).bind('contextmenu', function (ev) {remove_marker(ev); });
-        markers.push([marker_counter, coord[0]-25, coord[1]-25, coord[0]+25, coord[1]+25]);
-        marker_counter++;
-    });
-});
+//$(document).ready(function (){
+//    $('.floorPlanZoneContainer').bind('click', function (ev) {
+//        var $img = $(ev.target);
+//        var coord = get_click_position(ev);
+//        
+//        var new_marker = $("<img src='Image/marker.png' id='marker"+marker_counter+"' class='marker' oncontextmenu='return false;'/>");
+//        new_marker.css({position: 'absolute', left: coord[0]-25, top: coord[1]-25});
+//        $('.imageContainer').append(new_marker);
+//        $('#marker'+marker_counter).bind('contextmenu', function (ev) {remove_marker(ev); });
+//        markers.push([marker_counter, coord[0]-25, coord[1]-25, coord[0]+25, coord[1]+25]);
+//        marker_counter++;
+//    });
+//});
