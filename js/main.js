@@ -3,8 +3,7 @@ var xCoord = 0;
 var yCoord = 0;
 var markerCount = 0;
 var buttonArray = [], textArray = [], markerArray = [], text;
-var enableMarker = true;
-var movingMarker = false;
+var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
@@ -73,7 +72,8 @@ function removeElements(){ //Remove element based on the id typed in textbox
 function removeText(name){ //Remove text
   for (i = 0; i < textArray.length; i++){
     if(textArray[i].id == name){
-      textArray.splice(i,1);
+      //textArray.splice(i,1);
+      delete textArray[i];
     }
   }
 }
@@ -89,11 +89,11 @@ function removeBtn(name){ //Remove Btn
 //Markers 
 function toggleMarkers(){ //Toggle all markers
   if(markerArray.length != 0){
-    if(!enableMarker){
-      enableMarker = true;
+    if(!modeArray.enabled){
+      modeArray.enabled = true;
     }
     else{
-      enableMarker = false;
+      modeArray.enabled = false;
     }
   
     markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
@@ -107,34 +107,41 @@ function toggleMarkers(){ //Toggle all markers
 function toggleOneMarkers(marker){ //toggle one marker
   marker.classList.toggle("marker");
   var markerStat = document.getElementById("markerStatus");
-  markerStat.innerText = enableMarker + "";
+  markerStat.innerText = modeArray.enabled + "";
 }
 
 function toggleMode(){
   var mode;
-  if(!movingMarker){
-    movingMarker =true;
-    mode = "Moving";
+  if(!modeArray.viewingMode){
+    modeArray.viewingMode = true;
+    modeArray.addingMode = false;
+    mode = "Viewing";
   }
   else{
-    movingMarker = false;
+    modeArray.viewingMode = false;
+    modeArray.addingMode = true;
     mode = "Adding";
+    for (var i = 0; i<markerArray.length; i++){
+      markerArray[i].style.opacity= 1;
+    }
+
   }
   document.getElementById("Mode").innerText = mode;
 }
 
 function createNewMarker(){ //add or move a a marker
   var newMarker;
-  if (enableMarker){ //Check if markers is currently shown
-    if(!movingMarker){ //Create marker if not in moving mode
+  if (modeArray.enabled){ //Check if markers is currently shown
+    if(modeArray.addingMode){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (markerArray.length + 1);
-      newMarker.onclick = displayCurrentMarker(newMarker.id);
+      newMarker.setAttribute("onclick","displayCurrentMarker(this.id)") ;
       markerArray.push(newMarker);
       //alert("new marker created");
+      moveMarker(newMarker);
     }
     else{
       //alert(document.getElementById("selectedMarker").text);
@@ -144,12 +151,20 @@ function createNewMarker(){ //add or move a a marker
     }
   }
 
-  moveMarker(newMarker);
+  
 }
 
 function displayCurrentMarker(markerID){
   var textSelectedMarker = document.getElementById("selectedMarker");
   textSelectedMarker.innerText = markerID;
+  for (var i = 0; i<markerArray.length; i++){
+    if (markerArray[i].id == markerID){
+      markerArray[i].style.opacity = 0.3;
+    }
+    else{
+      markerArray[i].style.opacity = 1;
+    }
+  }
 }
 
 function showCoords(event) {
@@ -166,7 +181,7 @@ function showCoords(event) {
 //document.getElementById("#imageSource").addEventListener("click", createNewMarker);
 
 function moveMarker(marker){ //Used to move a Marker around
-  if(!enableMarker){
+  if(!modeArray.enabled){
     alert("Enable marker to move markers");
     return
   }
