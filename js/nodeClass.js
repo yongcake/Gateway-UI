@@ -1,7 +1,7 @@
 class Node{
-    constructor(identification, location){
-        this.identification = identification;
+    constructor(location, identification){
         this.location = location;
+        this.identification = identification;
         this.signal = "Low";
         this.status = "No Signal";
     }
@@ -20,5 +20,21 @@ class Node{
     deleteNode(){
         
     }
+}
 
+var nodeList = [];
+
+function addNode()
+{
+    var location = document.getElementById("locationName").value;
+    var identification = document.getElementById("nodeID").value;
+    if (location == "" || identification == ""){
+        alert("Please make sure both fields are filled before adding node.");
+        return;
+    }
+
+    var n = new Node(location, identification);
+    nodeList.push(n);   
+    console.log("Node Location: " + n.location);
+    console.log("Node ID: " + n.identification);
 }
