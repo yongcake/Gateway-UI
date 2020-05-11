@@ -121,6 +121,7 @@ function toggleMode(){
   else{
     modeArray.viewingMode = false;
     modeArray.addingMode = true;
+    $("#btnDeleteMarker").hide();
     mode = "Adding";
     for (var i = 0; i<markerArray.length; i++){
       markerArray[i].style.opacity= 1;
@@ -186,7 +187,7 @@ function removeMarker(){
 }
 
 function refreshMarkerList(){
-  
+
 }
 
 function showCoords(event) {
