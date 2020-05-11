@@ -28,8 +28,11 @@
 			<input type="button" id="button" value="Test3">
 			<input type="button" id="button" value="Test4">
 			<input type="button" id="button" value="Test5">
+
+			<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
+			<button id="btnToggleMode" onclick="toggleMode()">switch mode</button>
 		</div>
-	
+		
 		<br>
 
 		<div class="floorPlanZoneContainer">
@@ -87,9 +90,6 @@
 	<hr>
 	<b>Testing different codes/functions below</b>
 	<br>	
-	<p><b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
-
-	</p>
 	<p>
 	<button id="btnTxt" onclick="appendText()">Click to add Text</button>
 	<button id="btnBtn" onclick="appendButton()">Click to add Button</button>
