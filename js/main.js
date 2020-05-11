@@ -64,7 +64,6 @@ function removeElements(){ //Remove element based on the id typed in textbox
   var element = document.getElementById(elementID);
   element.remove();
   removeText(elementID);
-  removeBtn(elementID);
   checkIDBtn();
   checkIDTxt();
 }
@@ -78,10 +77,12 @@ function removeText(name){ //Remove text
   }
 }
 
-function removeBtn(name){ //Remove Btn
-  for (i = 0; i < buttonArray.length; i++){
-    if(buttonArray[i].id == name){
-      buttonArray.splice(i,1);
+function removeFromArray(arrayList,itemName){ //Remove Btn
+  for (i = 0; i < arrayList.length; i++){
+    if(arrayList[i].id == itemName){
+      arrayList.splice(i,1);
+      var element = document.getElementById(itemName);
+      element.remove();
     }
   }
 }
@@ -123,6 +124,8 @@ function toggleMode(){
     mode = "Adding";
     for (var i = 0; i<markerArray.length; i++){
       markerArray[i].style.opacity= 1;
+      markerArray[i].style.zIndex = 1;
+      markerArray[i].style.backgroundColor ="red";
     }
 
   }
@@ -149,22 +152,41 @@ function createNewMarker(){ //add or move a a marker
       
       //alert(newMarker.id);
     }
-  }
-
-  
+  }  
 }
 
 function displayCurrentMarker(markerID){
-  var textSelectedMarker = document.getElementById("selectedMarker");
-  textSelectedMarker.innerText = markerID;
-  for (var i = 0; i<markerArray.length; i++){
-    if (markerArray[i].id == markerID){
-      markerArray[i].style.opacity = 0.3;
+  if(modeArray.viewingMode){
+    var textSelectedMarker = document.getElementById("selectedMarker");
+    textSelectedMarker.innerText = markerID;
+    for (var i = 0; i<markerArray.length; i++){
+      if (markerArray[i].id == markerID){
+        markerArray[i].style.opacity = 0.5;
+        markerArray[i].style.zIndex = 3;
+        markerArray[i].style.backgroundColor ="green";
+      }
+      else{
+        markerArray[i].style.opacity = 1;
+        markerArray[i].style.zIndex = 1;
+        markerArray[i].style.backgroundColor ="red";
+      }
     }
-    else{
-      markerArray[i].style.opacity = 1;
-    }
+    $("#btnDeleteMarker").show();
   }
+}
+
+function removeMarker(){
+  $("#btnDeleteMarker").hide();
+  var markerID = document.getElementById("selectedMarker");
+  if(markerID != "None"){
+    removeFromArray(markerArray, markerID.innerText);
+    markerID.innerText = "None";
+  }
+ 
+}
+
+function refreshMarkerList(){
+  
 }
 
 function showCoords(event) {
