@@ -137,26 +137,34 @@ function toggleMode(){
 function createNewMarker(){ //add or move a a marker
   var newMarker;
   var location = document.getElementById("locationName").value;
-  var identification = document.getElementById("nodeID").value;
+  var nodeID = document.getElementById("nodeID").value;
+  if (modeArray.addingMode && location == "" && nodeID == ""){
+    alert("Please make sure both fields are filled before adding node.");
+    return;
+  }
   if (modeArray.enabled){ //Check if markers is currently shown
-    if(modeArray.addingMode){ //Create marker if not in moving mode
+    if(modeArray.addingMode && location != "" && nodeID != ""){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (markerArray.length + 1);
+      addNode(newMarker.id);
       newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
       markerArray.push(newMarker);
       //alert("new marker created");
       moveMarker(newMarker);
       //markerAdded = true;
+      document.getElementById("locationName").value = "";
+      document.getElementById("nodeID").value = "";
     }
     else{
       //alert(document.getElementById("selectedMarker").text);
       newMarker = document.getElementById(document.getElementById("selectedMarker").text);
       //alert(newMarker.id);
     }
-  }  
+  } 
+
 }
 
 function displayCurrentMarker(markerID){
@@ -176,6 +184,12 @@ function displayCurrentMarker(markerID){
       }
     }
     $("#btnDeleteMarker").show();
+    for(var i = 0; i<nodeList.length; i++){
+      if (nodeList[i].markerID == markerID){
+          var nodeInformation = "ID: " + nodeList[i].nodeID + "<br> Location: " + nodeList[i].location + "<br> Signal Strength: " + nodeList[i].signal + "<br> Status: " + nodeList[i].status
+          document.getElementById("nodeInfo").innerHTML = nodeInformation;
+      }
+    }
   }
 }
 
@@ -220,3 +234,70 @@ function moveMarker(marker){ //Used to move a Marker around
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//==================================================Node Class=====================================================
+class Node{
+  constructor(markerID, location, nodeID){
+    this.markerID = markerID;
+    this.location = location;
+    this.nodeID = nodeID;
+    this.signal = "Low";
+    this.status = "No Signal";
+  }
+  signalChange(){
+      //this will be the function for changing signal later
+  }
+
+  statusChange(){
+      //this will be the function for changing status later
+  }
+
+  editNode(){
+      //this will be the function for editing node information later
+  }
+
+  deleteNode(){
+      
+  }
+}
+
+var nodeList = [];
+
+function addNode(markerID)
+{
+  var location = document.getElementById("locationName").value;
+  var nodeID = document.getElementById("nodeID").value;
+  if (location == "" || nodeID == ""){
+      alert("Please make sure both fields are filled before adding node.");
+      return;
+  }
+
+  var n = new Node(markerID, location, nodeID);
+  nodeList.push(n);
+  console.log("Marker ID: " + n.markerID);
+  console.log("Node Location: " + n.location);
+  console.log("Node ID: " + n.nodeID);
+}
+
