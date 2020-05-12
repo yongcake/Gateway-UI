@@ -78,7 +78,7 @@ function removeText(name){ //Remove text
   }
 }
 
-function removeFromArray(arrayList,itemName){ //Remove Btn
+function removeFromArray(arrayList,itemName){ //Remove element from an array and page
   for (i = 0; i < arrayList.length; i++){
     if(arrayList[i].id == itemName){
       arrayList.splice(i,1);
@@ -166,7 +166,8 @@ function createNewMarker(){ //add or move a a marker
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
-      newMarker.id = "marker" + (markerArray.length + 1);
+      newMarker.id = "marker" + (markerCount);
+      markerCount++;
       addNode(newMarker.id);
       newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
       markerArray.push(newMarker);
@@ -190,20 +191,20 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
     var textSelectedMarker = document.getElementById("selectedMarker");
     textSelectedMarker.innerText = markerID;
     for (var i = 0; i<markerArray.length; i++){
-      if (markerArray[i].id == markerID){
+      if (markerArray[i].id == markerID){ //Change css of selected marker
         markerArray[i].style.opacity = 0.5;
-        markerArray[i].style.zIndex = 3;
+        markerArray[i].style.zIndex = 3; //Bring markers to the front
         markerArray[i].style.backgroundColor ="green";
       }
-      else{
+      else{ //Revert css of other markers
         markerArray[i].style.opacity = 1;
-        markerArray[i].style.zIndex = 1;
+        markerArray[i].style.zIndex = 1; //Bring markers to the back
         markerArray[i].style.backgroundColor ="red";
       }
     }
-    $("#btnDeleteMarker").show();
-    $("#btnToggleMove").show();
-    for(var i = 0; i<nodeList.length; i++){
+    $("#btnDeleteMarker").show(); //button becomes available
+    $("#btnToggleMove").show(); //button becomes available
+    for(var i = 0; i<nodeList.length; i++){ //Find markers information
       if (nodeList[i].markerID == markerID){
           var nodeInformation = "ID: " + nodeList[i].nodeID + "<br> Location: " + nodeList[i].location + "<br> Signal Strength: " + nodeList[i].signal + "<br> Status: " + nodeList[i].status
           document.getElementById("nodeInfo").innerHTML = nodeInformation;
@@ -212,14 +213,14 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
   }
 }
 
-function removeMarker(){
-  $("#btnDeleteMarker").hide();
-  var markerID = document.getElementById("selectedMarker");
-  if(markerID != "None"){
-    removeFromArray(markerArray, markerID.innerText);
+function removeMarker(){  //Runs when btnDeleteMarker is clicked
+  $("#btnDeleteMarker").hide(); //hide button when marker is deleted
+  var markerID = document.getElementById("selectedMarker"); //Text that displays selected marker
+  if(markerID != "None"){ //doesn't run when there isn't a marker selected
+    removeFromArray(markerArray, markerID.innerText); //Function to remove marker,
     markerID.innerText = "None";
     modeArray.movingMode =false;
-    $("#btnToggleMove").hide();
+    $("#btnToggleMove").hide(); 
   }
  
 }
