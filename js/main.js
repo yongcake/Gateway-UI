@@ -112,26 +112,44 @@ function toggleOneMarkers(marker){ //toggle one marker
   markerStat.innerText = modeArray.enabled + "";
 }
 
-function toggleMode(){
-  var mode;
-  if(!modeArray.viewingMode){
+function toggleMode(){ //Toggle between Viewing and Adding
+  var mode; //Text to display mode
+  if(!modeArray.viewingMode){ //Swap to Viewing
     modeArray.viewingMode = true;
     modeArray.addingMode = false;
     mode = "Viewing";
   }
-  else{
+  else{                       //Swap to Adding
     modeArray.viewingMode = false;
     modeArray.addingMode = true;
-    $("#btnDeleteMarker").hide();
+    modeArray.movingMode =false;
+    $("#btnDeleteMarker").hide(); //Hide function that shouldn't be used in the current mode
+    $("#btnToggleMove").hide(); //Hide function that shouldn't be used in the current mode
     mode = "Adding";
-    for (var i = 0; i<markerArray.length; i++){
+    document.getElementById("btnToggleMove").innerText = "Move Marker"; //Refresh Text in case it was switch from moving to adding
+    for (var i = 0; i<markerArray.length; i++){ //Reset all markers to orginal setting
       markerArray[i].style.opacity= 1;
       markerArray[i].style.zIndex = 1;
       markerArray[i].style.backgroundColor ="red";
     }
 
   }
-  document.getElementById("Mode").innerText = mode;
+  document.getElementById("Mode").innerText = mode; //Update mode text
+}
+
+function toggleMove(){ //Toggle between Viewing and Moving
+  if(modeArray.viewingMode){ //Only runs if viewing is enabled
+    if(!modeArray.movingMode){ //Swap to Moving
+      modeArray.movingMode =true;
+      document.getElementById("Mode").innerText = "Moving"; //Update mode text
+      document.getElementById("btnToggleMove").innerText = "Stop Moving"; //Update toggle button text
+    }
+    else{
+      modeArray.movingMode =false; //Swap back to Viewing
+      document.getElementById("btnToggleMove").innerText = "Move Marker"; //Update toggle button text
+      document.getElementById("Mode").innerText = "Viewing"; //Update mode text
+    }
+  }
 }
 
 function createNewMarker(){ //add or move a a marker
@@ -153,21 +171,21 @@ function createNewMarker(){ //add or move a a marker
       newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
       markerArray.push(newMarker);
       //alert("new marker created");
-      moveMarker(newMarker);
       //markerAdded = true;
       document.getElementById("locationName").value = "";
       document.getElementById("nodeID").value = "";
     }
-    else{
+    else if(modeArray.movingMode){
       //alert(document.getElementById("selectedMarker").text);
       newMarker = document.getElementById(document.getElementById("selectedMarker").text);
-      //alert(newMarker.id);
+      
     }
+    moveMarker(newMarker);
   } 
 
 }
 
-function displayCurrentMarker(markerID){
+function displayCurrentMarker(markerID){ //function runs when a marker is clicked
   if(modeArray.viewingMode){
     var textSelectedMarker = document.getElementById("selectedMarker");
     textSelectedMarker.innerText = markerID;
@@ -184,6 +202,7 @@ function displayCurrentMarker(markerID){
       }
     }
     $("#btnDeleteMarker").show();
+    $("#btnToggleMove").show();
     for(var i = 0; i<nodeList.length; i++){
       if (nodeList[i].markerID == markerID){
           var nodeInformation = "ID: " + nodeList[i].nodeID + "<br> Location: " + nodeList[i].location + "<br> Signal Strength: " + nodeList[i].signal + "<br> Status: " + nodeList[i].status
@@ -199,6 +218,8 @@ function removeMarker(){
   if(markerID != "None"){
     removeFromArray(markerArray, markerID.innerText);
     markerID.innerText = "None";
+    modeArray.movingMode =false;
+    $("#btnToggleMove").hide();
   }
  
 }
