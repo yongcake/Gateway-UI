@@ -3,6 +3,7 @@ var xCoord = 0;
 var yCoord = 0;
 var markerCount = 0;
 var markerAdded = false;
+var selectedMarkerID = "";
 var buttonArray = [], textArray = [], markerArray = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
@@ -79,6 +80,8 @@ function removeText(name){ //Remove text
 }
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
+  removeNode(itemName);
+  document.getElementById("nodeInfoContainer").style.display = "none";
   for (i = 0; i < arrayList.length; i++){
     if(arrayList[i].id == itemName){
       arrayList.splice(i,1);
@@ -168,12 +171,15 @@ function createNewMarker(){ //add or move a a marker
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (markerArray.length + 1);
       addNode(newMarker.id);
+      var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
+      document.getElementById("formStatus").innerHTML = formStatus;
       newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
       markerArray.push(newMarker);
       //alert("new marker created");
       //markerAdded = true;
       document.getElementById("locationName").value = "";
       document.getElementById("nodeID").value = "";
+
     }
     else if(modeArray.movingMode){
       //alert(document.getElementById("selectedMarker").text);
@@ -203,10 +209,11 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
     }
     $("#btnDeleteMarker").show();
     $("#btnToggleMove").show();
+    //dispay information when VIEWED
     for(var i = 0; i<nodeList.length; i++){
       if (nodeList[i].markerID == markerID){
-          var nodeInformation = "ID: " + nodeList[i].nodeID + "<br> Location: " + nodeList[i].location + "<br> Signal Strength: " + nodeList[i].signal + "<br> Status: " + nodeList[i].status
-          document.getElementById("nodeInfo").innerHTML = nodeInformation;
+          document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
+          document.getElementById("nodeInfoContainer").style.display = "flex";
       }
     }
   }
@@ -221,7 +228,7 @@ function removeMarker(){
     modeArray.movingMode =false;
     $("#btnToggleMove").hide();
   }
- 
+  
 }
 
 function refreshMarkerList(){
@@ -254,6 +261,10 @@ function moveMarker(marker){ //Used to move a Marker around
   var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
+}
+
+function noSignal(){
+  document.getElementById("errorText").style.display = "block";
 }
 
 
@@ -302,6 +313,10 @@ class Node{
   deleteNode(){
       
   }
+
+  print(){
+    return "ID: " + this.nodeID + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status
+  }
 }
 
 var nodeList = [];
@@ -322,3 +337,11 @@ function addNode(markerID)
   console.log("Node ID: " + n.nodeID);
 }
 
+function removeNode(markerID){
+  for(var i = 0; i<nodeList.length; i++){
+    if (nodeList[i].markerID == markerID){
+        nodeList.splice(i, 1);
+        console.log("remove success");
+    }
+  }
+}

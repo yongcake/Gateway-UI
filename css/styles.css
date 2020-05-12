@@ -74,6 +74,7 @@ img{
 
 .formStatusWrapper{
 	margin-bottom: 5%;
+	display: block;
 }
 
 .nodeInfoContainer{
@@ -83,6 +84,7 @@ img{
 	margin-bottom: 2%;
 	display: flex;
 	justify-content: space-between;
+	display: none;
 }
 
 .nodeButtonWrapper{
@@ -100,6 +102,7 @@ img{
 }
 
 .errorTextWrapper{
+	display: none;
 	padding: 2%;
 	margin-top: 2%;
 	border: black solid 1px;
