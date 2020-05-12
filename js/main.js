@@ -169,7 +169,8 @@ function createNewMarker(){ //add or move a a marker
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
-      newMarker.id = "marker" + (markerArray.length + 1);
+      newMarker.id = "marker" + (markerCount);
+      markerCount++;
       addNode(newMarker.id);
       var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
       document.getElementById("formStatus").innerHTML = formStatus;
@@ -196,14 +197,14 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
     var textSelectedMarker = document.getElementById("selectedMarker");
     textSelectedMarker.innerText = markerID;
     for (var i = 0; i<markerArray.length; i++){
-      if (markerArray[i].id == markerID){
+      if (markerArray[i].id == markerID){ //Change css of selected marker
         markerArray[i].style.opacity = 0.5;
-        markerArray[i].style.zIndex = 3;
+        markerArray[i].style.zIndex = 3; //Bring markers to the front
         markerArray[i].style.backgroundColor ="green";
       }
-      else{
+      else{ //Revert css of other markers
         markerArray[i].style.opacity = 1;
-        markerArray[i].style.zIndex = 1;
+        markerArray[i].style.zIndex = 1; //Bring markers to the back
         markerArray[i].style.backgroundColor ="red";
       }
     }
@@ -219,14 +220,14 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
   }
 }
 
-function removeMarker(){
-  $("#btnDeleteMarker").hide();
-  var markerID = document.getElementById("selectedMarker");
-  if(markerID != "None"){
-    removeFromArray(markerArray, markerID.innerText);
+function removeMarker(){  //Runs when btnDeleteMarker is clicked
+  $("#btnDeleteMarker").hide(); //hide button when marker is deleted
+  var markerID = document.getElementById("selectedMarker"); //Text that displays selected marker
+  if(markerID != "None"){ //doesn't run when there isn't a marker selected
+    removeFromArray(markerArray, markerID.innerText); //Function to remove marker,
     markerID.innerText = "None";
     modeArray.movingMode =false;
-    $("#btnToggleMove").hide();
+    $("#btnToggleMove").hide(); 
   }
   
 }
