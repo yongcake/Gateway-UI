@@ -6,8 +6,14 @@ var markerCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
+<<<<<<< HEAD
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+=======
+var buttonArray = [], textArray = [], markerArray = [], text;
+var modeArray ={enabled:true, addingMode:true, movingMode:true, viewingMode:false};
+
+>>>>>>> a33832fc7d102accf862e74512a4b4e2da297a2c
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
@@ -146,6 +152,7 @@ function toggleMode(){ //Toggle between Viewing and Adding
     addButtonPressed = true;
   }
   document.getElementById("Mode").innerText = mode; //Update mode text
+  document.getElementById("nodeInfoContainer").style.display = "none"; //hide previously viewed info
 }
 
 function toggleMove(){ //Toggle between Viewing and Moving
@@ -164,7 +171,11 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
+<<<<<<< HEAD
   if (addButtonPressed == true){
+=======
+  if (addButtonPressed == true){ //if "add" is pressed, reset modes.
+>>>>>>> a33832fc7d102accf862e74512a4b4e2da297a2c
     modeArray.addingMode = true;
     addButtonPressed = false;
   }
@@ -255,7 +266,7 @@ function moveMarker(marker){ //Used to move a Marker around
   var xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
   var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
-  marker.style.top = yPosition + "px";
+  marker.style.top = yPosition + "px";  
   console.log("marker is moving");
 }
 
@@ -277,7 +288,12 @@ function addPressed(){
     addNode(newMarker.id);
     var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
     document.getElementById("formStatus").innerHTML = formStatus;
+<<<<<<< HEAD
     newMarker =null;
+=======
+    document.getElementById("locationName").value = "";
+    document.getElementById("nodeID").value = "";
+>>>>>>> a33832fc7d102accf862e74512a4b4e2da297a2c
   }
 }
 
@@ -331,7 +347,7 @@ function cancelEdit(){
 
 
 
-//==================================================Node Class=====================================================
+//================================================== Node Class ====================================================
 class Node{
   constructor(markerID, location, nodeID){
     this.markerID = markerID;
@@ -350,7 +366,23 @@ class Node{
 
   editNode(){
       //this will be the function for editing node information later
+<<<<<<< HEAD
 
+=======
+      if(modeArray.viewingMode){ //Only runs if viewing is enabled
+        if(!modeArray.movingMode){ //Swap to Moving
+          modeArray.movingMode =true;
+          document.getElementById("Mode").innerText = "Moving"; //Update mode text
+          document.getElementById("btnEditNode").innerText = "Confirm Edit"; //Update toggle button text
+
+        }
+        else{
+          modeArray.movingMode =false; //Swap back to Viewing
+          document.getElementById("btnEditNode").innerText = "Edit"; //Update toggle button text
+          document.getElementById("Mode").innerText = "Viewing"; //Update mode text
+        }
+      }
+>>>>>>> a33832fc7d102accf862e74512a4b4e2da297a2c
   }
 
   deleteNode(){
@@ -362,6 +394,7 @@ class Node{
   }
 }
 
+//=========================================== main (node class) ====================================================
 var nodeList = [];
 
 function addNode(markerID)
