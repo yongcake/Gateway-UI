@@ -1,11 +1,13 @@
 //Global varibles
 var xCoord = 0;
 var yCoord = 0;
+var newMarker;
 var markerCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
+var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], text;
-var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+var modeArray ={enabled:true, addingMode:true, movingMode:true, viewingMode:false};
 
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
@@ -189,7 +191,46 @@ function createNewMarker(){ //add or move a a marker
     }
     moveMarker(newMarker);
   } 
+}
 
+function testCreateNewMarker(){
+  //var location = document.getElementById("locationName").value;
+  //var nodeID = document.getElementById("nodeID").value;
+  //var newMarker;
+  if (addButtonPressed == true){
+    modeArray.addingMode = true;
+    addButtonPressed = false;
+  }
+  if(modeArray.enabled){
+    if(modeArray.addingMode){ //Create marker if not in moving mode
+      var container = document.querySelector("#imageSource");
+      newMarker = document.createElement("div"); 
+      container.append(newMarker); //create new div in #imageSource
+      newMarker.classList.toggle("marker"); // give .marker class css to the new div
+      newMarker.id = "marker" + (markerCount);
+      markerCount++;
+      newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
+      //addNode(newMarker.id);
+      //var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
+      //document.getElementById("formStatus").innerHTML = formStatus;
+      //markerArray.push(newMarker);
+      moveMarker(newMarker);
+      modeArray.addingMode = false;
+      console.log("maker is added");
+    }
+    if (modeArray.addingMode == false && addButtonPressed == false){
+      moveMarker(newMarker);
+    }
+      //else if(modeArray.movingMode && addButtonPressed == true){
+      //    if (location == "" && nodeID == ""){
+      //        alert("Please make sure both fields are filled before adding node.");
+      //        return;
+      //    }
+      //    else{
+      //        
+      //    }
+      //}
+  }
 }
 
 function displayCurrentMarker(markerID){ //function runs when a marker is clicked
@@ -262,13 +303,27 @@ function moveMarker(marker){ //Used to move a Marker around
   var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";
+  console.log("marker is moving");
 }
 
 function noSignal(){
   document.getElementById("errorText").style.display = "block";
 }
 
-
+function addPressed(){
+  var location = document.getElementById("locationName").value;
+  var nodeID = document.getElementById("nodeID").value;
+  if (location == "" && nodeID == ""){
+    alert("Please make sure both fields are filled before adding node.");
+    return;
+  }
+  else{
+    addButtonPressed = true;
+    addNode(newMarker.id);
+    var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
+    document.getElementById("formStatus").innerHTML = formStatus;
+  }
+}
 
 
 
