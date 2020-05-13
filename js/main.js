@@ -6,8 +6,8 @@ var markerCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
-var buttonArray = [], textArray = [], markerArray = [], text;
-var modeArray ={enabled:true, addingMode:true, movingMode:true, viewingMode:false};
+var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
+var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
@@ -122,6 +122,7 @@ function toggleMode(){ //Toggle between Viewing and Adding
     modeArray.viewingMode = true;
     modeArray.addingMode = false;
     modeArray.movingMode = false;
+    $("#addButton").hide();
     mode = "Viewing";
     if(!addButtonPressed){
       document.getElementById("selectedMarker").innerText = newMarker.id;
@@ -134,6 +135,7 @@ function toggleMode(){ //Toggle between Viewing and Adding
     modeArray.movingMode =false;
     $("#btnDeleteMarker").hide(); //Hide function that shouldn't be used in the current mode
     $("#btnToggleMove").hide(); //Hide function that shouldn't be used in the current mode
+    $("#addButton").show(); 
     mode = "Adding";
     document.getElementById("btnToggleMove").innerText = "Move Marker"; //Refresh Text in case it was switch from moving to adding
     for (var i = 0; i<markerArray.length; i++){ //Reset all markers to orginal setting
@@ -162,33 +164,30 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  //var location = document.getElementById("locationName").value;
-  //var nodeID = document.getElementById("nodeID").value;
-  //var newMarker;
   if (addButtonPressed == true){
     modeArray.addingMode = true;
     addButtonPressed = false;
   }
   if(modeArray.enabled){
-    if (modeArray.viewingMode == true){
+    if (modeArray.viewingMode){
+      if(modeArray.movingMode){
+        var marker = document.getElementById(selectedMarkerID);
+        moveMarker(marker);
+      }
       return;
     }
-    if(modeArray.addingMode){ //Create marker if not in moving mode
+    if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (markerCount);
       newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
-      //addNode(newMarker.id);
-      //var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
-      //document.getElementById("formStatus").innerHTML = formStatus;
-      //markerArray.push(newMarker);
       moveMarker(newMarker);
       modeArray.addingMode = false;
       console.log("maker is added");
     }
-    if (modeArray.addingMode == false && addButtonPressed == false){
+    else if (!addButtonPressed && !modeArray.movingMode){
       moveMarker(newMarker);
     }
   }
@@ -198,6 +197,8 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
   if(modeArray.viewingMode){
     var textSelectedMarker = document.getElementById("selectedMarker");
     textSelectedMarker.innerText = markerID;
+    selectedMarkerID = markerID;
+    resetNodeDiv();
     for (var i = 0; i<markerArray.length; i++){
       if (markerArray[i].id == markerID){ //Change css of selected marker
         markerArray[i].style.opacity = 0.5;
@@ -234,10 +235,6 @@ function removeMarker(){  //Runs when btnDeleteMarker is clicked
   
 }
 
-function refreshMarkerList(){
-
-}
-
 function showCoords(event) {
   var container = document.querySelector("#imageSource");
   xCoord = event.clientX - container.getBoundingClientRect().left;
@@ -249,17 +246,12 @@ function showCoords(event) {
   //alert(coords);
 }
 
-//document.getElementById("#imageSource").addEventListener("click", createNewMarker);
-
 function moveMarker(marker){ //Used to move a Marker around
   if(!modeArray.enabled){
     alert("Enable marker to move markers");
     return
   }
-  //var marker = document.querySelector("#marker");
   var container = document.querySelector("#imageSource");
-  //var xPosition = event.clientX - container.getBoundingClientRect().left - (marker.clientWidth / 2); //container.scrollLeft is for when the div is scrollable
-  //var yPosition = event.clientY + window.pageYOffset; ; //container.scrollTop is for when the div is scrollable
   var xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
   var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
@@ -285,13 +277,44 @@ function addPressed(){
     addNode(newMarker.id);
     var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
     document.getElementById("formStatus").innerHTML = formStatus;
+    newMarker =null;
   }
 }
 
+function resetNodeDiv(){
+  modeArray.movingMode =false; //Swap back to Viewing
+  document.getElementById("editNode").value = "Edit"; //Update toggle button text
+  document.getElementById("Mode").innerText = "Viewing"; //Update mode text
+  $("#cancelEdit").hide();
+}
 
+//Function that interact with Node Class
+function editSelectedNode(){
+  //alert("Swapped Mode");
+  if(modeArray.viewingMode){ //Only runs if viewing is enabled
+    //alert(selectedMarkerID);
+    if(!modeArray.movingMode){ //Swap to Moving
+      modeArray.movingMode =true;
+      var marker = document.getElementById(selectedMarkerID);
+      oldCord= [marker.style.left,marker.style.top];
+      document.getElementById("Mode").innerText = "Moving"; //Update mode text
+      document.getElementById("editNode").value = "Confirm Edit"; //Update toggle button text
+      $("#cancelEdit").show();
+    }
+    else{
+      resetNodeDiv();
+      modeArray.movingMode = false;
+    }
+  }
+}
 
-
-
+function cancelEdit(){
+  resetNodeDiv();
+  var marker = document.getElementById(selectedMarkerID);
+  marker.style.left = oldCord[0];
+  marker.style.top = oldCord[1];
+  oldCord = [];
+}
 
 
 
@@ -327,20 +350,6 @@ class Node{
 
   editNode(){
       //this will be the function for editing node information later
-      if(modeArray.viewingMode){ //Only runs if viewing is enabled
-        if(!modeArray.movingMode){ //Swap to Moving
-          modeArray.movingMode =true;
-          document.getElementById("Mode").innerText = "Moving"; //Update mode text
-          document.getElementById("btnEditNode").innerText = "Confirm Edit"; //Update toggle button text
-
-        }
-        else{
-          modeArray.movingMode =false; //Swap back to Viewing
-          document.getElementById("btnEditNode").innerText = "Edit"; //Update toggle button text
-          document.getElementById("Mode").innerText = "Viewing"; //Update mode text
-        }
-      }
-      
 
   }
 
