@@ -5,7 +5,7 @@ var markerCount = 0;
 var markerAdded = false;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-
+var oldCords
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
@@ -298,6 +298,21 @@ class Node{
 
   editNode(){
       //this will be the function for editing node information later
+      if(modeArray.viewingMode){ //Only runs if viewing is enabled
+        if(!modeArray.movingMode){ //Swap to Moving
+          modeArray.movingMode =true;
+          document.getElementById("Mode").innerText = "Moving"; //Update mode text
+          document.getElementById("btnEditNode").innerText = "Confirm Edit"; //Update toggle button text
+
+        }
+        else{
+          modeArray.movingMode =false; //Swap back to Viewing
+          document.getElementById("btnEditNode").innerText = "Edit"; //Update toggle button text
+          document.getElementById("Mode").innerText = "Viewing"; //Update mode text
+        }
+      }
+      
+
   }
 
   deleteNode(){
