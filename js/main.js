@@ -8,6 +8,7 @@ var selectedMarkerID = "";
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:true, viewingMode:false};
+
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
@@ -144,6 +145,7 @@ function toggleMode(){ //Toggle between Viewing and Adding
     addButtonPressed = true;
   }
   document.getElementById("Mode").innerText = mode; //Update mode text
+  document.getElementById("nodeInfoContainer").style.display = "none"; //hide previously viewed info
 }
 
 function toggleMove(){ //Toggle between Viewing and Moving
@@ -162,9 +164,6 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  //if (modeArray.viewingMode == true){ //if its in viewing, markers won't be added
-  //  return;
-  //}
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
@@ -263,7 +262,7 @@ function moveMarker(marker){ //Used to move a Marker around
   var xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
   var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
-  marker.style.top = yPosition + "px";
+  marker.style.top = yPosition + "px";  
   console.log("marker is moving");
 }
 
@@ -285,6 +284,8 @@ function addPressed(){
     addNode(newMarker.id);
     var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
     document.getElementById("formStatus").innerHTML = formStatus;
+    document.getElementById("locationName").value = "";
+    document.getElementById("nodeID").value = "";
   }
 }
 
@@ -308,7 +309,7 @@ function addPressed(){
 
 
 
-//==================================================Node Class=====================================================
+//================================================== Node Class ====================================================
 class Node{
   constructor(markerID, location, nodeID){
     this.markerID = markerID;
@@ -351,6 +352,7 @@ class Node{
   }
 }
 
+//=========================================== main (node class) ====================================================
 var nodeList = [];
 
 function addNode(markerID)
