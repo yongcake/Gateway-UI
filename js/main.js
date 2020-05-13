@@ -7,13 +7,8 @@ var markerAdded = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], text;
-<<<<<<< HEAD
-var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-var oldCords
-=======
 var modeArray ={enabled:true, addingMode:true, movingMode:true, viewingMode:false};
 
->>>>>>> 4eb7b2236e350a5cbd8cace2707556f7fab3c8a7
 function addText(value){ //For combining all id in an array
   text+= value.id + " "
 }
@@ -163,42 +158,6 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  var newMarker;
-  var location = document.getElementById("locationName").value;
-  var nodeID = document.getElementById("nodeID").value;
-  if (modeArray.addingMode && location == "" && nodeID == ""){
-    alert("Please make sure both fields are filled before adding node.");
-    return;
-  }
-  if (modeArray.enabled){ //Check if markers is currently shown
-    if(modeArray.addingMode && location != "" && nodeID != ""){ //Create marker if not in moving mode
-      var container = document.querySelector("#imageSource");
-      newMarker = document.createElement("div"); 
-      container.append(newMarker); //create new div in #imageSource
-      newMarker.classList.toggle("marker"); // give .marker class css to the new div
-      newMarker.id = "marker" + (markerCount);
-      markerCount++;
-      addNode(newMarker.id);
-      var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
-      document.getElementById("formStatus").innerHTML = formStatus;
-      newMarker.setAttribute("onclick","displayCurrentMarker(this.id)");
-      markerArray.push(newMarker);
-      //alert("new marker created");
-      //markerAdded = true;
-      document.getElementById("locationName").value = "";
-      document.getElementById("nodeID").value = "";
-
-    }
-    else if(modeArray.movingMode){
-      //alert(document.getElementById("selectedMarker").text);
-      newMarker = document.getElementById(document.getElementById("selectedMarker").text);
-      
-    }
-    moveMarker(newMarker);
-  } 
-}
-
-function testCreateNewMarker(){
   //var location = document.getElementById("locationName").value;
   //var nodeID = document.getElementById("nodeID").value;
   //var newMarker;
@@ -226,15 +185,6 @@ function testCreateNewMarker(){
     if (modeArray.addingMode == false && addButtonPressed == false){
       moveMarker(newMarker);
     }
-      //else if(modeArray.movingMode && addButtonPressed == true){
-      //    if (location == "" && nodeID == ""){
-      //        alert("Please make sure both fields are filled before adding node.");
-      //        return;
-      //    }
-      //    else{
-      //        
-      //    }
-      //}
   }
 }
 
