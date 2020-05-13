@@ -158,14 +158,14 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  //var location = document.getElementById("locationName").value;
-  //var nodeID = document.getElementById("nodeID").value;
-  //var newMarker;
-  if (addButtonPressed == true){
+  if (modeArray.viewingMode == true){ //if its in viewing, markers won't be added
+    return;
+  }
+  if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
   }
-  if(modeArray.enabled){
+  if(modeArray.enabled){ 
     if(modeArray.addingMode){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
@@ -332,8 +332,6 @@ class Node{
           document.getElementById("Mode").innerText = "Viewing"; //Update mode text
         }
       }
-      
-
   }
 
   deleteNode(){
