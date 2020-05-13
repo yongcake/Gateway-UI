@@ -134,7 +134,7 @@ function toggleMode(){ //Toggle between Viewing and Adding
     modeArray.addingMode = true;
     modeArray.movingMode =false;
     $("#btnDeleteMarker").hide(); //Hide function that shouldn't be used in the current mode
-    $("#btnToggleMove").hide(); //Hide function that shouldn't be used in the current mode
+    //$("#btnToggleMove").hide(); //Hide function that shouldn't be used in the current mode
     $("#addButton").show(); 
     mode = "Adding";
     document.getElementById("btnToggleMove").innerText = "Move Marker"; //Refresh Text in case it was switch from moving to adding
@@ -213,7 +213,7 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
       }
     }
     $("#btnDeleteMarker").show();
-    $("#btnToggleMove").show();
+    //$("#btnToggleMove").show();
     //dispay information when VIEWED
     for(var i = 0; i<nodeList.length; i++){
       if (nodeList[i].markerID == markerID){
