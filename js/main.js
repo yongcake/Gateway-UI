@@ -340,6 +340,8 @@ function saveEdit(){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
       document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
+      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved <br>"
+      document.getElementById("formStatus").innerHTML = formStatus;
     }
   }
 
@@ -347,6 +349,7 @@ function saveEdit(){
   document.getElementById("nodeID").value = "";
   modeArray.movingMode =false; //Swap back to Viewing
   document.getElementById("Mode").innerText = "Viewing";
+
 }
 
 function cancelEdit(){
