@@ -31,7 +31,6 @@
 
 			<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
 			<button id="btnToggleMode" onclick="toggleMode()">switch mode</button>
-			<button id="btnDeleteMarker" hidden onclick="removeMarker()">Delete</button>
 			<button id="btnToggleMove" hidden onclick="toggleMove()">Move Marker</button>
 		</div>
 		
@@ -43,7 +42,7 @@
 			</div>
 
 
-			<div class="informationContainer">
+			<div class="informationContainer" id ="informationContainerTest">
 
 				<div class="formContainer">
 					<div class="inputWrapper" id="inputInfo">
@@ -54,6 +53,7 @@
 					</div>
 					<div class="addButtonWrapper" id="addButton"> 
 						<input type="button" id="addNode" value="Add" onclick="addPressed()">
+						
 					</div>
 				</div>
 				
