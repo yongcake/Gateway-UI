@@ -192,6 +192,8 @@ function createNewMarker(){ //add or move a a marker
       moveMarker(newMarker);
     }
   }
+  console.log("this is created" + newMarker.id);
+
 }
 
 function displayCurrentMarker(markerID){ //function runs when a marker is clicked
@@ -278,7 +280,7 @@ function addPressed(){
     addNode(newMarker.id);
     var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
     document.getElementById("formStatus").innerHTML = formStatus;
-    newMarker =null;
+    newMarker = null; 
     document.getElementById("locationName").value = "";
     document.getElementById("nodeID").value = "";
   }
@@ -297,12 +299,26 @@ function editSelectedNode(){
   if(modeArray.viewingMode){ //Only runs if viewing is enabled
     //alert(selectedMarkerID);
     if(!modeArray.movingMode){ //Swap to Moving
+      document.getElementById("editNode").onclick = editSelectedNode;
       modeArray.movingMode =true;
       var marker = document.getElementById(selectedMarkerID);
       oldCord= [marker.style.left,marker.style.top];
       document.getElementById("Mode").innerText = "Moving"; //Update mode text
-      document.getElementById("editNode").value = "Confirm Edit"; //Update toggle button text
-      $("#cancelEdit").show();
+
+      for (var i = 0; i<nodeList.length; i++){
+        if(nodeList[i].markerID == selectedMarkerID){
+          document.getElementById("locationName").value = nodeList[i].location;
+          document.getElementById("nodeID").value = nodeList[i].nodeID;
+        }
+      }
+
+      document.getElementById("editNode").value = "Cancel Edit"; //Update toggle button text
+      document.getElementById("editNode").onclick = cancelEdit;
+      
+      document.getElementById("addNode").value = "Save";
+      $("#addButton").show();
+      document.getElementById("addNode").onclick = saveEdit;
+      //$("#cancelEdit").show();
     }
     else{
       resetNodeDiv();
@@ -311,12 +327,38 @@ function editSelectedNode(){
   }
 }
 
+function saveEdit(){
+  modeArray.movingMode = false;
+  document.getElementById("editNode").value = "Edit";
+  document.getElementById("editNode").onclick = editSelectedNode;
+  var newLocation = document.getElementById("locationName").value
+  var newID = document.getElementById("nodeID").value
+  $("#addButton").hide();
+  document.getElementById("addNode").value = "Add";
+
+  for (var i = 0; i<nodeList.length; i++){
+    if (nodeList[i].markerID == selectedMarkerID){
+      nodeList[i].editNode(newLocation, newID);
+      document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
+    }
+  }
+
+  document.getElementById("locationName").value = "";
+  document.getElementById("nodeID").value = "";
+  modeArray.movingMode =false; //Swap back to Viewing
+  document.getElementById("Mode").innerText = "Viewing";
+}
+
 function cancelEdit(){
   resetNodeDiv();
   var marker = document.getElementById(selectedMarkerID);
   marker.style.left = oldCord[0];
   marker.style.top = oldCord[1];
   oldCord = [];
+  document.getElementById("editNode").onclick = editSelectedNode;
+  $("#addButton").hide();
+  document.getElementById("locationName").value = "";
+  document.getElementById("nodeID").value = "";
 }
 
 
@@ -351,8 +393,10 @@ class Node{
       //this will be the function for changing status later
   }
 
-  editNode(){
-      //this will be the function for editing node information later
+  editNode(newLocation, newID){
+    //this will be the function for editing node information later
+    this.location = newLocation;
+    this.nodeID = newID;
   }
 
   deleteNode(){
