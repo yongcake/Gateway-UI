@@ -133,8 +133,6 @@ function toggleMode(){ //Toggle between Viewing and Adding
     modeArray.viewingMode = false;
     modeArray.addingMode = true;
     modeArray.movingMode =false;
-    $("#btnDeleteMarker").hide(); //Hide function that shouldn't be used in the current mode
-    //$("#btnToggleMove").hide(); //Hide function that shouldn't be used in the current mode
     $("#addButton").show(); 
     mode = "Adding";
     document.getElementById("btnToggleMove").innerText = "Move Marker"; //Refresh Text in case it was switch from moving to adding
@@ -214,7 +212,6 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
         markerArray[i].style.backgroundColor ="red";
       }
     }
-    $("#btnDeleteMarker").show();
     //$("#btnToggleMove").show();
     //dispay information when VIEWED
     for(var i = 0; i<nodeList.length; i++){
@@ -227,7 +224,6 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 }
 
 function removeMarker(){  //Runs when btnDeleteMarker is clicked
-  $("#btnDeleteMarker").hide(); //hide button when marker is deleted
   var markerID = document.getElementById("selectedMarker"); //Text that displays selected marker
   if(markerID != "None"){ //doesn't run when there isn't a marker selected
     removeFromArray(markerArray, markerID.innerText); //Function to remove marker,
@@ -275,9 +271,9 @@ function addPressed(){
   }
   else{
     addButtonPressed = true;
-    markerCount++;
     markerArray.push(newMarker);
-    addNode(newMarker.id);
+    addNode(newMarker.id, ("nodeInfo"+markerCount));
+    markerCount++;
     var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
     document.getElementById("formStatus").innerHTML = formStatus;
     newMarker = null; 
@@ -381,10 +377,11 @@ function cancelEdit(){
 
 //================================================== Node Class ====================================================
 class Node{
-  constructor(markerID, location, nodeID){
+  constructor(markerID, location, nodeID, infoID){
     this.markerID = markerID;
     this.location = location;
     this.nodeID = nodeID;
+    this.infoID = infoID;
     this.signal = "Low";
     this.status = "No Signal";
   }
@@ -414,7 +411,44 @@ class Node{
 //=========================================== main (node class) ====================================================
 var nodeList = [];
 
-function addNode(markerID)
+function createNodeContainer(newNode){ //Used to create a new container
+  var newInfoContainer = document.createElement("div"); //Div to store all other div
+  var newInfoWarpper = document.createElement("div");  //Div that showcase node info
+  var newButtonWarpper= document.createElement("div"); //Div container the buttons
+  var buttonArray = [];
+  for (var i = 0; i<3;i++){
+    var newButton = document.createElement("input");  
+    newButton.classList.toggle("nodeButton");
+    newButton.setAttribute("type","button");
+    buttonArray.push(newButton);
+  }
+  console.log("Elements created");
+  //Assign classes
+  newInfoContainer.classList.toggle("nodeInfoContainer"); 
+  newInfoWarpper.classList.toggle("nodeInfoWrapper");
+  newButtonWarpper.classList.toggle("nodeButtonWrapper");
+  console.log("Class assigned");
+  //Set IDs to div 
+  newInfoContainer.id = newNode.nodeID;
+  newInfoWarpper.id = newNode.infoID;
+  newButtonWarpper.id = "Temp"
+  $("#informationContainerTest").append(newInfoContainer);
+  $("#"+newNode.nodeID).append(newInfoWarpper);
+  document.getElementById(newNode.infoID).innerText = newNode.print();
+
+  //Buttons
+  buttonArray[0].value ="Edit";
+  $("#"+newNode.nodeID).append(newButtonWarpper);
+  $("#Temp").append(buttonArray[0]); 
+  buttonArray[1].value ="Delete Marker";
+  $("#Temp").append(buttonArray[1]);
+  buttonArray[2].value ="No Signal";
+  $("#Temp").append(buttonArray[2]);
+  newButtonWarpper.id ="";
+  console.log("All Done");
+}
+
+function addNode(markerID, infoID)
 {
   var location = document.getElementById("locationName").value;
   var nodeID = document.getElementById("nodeID").value;
@@ -423,7 +457,8 @@ function addNode(markerID)
       return;
   }
 
-  var n = new Node(markerID, location, nodeID);
+  var n = new Node(markerID, location, nodeID, infoID);
+  createNodeContainer(n);
   nodeList.push(n);
   console.log("Marker ID: " + n.markerID);
   console.log("Node Location: " + n.location);
