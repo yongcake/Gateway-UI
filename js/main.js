@@ -379,17 +379,31 @@ function addNode(markerID, infoID)
 {
   var location = document.getElementById("locationName").value;
   var nodeID = document.getElementById("nodeID").value;
+  var nodeExist = false;
   if (location == "" || nodeID == ""){
       alert("Please make sure both fields are filled before adding node.");
       return;
   }
 
-  var n = new Node(markerID, location, nodeID, infoID);
-  createNodeContainer(n);
-  nodeList.push(n);
-  console.log("Marker ID: " + n.markerID);
-  console.log("Node Location: " + n.location);
-  console.log("Node ID: " + n.nodeID);
+  for (var i = 0; i<nodeList.length; i++){
+    if (nodeID == nodeList[i].nodeID){
+      nodeExist = true;
+    }
+  }
+
+  if(nodeExist == true){
+    alert("Node ID already exist, please enter a non-existing ID"); 
+    removeMarker(markerID);
+    return;
+  }
+  else{
+    var n = new Node(markerID, location, nodeID, infoID);
+    createNodeContainer(n);
+    nodeList.push(n);
+    console.log("Marker ID: " + n.markerID);
+    console.log("Node Location: " + n.location);
+    console.log("Node ID: " + n.nodeID);
+  }
 }
 
 function removeNode(markerID){
