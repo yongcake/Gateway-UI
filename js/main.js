@@ -19,7 +19,11 @@ function removeFromArray(arrayList,itemName){ //Remove Btn
   $("#"+itemName).remove();
   removeNode(itemName);
 }
-
+function removeUnwantedMarker(){
+  if(newMarker != null){
+    $("#"+newMarker.id).remove();
+  }
+}
 //Markers 
 function toggleMode(){ //Toggle between Viewing and Adding
   var mode; //Text to display mode
@@ -133,8 +137,11 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
     removeFromArray(markerArray, markerID); //Function to remove marker,
+    removeUnwantedMarker();
     //markerID.innerText = "None";
     modeArray.movingMode =false;
+    modeArray.viewingMode =false;
+    modeArray.addingMode =true;
     //$("#btnToggleMove").hide(); 
   //}
   
@@ -191,8 +198,9 @@ function addPressed(){
 
 function resetNodeDiv(){
   modeArray.movingMode =false; //Swap back to Viewing
+  modeArray.viewingMode = false;
   document.getElementById("editNode").value = "Edit"; //Update toggle button text
-  document.getElementById("Mode").innerText = "Viewing"; //Update mode text
+  document.getElementById("Mode").innerText = "Adding"; //Update mode text
   $("#cancelEdit").hide();
 }
 
@@ -200,6 +208,7 @@ function resetNodeDiv(){
 function editSelectedNode(markerID){
   //if(modeArray.viewingMode){ //Only runs if viewing is enabled
     if(!modeArray.movingMode){ //Swap to Moving
+      removeUnwantedMarker();
       var node = getNodeByMarkerID(markerID);
       modeArray.viewingMode = true;
       modeArray.movingMode =true;
@@ -221,7 +230,7 @@ function editSelectedNode(markerID){
       //document.getElementById("editNode").onclick = cancelEdit;
       
       document.getElementById("addNode").value = "Save";
-      $("#addButton").show();
+      $("#addNode").show();
       document.getElementById("addNode").onclick = saveEdit;
     }
   //}
@@ -230,20 +239,20 @@ function editSelectedNode(markerID){
 function saveEdit(){
   var markerID = $("#selectedMarker").text();
   var node =getNodeByMarkerID(markerID);
-  modeArray.movingMode = false;
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   //document.getElementById("editNode").value = "Edit";
   //document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
   var newLocation = $("#locationName").val();
   var newID = $("#nodeID").val();
-  $("#addButton").hide();
+  $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
 
   for (var i = 0; i<nodeList.length; i++){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
-      document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
+      $("#"+ newID +" #"+node.infoID).html(nodeList[i].print());
+      //document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
       var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
     }
@@ -253,6 +262,7 @@ function saveEdit(){
   document.getElementById("nodeID").value = "";
   modeArray.movingMode =false; //Swap back to Adding
   modeArray.viewingMode =false; 
+  modeArray.addingMode = true;
   document.getElementById("Mode").innerText = "Adding";
 
 }
@@ -263,14 +273,16 @@ function cancelEdit(){
   marker.style.left = oldCord[0];
   marker.style.top = oldCord[1];
   oldCord = [];
-
   var markerID = $("#selectedMarker").text();
   var node =getNodeByMarkerID(markerID);
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
-  $("#addButton").hide();
+  $("#addNode").hide();
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
+  modeArray.movingMode =false; //Swap back to Adding
+  modeArray.viewingMode =false; 
+  modeArray.addingMode = true;
 }
 
 
@@ -311,6 +323,7 @@ class Node{
   editNode(newLocation, newID){
     //this will be the function for editing node information later
     this.location = newLocation;
+    $("#"+this.nodeID).attr("id",newID);
     this.nodeID = newID;
   }
 
@@ -326,7 +339,7 @@ function createNodeContainer(newNode){ //Used to create a new container
   
   $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
-  $("#"+newNode.nodeID).html(newNode.print());
+  $("#"+newNode.infoID).html(newNode.print());
   console.log("Elements created");
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
