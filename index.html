@@ -38,7 +38,7 @@
 
 		<div class="floorPlanZoneContainer">
 		
-			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); showCoords(event);">
+			<div class="imageContainer" id="imageSource" onclick="createNewMarker();">
 			</div>
 
 
@@ -60,19 +60,20 @@
 				<div class="formStatusWrapper" id="formStatus">
 					 <br>
 				</div>
-
-				<div class="nodeInfoContainer" id="nodeInfoContainer">
-					<div class="nodeInfoWrapper" id="nodeInfo">
-						ID: A000000001 <br>
-						Location: Test Location 1 <br>
-						Signal Strength: High <br>
-						Status: Connected
-					</div>
-					<div class="nodeButtonWrapper" id="nodeButton">
-						<input type="button" class="nodeButton" id="editNode" onclick = "editSelectedNode()" value="Edit">
-						<input type="button" class="nodeButton" id="cancelEdit" onclick = "cancelEdit()" value="Cancel Edit" hidden>
-						<input type="button" class="nodeButton" id="deleteNode" value="Delete" onclick="removeMarker()">
-						<input type="button" class="nodeButton" id="noSignalNode" value="No Signal" onclick="noSignal()">
+				<div class="scrollInfoContainer" id="scrollInf	oContainer">
+					<div class="nodeInfoContainer" id="nodeInfoContainer">
+						<div class="nodeInfoWrapper" id="nodeInfo">
+							ID: A000000001 <br>
+							Location: Test Location 1 <br>
+							Signal Strength: High <br>
+							Status: Connected
+						</div>
+						<div class="nodeButtonWrapper" id="nodeButton">
+							<input type="button" class="nodeButton" id="editNode" onclick = "editSelectedNode()" value="Edit">
+							<input type="button" class="nodeButton" id="cancelEdit" onclick = "cancelEdit()" value="Cancel Edit" hidden>
+							<input type="button" class="nodeButton" id="deleteNode" value="Delete" onclick="removeMarker()">
+							<input type="button" class="nodeButton" id="noSignalNode" value="No Signal" onclick="noSignal()">
+						</div>
 					</div>
 				</div>
 
@@ -91,24 +92,7 @@
 	
 	</div>
 	<hr>
-	<b>Testing different codes/functions below</b>
-	<br>	
-	<p>
-	<button id="btnTxt" onclick="appendText()">Click to add Text</button>
-	<button id="btnBtn" onclick="appendButton()">Click to add Button</button>
-	<button id="btnColor" onclick="toggleMarkers()">Toggle Marker</button>
-	Marker Status: <b id="markerStatus">true</b></p>
-	<br>
-	<button id="btnCheckTxt" onclick="checkIDTxt()">Show Text IDs</button>
-	<button id="btnCheckBtn" onclick="checkIDBtn()">Show Button IDs</button>
-	<br>
-	<p><b>Enter an ID to remove: </b><input type="text" id="removeID">
-		<button id="btnRemoveEle" onclick="removeElements()">Remove</button>
-	</p>
-	
-	<div id="testArea"></div>
-	<br><b>End of Testing Zone</b>
-	<hr>
+
 </body>
 
 </html>

@@ -8,77 +8,6 @@ var selectedMarkerID = "";
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-function addText(value){ //For combining all id in an array
-  text+= value.id + " "
-}
-
-//Checking Functions
-function checkIDTxt(){ // used to check ids of all txts added
-  text = "";
-  if (textArray.length != 0){
-    textArray.forEach(addText);
-    alert("Current IDs for Text: "+ text);
-  }
-  else
-  {
-    alert("No ID found for Text");
-  }
-  
-}
-
-function checkIDBtn(){ // used to check ids of all buttons added
-  text = "";
-  if (buttonArray.length != 0){
-    buttonArray.forEach(addText);
-    alert("Current IDs for button = " + text);
-  }
-  else
-  {
-    alert("No ID found for button");
-  }
-}
-//Addings Elements
-function appendText(){ //Add a new p
-  //var txt1 = "<p>Text.</p>";        // Create text with HTML
-  //var txt2 = $("<p></p>").text("Text.");  // Create text with jQuery
-
-  var txt3 = document.createElement("p");
-  txt3.innerHTML = "Text";         // Create text with DOM
-  txt3.id = "txt" + (textArray.length + 1);
-  textArray.push(txt3); //Push to an Array
-  $("#testArea").append(txt3);   // Append new elements
-  checkIDTxt();
-}
-
-function appendButton(){ //Add a new button
-  var buttonTest = document.createElement("button");
-  buttonTest.innerHTML = "This is a button";
-  buttonTest.id = "btn" + (buttonArray.length + 1);
-  buttonArray.push(buttonTest); //Push to an Array
-  $("#testArea").append(buttonTest);   // Append new elements
-  checkIDBtn();
-}
-
-//Removing Items
-function removeElements(){ //Remove element based on the id typed in textbox
-  //alert(textArray);
-  var elementID = document.getElementById("removeID").value;
-  //alert(elementID);
-  var element = document.getElementById(elementID);
-  element.remove();
-  removeText(elementID);
-  checkIDBtn();
-  checkIDTxt();
-}
-
-function removeText(name){ //Remove text
-  for (i = 0; i < textArray.length; i++){
-    if(textArray[i].id == name){
-      //textArray.splice(i,1);
-      delete textArray[i];
-    }
-  }
-}
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
   document.getElementById("nodeInfoContainer").style.display = "none";
@@ -274,7 +203,7 @@ function addPressed(){
     markerArray.push(newMarker);
     addNode(newMarker.id, ("nodeInfo"+markerCount));
     markerCount++;
-    var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
+    var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
     document.getElementById("formStatus").innerHTML = formStatus;
     newMarker = null; 
     document.getElementById("locationName").value = "";
@@ -336,7 +265,7 @@ function saveEdit(){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
       document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
-      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved <br>"
+      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
     }
   }

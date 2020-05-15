@@ -77,6 +77,12 @@ img{
 	display: block;
 }
 
+.scrollInfoContainer{
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
 .nodeInfoContainer{
 	width: 100%;
 	border: black solid 1px;
