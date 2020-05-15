@@ -10,7 +10,7 @@ var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
-  document.getElementById("nodeInfoContainer").style.display = "none";
+  $("#nodeInfoContainer").hide();
   for (i = 0; i < arrayList.length; i++){
     if(arrayList[i].id == itemName){
       arrayList.splice(i,1);
@@ -22,29 +22,6 @@ function removeFromArray(arrayList,itemName){ //Remove Btn
 }
 
 //Markers 
-function toggleMarkers(){ //Toggle all markers
-  if(markerArray.length != 0){
-    if(!modeArray.enabled){
-      modeArray.enabled = true;
-    }
-    else{
-      modeArray.enabled = false;
-    }
-  
-    markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
-  
-  }
-  else{
-    alert("No Marker to toggle");
-  }
-}
-
-function toggleOneMarkers(marker){ //toggle one marker
-  marker.classList.toggle("marker");
-  var markerStat = document.getElementById("markerStatus");
-  markerStat.innerText = modeArray.enabled + "";
-}
-
 function toggleMode(){ //Toggle between Viewing and Adding
   var mode; //Text to display mode
   if(!modeArray.viewingMode){ //Swap to Viewing
@@ -73,7 +50,8 @@ function toggleMode(){ //Toggle between Viewing and Adding
     addButtonPressed = true;
   }
   document.getElementById("Mode").innerText = mode; //Update mode text
-  document.getElementById("nodeInfoContainer").style.display = "none"; //hide previously viewed info
+  $("#nodeInfoContainer").hide(); //hide previously viewed info
+
 }
 
 function toggleMove(){ //Toggle between Viewing and Moving
@@ -188,12 +166,12 @@ function moveMarker(marker){ //Used to move a Marker around
 }
 
 function noSignal(){
-  document.getElementById("errorText").style.display = "block";
+  $("#errorText").show();
 }
 
 function addPressed(){
-  var location = document.getElementById("locationName").value;
-  var nodeID = document.getElementById("nodeID").value;
+  var location = $("#locationName").val(); //.value
+  var nodeID = $("#nodeID").val(); 
   if (location == "" && nodeID == ""){
     alert("Please make sure both fields are filled before adding node.");
     return;
@@ -224,7 +202,6 @@ function editSelectedNode(){
   if(modeArray.viewingMode){ //Only runs if viewing is enabled
     //alert(selectedMarkerID);
     if(!modeArray.movingMode){ //Swap to Moving
-      document.getElementById("editNode").onclick = editSelectedNode;
       modeArray.movingMode =true;
       var marker = document.getElementById(selectedMarkerID);
       oldCord= [marker.style.left,marker.style.top];
@@ -256,8 +233,8 @@ function saveEdit(){
   modeArray.movingMode = false;
   document.getElementById("editNode").value = "Edit";
   document.getElementById("editNode").onclick = editSelectedNode;
-  var newLocation = document.getElementById("locationName").value
-  var newID = document.getElementById("nodeID").value
+  var newLocation = $("#locationName").val();
+  var newID = $("#nodeID").val();
   $("#addButton").hide();
   document.getElementById("addNode").value = "Add";
 
@@ -304,6 +281,8 @@ function cancelEdit(){
 
 
 
+
+
 //================================================== Node Class ====================================================
 class Node{
   constructor(markerID, location, nodeID, infoID){
@@ -326,10 +305,6 @@ class Node{
     //this will be the function for editing node information later
     this.location = newLocation;
     this.nodeID = newID;
-  }
-
-  deleteNode(){
-      
   }
 
   print(){
