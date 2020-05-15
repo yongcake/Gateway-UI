@@ -185,6 +185,7 @@ function addPressed(){
     newMarker = null; 
     document.getElementById("locationName").value = "";
     document.getElementById("nodeID").value = "";
+    $("#addNode").hide();
   }
 }
 
@@ -223,17 +224,17 @@ function editSelectedNode(markerID){
       $("#addButton").show();
       document.getElementById("addNode").onclick = saveEdit;
     }
-    else{
-      resetNodeDiv();
-      modeArray.movingMode = false;
-    }
   //}
 }
 
 function saveEdit(){
+  var markerID = $("#selectedMarker").text();
+  var node =getNodeByMarkerID(markerID);
   modeArray.movingMode = false;
-  document.getElementById("editNode").value = "Edit";
-  document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
+  $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
+  $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
+  //document.getElementById("editNode").value = "Edit";
+  //document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
   var newLocation = $("#locationName").val();
   var newID = $("#nodeID").val();
   $("#addButton").hide();
@@ -250,8 +251,9 @@ function saveEdit(){
 
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
-  modeArray.movingMode =false; //Swap back to Viewing
-  document.getElementById("Mode").innerText = "Viewing";
+  modeArray.movingMode =false; //Swap back to Adding
+  modeArray.viewingMode =false; 
+  document.getElementById("Mode").innerText = "Adding";
 
 }
 
@@ -261,7 +263,11 @@ function cancelEdit(){
   marker.style.left = oldCord[0];
   marker.style.top = oldCord[1];
   oldCord = [];
-  document.getElementById("editNode").onclick = editSelectedNode;
+
+  var markerID = $("#selectedMarker").text();
+  var node =getNodeByMarkerID(markerID);
+  $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
+  $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   $("#addButton").hide();
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
@@ -318,7 +324,7 @@ var nodeList = [];
 
 function createNodeContainer(newNode){ //Used to create a new container
   
-  $("#informationContainerTest").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
+  $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
   $("#"+newNode.nodeID).html(newNode.print());
   console.log("Elements created");
@@ -376,7 +382,6 @@ function addNode(markerID, infoID)
 function removeNode(markerID){
   for(var i = 0; i<nodeList.length; i++){
     if (nodeList[i].markerID == markerID){
-        alert(nodeList[i].nodeID);
         $("#"+nodeList[i].nodeID).remove();
         nodeList.splice(i, 1);
         console.log("remove success");
