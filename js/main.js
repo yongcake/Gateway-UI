@@ -8,77 +8,6 @@ var selectedMarkerID = "";
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-function addText(value){ //For combining all id in an array
-  text+= value.id + " "
-}
-
-//Checking Functions
-function checkIDTxt(){ // used to check ids of all txts added
-  text = "";
-  if (textArray.length != 0){
-    textArray.forEach(addText);
-    alert("Current IDs for Text: "+ text);
-  }
-  else
-  {
-    alert("No ID found for Text");
-  }
-  
-}
-
-function checkIDBtn(){ // used to check ids of all buttons added
-  text = "";
-  if (buttonArray.length != 0){
-    buttonArray.forEach(addText);
-    alert("Current IDs for button = " + text);
-  }
-  else
-  {
-    alert("No ID found for button");
-  }
-}
-//Addings Elements
-function appendText(){ //Add a new p
-  //var txt1 = "<p>Text.</p>";        // Create text with HTML
-  //var txt2 = $("<p></p>").text("Text.");  // Create text with jQuery
-
-  var txt3 = document.createElement("p");
-  txt3.innerHTML = "Text";         // Create text with DOM
-  txt3.id = "txt" + (textArray.length + 1);
-  textArray.push(txt3); //Push to an Array
-  $("#testArea").append(txt3);   // Append new elements
-  checkIDTxt();
-}
-
-function appendButton(){ //Add a new button
-  var buttonTest = document.createElement("button");
-  buttonTest.innerHTML = "This is a button";
-  buttonTest.id = "btn" + (buttonArray.length + 1);
-  buttonArray.push(buttonTest); //Push to an Array
-  $("#testArea").append(buttonTest);   // Append new elements
-  checkIDBtn();
-}
-
-//Removing Items
-function removeElements(){ //Remove element based on the id typed in textbox
-  //alert(textArray);
-  var elementID = document.getElementById("removeID").value;
-  //alert(elementID);
-  var element = document.getElementById(elementID);
-  element.remove();
-  removeText(elementID);
-  checkIDBtn();
-  checkIDTxt();
-}
-
-function removeText(name){ //Remove text
-  for (i = 0; i < textArray.length; i++){
-    if(textArray[i].id == name){
-      //textArray.splice(i,1);
-      delete textArray[i];
-    }
-  }
-}
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
@@ -92,29 +21,6 @@ function removeFromArray(arrayList,itemName){ //Remove Btn
 }
 
 //Markers 
-function toggleMarkers(){ //Toggle all markers
-  if(markerArray.length != 0){
-    if(!modeArray.enabled){
-      modeArray.enabled = true;
-    }
-    else{
-      modeArray.enabled = false;
-    }
-  
-    markerArray.forEach(toggleOneMarkers); //Call function for each element store in Array
-  
-  }
-  else{
-    alert("No Marker to toggle");
-  }
-}
-
-function toggleOneMarkers(marker){ //toggle one marker
-  marker.classList.toggle("marker");
-  var markerStat = document.getElementById("markerStatus");
-  markerStat.innerText = modeArray.enabled + "";
-}
-
 function toggleMode(){ //Toggle between Viewing and Adding
   var mode; //Text to display mode
   if(!modeArray.viewingMode){ //Swap to Viewing
@@ -143,7 +49,8 @@ function toggleMode(){ //Toggle between Viewing and Adding
     addButtonPressed = true;
   }
   document.getElementById("Mode").innerText = mode; //Update mode text
-  document.getElementById("nodeInfoContainer").style.display = "none"; //hide previously viewed info
+  $("#nodeInfoContainer").hide(); //hide previously viewed info
+
 }
 
 function toggleMove(){ //Toggle between Viewing and Moving
@@ -258,12 +165,12 @@ function moveMarker(marker){ //Used to move a Marker around
 }
 
 function noSignal(){
-  document.getElementById("errorText").style.display = "block";
+  $("#errorText").show();
 }
 
 function addPressed(){
-  var location = document.getElementById("locationName").value;
-  var nodeID = document.getElementById("nodeID").value;
+  var location = $("#locationName").val(); //.value
+  var nodeID = $("#nodeID").val(); 
   if (location == "" && nodeID == ""){
     alert("Please make sure both fields are filled before adding node.");
     return;
@@ -273,7 +180,7 @@ function addPressed(){
     markerArray.push(newMarker);
     addNode(newMarker.id, ("nodeInfo"+markerCount));
     markerCount++;
-    var formStatus = "Node '" + nodeID + "' added at '" + location + "' <br>"
+    var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
     document.getElementById("formStatus").innerHTML = formStatus;
     newMarker = null; 
     document.getElementById("locationName").value = "";
@@ -327,8 +234,8 @@ function saveEdit(){
   modeArray.movingMode = false;
   document.getElementById("editNode").value = "Edit";
   document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
-  var newLocation = document.getElementById("locationName").value
-  var newID = document.getElementById("nodeID").value
+  var newLocation = $("#locationName").val();
+  var newID = $("#nodeID").val();
   $("#addButton").hide();
   document.getElementById("addNode").value = "Add";
 
@@ -336,7 +243,7 @@ function saveEdit(){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
       document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
-      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved <br>"
+      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
     }
   }
@@ -375,6 +282,8 @@ function cancelEdit(){
 
 
 
+
+
 //================================================== Node Class ====================================================
 class Node{
   constructor(markerID, location, nodeID, infoID){
@@ -397,10 +306,6 @@ class Node{
     //this will be the function for editing node information later
     this.location = newLocation;
     this.nodeID = newID;
-  }
-
-  deleteNode(){
-      
   }
 
   print(){
