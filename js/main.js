@@ -302,6 +302,8 @@ function cancelEdit(){
 
 function cancelPressed(){
   removeMarker(newMarker.id);
+  document.getElementById("locationName").value = "";
+  document.getElementById("nodeID").value = "";
   $("#cancel").hide();
   $("#addNode").hide(); 
 }
