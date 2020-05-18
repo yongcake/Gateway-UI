@@ -74,15 +74,6 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  var location = $("#locationName").val(); //.value
-  var nodeID = $("#nodeID").val(); 
-
-  $("#addNode").show();
-
-  if (location == "" || nodeID == ""){
-    $("#cancel").show();
-  }
-
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
@@ -97,7 +88,10 @@ function createNewMarker(){ //add or move a a marker
       return;
     }
     if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
-
+      $("#addNode").show();
+      $("#cancel").show();
+      $("#addNode").attr("value","Add");
+      $("#addNode").attr("onclick", "addPressed()")
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
@@ -245,6 +239,7 @@ function editSelectedNode(markerID){
       
       document.getElementById("addNode").value = "Save";
       $("#addNode").show();
+      $("#cancel").hide();
       document.getElementById("addNode").onclick = saveEdit;
     }
   //}
@@ -262,11 +257,10 @@ function saveEdit(){
   var newID = $("#nodeID").val();
   $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
-  
   for (var i = 0; i<nodeList.length; i++){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
-      $("#"+ newID +" #"+node.infoID).html(nodeList[i].print());
+      $("#"+ node.nodeID +" #"+node.infoID).html(nodeList[i].print());
       //document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
       var formStatus = "Node '" + nodeList[i].nodeName + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
