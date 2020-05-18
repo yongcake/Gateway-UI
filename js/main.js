@@ -78,10 +78,7 @@ function createNewMarker(){ //add or move a a marker
   var nodeID = $("#nodeID").val(); 
 
   $("#addNode").show();
-
-  if (location == "" || nodeID == ""){
-    $("#cancel").show();
-  }
+  $("#cancel").show();
 
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;

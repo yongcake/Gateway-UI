@@ -93,13 +93,35 @@ img{
 }
 
 .scrollInfoContainer{
-	width: 28vw;
+	width: 31vw;
+	height: 24.6vw;
 	display: flex;
 	flex-direction: column;
+	overflow-y: auto;
+	overflow-x: hidden;
 }
+div.scrollInfoContainer::-webkit-scrollbar {
+	width: 8px;
+  }
+  
+  /* Track */
+  div.scrollInfoContainer::-webkit-scrollbar-track {
+	background: #f1f1f1; 
+  }
+   
+  /* Handle */
+  div.scrollInfoContainer::-webkit-scrollbar-thumb {
+	background: #888; 
+  }
+  
+  /* Handle on hover */
+  div.scrollInfoContainer::-webkit-scrollbar-thumb:hover {
+	background: #555; 
+  }
+
 
 .nodeInfoContainer{
-	width: 100%;
+	width: 28vw;
 	border: black solid 1px;
 	padding: 2%;
 	margin-bottom: 2%;
