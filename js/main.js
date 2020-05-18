@@ -3,6 +3,7 @@ var xCoord = 0;
 var yCoord = 0;
 var newMarker;
 var markerCount = 0;
+var nodeCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
@@ -87,6 +88,7 @@ function createNewMarker(){ //add or move a a marker
       return;
     }
     if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
+
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
@@ -105,7 +107,7 @@ function createNewMarker(){ //add or move a a marker
 
 }
 
-function displayCurrentMarker(markerID){ //function runs when a marker is clicked
+function displayCurrentMarker(markerID){ //function runs when a marker is clicked (Currently not Used)
   if(modeArray.viewingMode){
     var textSelectedMarker = document.getElementById("selectedMarker");
     textSelectedMarker.innerText = markerID;
@@ -136,12 +138,15 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
+  if(!modeArray.movingMode){
     removeFromArray(markerArray, markerID); //Function to remove marker,
     removeUnwantedMarker();
-    //markerID.innerText = "None";
-    modeArray.movingMode =false;
     modeArray.viewingMode =false;
     modeArray.addingMode =true;
+  }else{
+    alert("Exit from Editing to delete");
+  }
+    //markerID.innerText = "None";
     //$("#btnToggleMove").hide(); 
   //}
   
@@ -178,7 +183,7 @@ function noSignal(){
 function addPressed(){
   var location = $("#locationName").val(); //.value
   var nodeID = $("#nodeID").val(); 
-  if (location == "" && nodeID == ""){
+  if (location == "" || nodeID == ""){
     alert("Please make sure both fields are filled before adding node.");
     return;
   }
@@ -199,8 +204,7 @@ function addPressed(){
 function resetNodeDiv(){
   modeArray.movingMode =false; //Swap back to Viewing
   modeArray.viewingMode = false;
-  document.getElementById("editNode").value = "Edit"; //Update toggle button text
-  document.getElementById("Mode").innerText = "Adding"; //Update mode text
+  $("#Mode").text("Adding"); //Update mode text
   $("#cancelEdit").hide();
 }
 
@@ -221,7 +225,7 @@ function editSelectedNode(markerID){
       for (var i = 0; i<nodeList.length; i++){
         if(nodeList[i].markerID == selectedMarkerID){
           document.getElementById("locationName").value = nodeList[i].location;
-          document.getElementById("nodeID").value = nodeList[i].nodeID;
+          document.getElementById("nodeID").value = nodeList[i].nodeName;
         }
       }
       $("#"+ node.nodeID +" #editNode").attr("value", "Cancel Edit");
@@ -247,13 +251,13 @@ function saveEdit(){
   var newID = $("#nodeID").val();
   $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
-
+  
   for (var i = 0; i<nodeList.length; i++){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
       $("#"+ newID +" #"+node.infoID).html(nodeList[i].print());
       //document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
-      var formStatus = "Node '" + nodeList[i].nodeID + "' changes saved "
+      var formStatus = "Node '" + nodeList[i].nodeName + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
     }
   }
@@ -304,10 +308,11 @@ function cancelEdit(){
 
 //================================================== Node Class ====================================================
 class Node{
-  constructor(markerID, location, nodeID, infoID){
+  constructor(markerID, nodeID, location, nodeName, infoID){
     this.markerID = markerID;
     this.location = location;
     this.nodeID = nodeID;
+    this.nodeName = nodeName;
     this.infoID = infoID;
     this.signal = "Low";
     this.status = "No Signal";
@@ -320,15 +325,15 @@ class Node{
       //this will be the function for changing status later
   }
 
-  editNode(newLocation, newID){
+  editNode(newLocation, newName){
     //this will be the function for editing node information later
     this.location = newLocation;
-    $("#"+this.nodeID).attr("id",newID);
-    this.nodeID = newID;
+    //$("#"+this.nodeID).attr("id",newID);
+    this.nodeName = newName;
   }
 
   print(){
-    return "ID: " + this.nodeID + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status
+    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status
   }
 }
 
@@ -378,13 +383,15 @@ function createNodeContainer(newNode){ //Used to create a new container
 function addNode(markerID, infoID)
 {
   var location = document.getElementById("locationName").value;
-  var nodeID = document.getElementById("nodeID").value;
-  if (location == "" || nodeID == ""){
+  var nodeID = "node"+nodeCount;
+  nodeCount++;
+  var nodeName = document.getElementById("nodeID").value;
+  if (location == "" || nodeName == ""){
       alert("Please make sure both fields are filled before adding node.");
       return;
   }
 
-  var n = new Node(markerID, location, nodeID, infoID);
+  var n = new Node(markerID,nodeID, location, nodeName, infoID);
   createNodeContainer(n);
   nodeList.push(n);
   console.log("Marker ID: " + n.markerID);
