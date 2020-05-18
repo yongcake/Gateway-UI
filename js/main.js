@@ -5,6 +5,7 @@ var newMarker;
 var markerCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
+var cancelPressed = false;
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
@@ -73,11 +74,34 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  $("#addNode").show();
+  $(document).ready(() => {
+    $(".formInput").change(() =>{
+      $("#addNode").show();
+      $("#addNode").attr('value', 'Add');
+      $("#addNode").attr("onclick","addPressed()");
+    });
+  }); 
+  var location = $("#locationName").val(); //.value
+  var nodeID = $("#nodeID").val(); 
+
+  if (location == "" && nodeID == ""){
+    $("#addNode").attr('value', 'Cancel');
+    $("#addNode").show();
+    //$("#addNode").attr("onclick","removeUnwantedMarker()");
+    document.getElementById("addNode").onclick = function(){
+      removeMarker(newMarker.id);
+      $("#addNode").attr('value', 'Add'); 
+      $("#addNode").attr("onclick","addPressed()");
+      $("#addNode").hide();
+      return;
+    }
+  }
+
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
   }
+  
   if(modeArray.enabled){
     if (modeArray.viewingMode){
       if(modeArray.movingMode){
@@ -102,7 +126,6 @@ function createNewMarker(){ //add or move a a marker
     }
   }
   console.log("this is created" + newMarker.id);
-
 }
 
 function displayCurrentMarker(markerID){ //function runs when a marker is clicked
@@ -174,6 +197,7 @@ function moveMarker(marker){ //Used to move a Marker around
 function noSignal(){
   $("#errorText").show();
 }
+
 
 function addPressed(){
   var location = $("#locationName").val(); //.value
