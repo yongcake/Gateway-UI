@@ -74,11 +74,33 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  $("#addNode").show();
+  $(document).ready(() => {
+    $(".formInput").change(() =>{
+      $("#addNode").show();
+      $("#addNode").attr('value', 'Add');
+      $("#addNode").attr("onclick","addPressed()");
+    });
+  }); 
+  var location = $("#locationName").val(); //.value
+  var nodeID = $("#nodeID").val(); 
+
+  if (location == "" && nodeID == ""){
+    $("#addNode").attr('value', 'Cancel');
+    $("#addNode").show();
+    document.getElementById("addNode").onclick = function(){
+      removeMarker(newMarker.id);
+      $("#addNode").attr('value', 'Add'); 
+      $("#addNode").attr("onclick","addPressed()");
+      $("#addNode").hide();
+      return;
+    }
+  }
+
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
   }
+  
   if(modeArray.enabled){
     if (modeArray.viewingMode){
       if(modeArray.movingMode){
@@ -104,7 +126,6 @@ function createNewMarker(){ //add or move a a marker
     }
   }
   console.log("this is created" + newMarker.id);
-
 }
 
 function displayCurrentMarker(markerID){ //function runs when a marker is clicked (Currently not Used)
@@ -179,6 +200,7 @@ function moveMarker(marker){ //Used to move a Marker around
 function noSignal(){
   $("#errorText").show();
 }
+
 
 function addPressed(){
   var location = $("#locationName").val(); //.value
@@ -383,20 +405,48 @@ function createNodeContainer(newNode){ //Used to create a new container
 function addNode(markerID, infoID)
 {
   var location = document.getElementById("locationName").value;
+<<<<<<< HEAD
   var nodeID = "node"+nodeCount;
   nodeCount++;
   var nodeName = document.getElementById("nodeID").value;
   if (location == "" || nodeName == ""){
+=======
+  var nodeID = document.getElementById("nodeID").value;
+  var nodeExist = false;
+  if (location == "" || nodeID == ""){
+>>>>>>> 9728f4e5825317fc6dcd099a0f45d03d6b2a7eaa
       alert("Please make sure both fields are filled before adding node.");
       return;
   }
 
+<<<<<<< HEAD
   var n = new Node(markerID,nodeID, location, nodeName, infoID);
   createNodeContainer(n);
   nodeList.push(n);
   console.log("Marker ID: " + n.markerID);
   console.log("Node Location: " + n.location);
   console.log("Node ID: " + n.nodeID);
+=======
+  for (var i = 0; i<nodeList.length; i++){
+    if (nodeID == nodeList[i].nodeID){
+      nodeExist = true;
+    }
+  }
+
+  if(nodeExist == true){
+    alert("Node ID already exist, please enter a non-existing ID"); 
+    removeMarker(markerID);
+    return;
+  }
+  else{
+    var n = new Node(markerID, location, nodeID, infoID);
+    createNodeContainer(n);
+    nodeList.push(n);
+    console.log("Marker ID: " + n.markerID);
+    console.log("Node Location: " + n.location);
+    console.log("Node ID: " + n.nodeID);
+  }
+>>>>>>> 9728f4e5825317fc6dcd099a0f45d03d6b2a7eaa
 }
 
 function removeNode(markerID){
