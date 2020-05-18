@@ -405,28 +405,15 @@ function createNodeContainer(newNode){ //Used to create a new container
 function addNode(markerID, infoID)
 {
   var location = document.getElementById("locationName").value;
-<<<<<<< HEAD
   var nodeID = "node"+nodeCount;
   nodeCount++;
   var nodeName = document.getElementById("nodeID").value;
-  if (location == "" || nodeName == ""){
-=======
-  var nodeID = document.getElementById("nodeID").value;
   var nodeExist = false;
   if (location == "" || nodeID == ""){
->>>>>>> 9728f4e5825317fc6dcd099a0f45d03d6b2a7eaa
       alert("Please make sure both fields are filled before adding node.");
       return;
   }
 
-<<<<<<< HEAD
-  var n = new Node(markerID,nodeID, location, nodeName, infoID);
-  createNodeContainer(n);
-  nodeList.push(n);
-  console.log("Marker ID: " + n.markerID);
-  console.log("Node Location: " + n.location);
-  console.log("Node ID: " + n.nodeID);
-=======
   for (var i = 0; i<nodeList.length; i++){
     if (nodeID == nodeList[i].nodeID){
       nodeExist = true;
@@ -439,14 +426,13 @@ function addNode(markerID, infoID)
     return;
   }
   else{
-    var n = new Node(markerID, location, nodeID, infoID);
+    var n = new Node(markerID,nodeID, location, nodeName, infoID);
     createNodeContainer(n);
     nodeList.push(n);
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
   }
->>>>>>> 9728f4e5825317fc6dcd099a0f45d03d6b2a7eaa
 }
 
 function removeNode(markerID){
