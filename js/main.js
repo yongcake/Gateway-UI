@@ -415,7 +415,7 @@ function addNode(markerID, infoID)
   }
 
   for (var i = 0; i<nodeList.length; i++){
-    if (nodeID == nodeList[i].nodeID){
+    if (nodeName == nodeList[i].nodeName){
       nodeExist = true;
     }
   }
