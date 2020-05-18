@@ -30,6 +30,12 @@ img{
 	margin-right: 1%;
 }
 
+.floor{
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
 .formInput {
 	width: 20vw;
 	height: 1.5vw;	
@@ -67,9 +73,18 @@ img{
 	display: flex;	
 }
 
+.formButtonContainer{
+	display: flex;
+	margin: 4.8%;	
+}
+
 .addButtonWrapper{
 	align-self: flex-end;
-	margin: 4.8%;
+}
+
+.cancelButtonWrapper{
+	align-self: flex-end;
+	margin-left: 6%;
 }
 
 .formStatusWrapper{
@@ -78,7 +93,7 @@ img{
 }
 
 .scrollInfoContainer{
-	width: 100%;
+	width: 28vw;
 	display: flex;
 	flex-direction: column;
 }
@@ -108,7 +123,7 @@ img{
 }
 
 .errorTextWrapper{
-	
+	width: 28vw;
 	padding: 2%;
 	margin-top: 2%;
 	border: black solid 1px;
@@ -134,6 +149,13 @@ img{
 #addNode{
 	padding: 5px;
 	float: right;
+	align-self: flex-end;
+	width: 3.5rem;
+}
+
+#cancel{
+	padding: 5px;
+	
 	align-self: flex-end;
 	width: 3.5rem;
 }

@@ -73,26 +73,13 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  $(document).ready(() => {
-    $(".formInput").change(() =>{
-      $("#addNode").show();
-      $("#addNode").attr('value', 'Add');
-      $("#addNode").attr("onclick","addPressed()");
-    });
-  }); 
   var location = $("#locationName").val(); //.value
   var nodeID = $("#nodeID").val(); 
 
-  if (location == "" && nodeID == ""){
-    $("#addNode").attr('value', 'Cancel');
-    $("#addNode").show();
-    document.getElementById("addNode").onclick = function(){
-      removeMarker(newMarker.id);
-      $("#addNode").attr('value', 'Add'); 
-      $("#addNode").attr("onclick","addPressed()");
-      $("#addNode").hide();
-      return;
-    }
+  $("#addNode").show();
+
+  if (location == "" || nodeID == ""){
+    $("#cancel").show();
   }
 
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
@@ -200,7 +187,7 @@ function noSignal(){
 function addPressed(){
   var location = $("#locationName").val(); //.value
   var nodeID = $("#nodeID").val(); 
-  if (location == "" && nodeID == ""){
+  if (location == "" || nodeID == ""){
     alert("Please make sure both fields are filled before adding node.");
     return;
   }
@@ -215,6 +202,7 @@ function addPressed(){
     document.getElementById("locationName").value = "";
     document.getElementById("nodeID").value = "";
     $("#addNode").hide();
+    $("#cancel").hide();
   }
 }
 
@@ -256,6 +244,7 @@ function editSelectedNode(markerID){
       document.getElementById("addNode").onclick = saveEdit;
     }
   //}
+  return true;
 }
 
 function saveEdit(){
@@ -305,6 +294,12 @@ function cancelEdit(){
   modeArray.movingMode =false; //Swap back to Adding
   modeArray.viewingMode =false; 
   modeArray.addingMode = true;
+}
+
+function cancelPressed(){
+  removeMarker(newMarker.id);
+  $("#cancel").hide();
+  $("#addNode").hide(); 
 }
 
 

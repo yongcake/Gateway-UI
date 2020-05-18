@@ -23,13 +23,16 @@
 		<label><i>*Insert Area*</i></label> <br><br>
 	
 		<div class="floor">
-			<input type="button" id="button" value="Test1">
-			<input type="button" id="button" value="Test2">
-			<input type="button" id="button" value="Test3">
-			<input type="button" id="button" value="Test4">
-			<input type="button" id="button" value="Test5">
-
-			<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
+			<div class="floorSelectionWrapper">
+				<input type="button" id="button" value="Test1">
+				<input type="button" id="button" value="Test2">
+				<input type="button" id="button" value="Test3">
+				<input type="button" id="button" value="Test4">
+				<input type="button" id="button" value="Test5">
+			</div>
+			<div class="markerStatusWrapper">
+				<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
+			</div>
 			<!--<button id="btnToggleMode" onclick="toggleMode()">switch mode</button>
 			<button id="btnToggleMove" hidden onclick="toggleMove()">Move Marker</button> -->
 		</div>
@@ -44,19 +47,23 @@
 
 			<div class="informationContainer" id ="informationContainerTest">
 
-				<div
-				 class="formContainer">
+				<div class="formContainer">
 					<div class="inputWrapper" id="inputInfo">
 						<label for="LocalName">Location Name:</label> <br>
 						<input type="text" class ="formInput" id="locationName" name="fname"><br><br>
 						<label for="NodeID">Node ID:</label> <br>
 						<input type="text" class ="formInput" id="nodeID" name="fname"><br><br>
 					</div>
-					<div class="addButtonWrapper" id="addButton"> 
-						<input type="button" hidden id="addNode" value="Add" onclick="addPressed()">
-						
+					<div class="formButtonContainer">
+						<div class="addButtonWrapper" id="addButton"> 
+							<input type="button" hidden id="addNode" value="Add" onclick="addPressed()">
+						</div>
+						<div class="cancelButtonWrapper" id="cancelButton">
+							<input type="button" hidden id="cancel" value="Cancel" onclick="cancelPressed()">
+						</div>
 					</div>
 				</div>
+				
 				
 				<div class="formStatusWrapper" id="formStatus">
 					 <br>
