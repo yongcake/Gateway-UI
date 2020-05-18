@@ -5,7 +5,6 @@ var newMarker;
 var markerCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
-var cancelPressed = false;
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
@@ -87,7 +86,6 @@ function createNewMarker(){ //add or move a a marker
   if (location == "" && nodeID == ""){
     $("#addNode").attr('value', 'Cancel');
     $("#addNode").show();
-    //$("#addNode").attr("onclick","removeUnwantedMarker()");
     document.getElementById("addNode").onclick = function(){
       removeMarker(newMarker.id);
       $("#addNode").attr('value', 'Add'); 
