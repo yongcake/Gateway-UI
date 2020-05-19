@@ -16,7 +16,7 @@
 			<h1>Gateway Signal Test Kit</h1>
 	
 			<div class="complete">
-				<input type="button" id="TestCompleteButton" value="Test Complete">
+				<input type="button" id="TestCompleteButton" value="Test Complete" ondblclick="testComplete()">
 			</div>	
 		</div>
 
@@ -30,9 +30,11 @@
 				<input type="button" id="button" value="Test4">
 				<input type="button" id="button" value="Test5">
 			</div>
-			<div class="markerStatusWrapper">
+			
+			<div class="markerStatusWrapper" hidden>
 				<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
 			</div>
+			
 			<!--<button id="btnToggleMode" onclick="toggleMode()">switch mode</button>
 			<button id="btnToggleMove" hidden onclick="toggleMove()">Move Marker</button> -->
 		</div>
@@ -49,10 +51,10 @@
 
 				<div class="formContainer">
 					<div class="inputWrapper" id="inputInfo">
-						<label for="LocalName">Location Name:</label> <br>
-						<input type="text" class ="formInput" id="locationName" name="fname"><br><br>
 						<label for="NodeID">Node ID:</label> <br>
 						<input type="text" class ="formInput" id="nodeID" name="fname"><br><br>
+						<label for="LocalName">Location Name:</label> <br>
+						<input type="text" class ="formInput" id="locationName" name="fname"><br><br>
 					</div>
 					<div class="formButtonContainer">
 						<div class="addButtonWrapper" id="addButton"> 
