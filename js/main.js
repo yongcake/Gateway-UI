@@ -460,7 +460,6 @@ function getNodeByMarkerID(markerID){
   else{
     alert("No Node found");
   }
-<<<<<<< HEAD
   
 }
 
@@ -500,6 +499,7 @@ function remapMarkers(newSite){
     }
   }
 }
+
 function clearSite(currentSite){
   for(var i = 0;i<siteArray.length;i++){ //loop all the sites
     if(siteArray[i][0] == currentSite ){
@@ -514,6 +514,4 @@ function clearSite(currentSite){
     }
     console.log(currentSite +" Cleared")
   }
-=======
->>>>>>> a3df5c84d5879e0f63bbed07a1d9185819e687eb
 }
