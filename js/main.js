@@ -1,14 +1,16 @@
 //Global varibles
-var xCoord = 0;
-var yCoord = 0;
+var xPosition;
+var yPosition;
 var newMarker;
 var markerCount = 0;
 var nodeCount = 0;
 var markerAdded = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
-var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
+var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [["Test1"],["Test2"]],text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+var currentSite = "Test1";
+//Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
@@ -25,39 +27,10 @@ function removeUnwantedMarker(){
     $("#"+newMarker.id).remove();
   }
 }
+
 //Markers 
-function toggleMode(){ //Toggle between Viewing and Adding
-  var mode; //Text to display mode
-  if(!modeArray.viewingMode){ //Swap to Viewing
-    modeArray.viewingMode = true;
-    modeArray.addingMode = false;
-    modeArray.movingMode = false;
-    $("#addButton").hide();
-    mode = "Viewing";
-    if(!addButtonPressed){
-      document.getElementById("selectedMarker").innerText = newMarker.id;
-      //removeMarker();
-    }
-  }
-  else{                       //Swap to Adding
-    modeArray.viewingMode = false;
-    modeArray.addingMode = true;
-    modeArray.movingMode =false;
-    $("#addButton").show(); 
-    mode = "Adding";
-    document.getElementById("btnToggleMove").innerText = "Move Marker"; //Refresh Text in case it was switch from moving to adding
-    for (var i = 0; i<markerArray.length; i++){ //Reset all markers to orginal setting
-      markerArray[i].style.opacity= 1;
-      markerArray[i].style.zIndex = 1;
-      markerArray[i].style.backgroundColor ="red";
-    }
-    addButtonPressed = true;
-  }
-  document.getElementById("Mode").innerText = mode; //Update mode text
-  $("#nodeInfoContainer").hide(); //hide previously viewed info
 
-}
-
+//(Not Used ATM)
 function toggleMove(){ //Toggle between Viewing and Moving
   if(modeArray.viewingMode){ //Only runs if viewing is enabled
     if(!modeArray.movingMode){ //Swap to Moving
@@ -156,8 +129,8 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
 
 function showCoords(event) {
   var container = document.querySelector("#imageSource");
-  xCoord = event.clientX - container.getBoundingClientRect().left;
-  yCoord = event.clientY - container.getBoundingClientRect().top;
+  var xCoord = event.clientX - container.getBoundingClientRect().left;
+  var yCoord = event.clientY - container.getBoundingClientRect().top;
   var pagexCoord = event.clientX;
   var pageyCoord = event.clientY;
   var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " + yCoord + "<br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord;
@@ -171,8 +144,8 @@ function moveMarker(marker){ //Used to move a Marker around
     return
   }
   var container = document.querySelector("#imageSource");
-  var xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
-  var yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
+  xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
+  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
@@ -323,12 +296,12 @@ function cancelPressed(){
 class Node{
   constructor(markerID, nodeID, location, nodeName, infoID){
     this.markerID = markerID;
-    this.location = location;
     this.nodeID = nodeID;
-    this.nodeName = nodeName;
     this.infoID = infoID;
     this.signal = "Low";
     this.status = "No Signal";
+    this.editNode(location,nodeName);
+    this.updatePosition(xPosition,yPosition);
   }
   signalChange(){
       //this will be the function for changing signal later
@@ -344,7 +317,13 @@ class Node{
     //$("#"+this.nodeID).attr("id",newID);
     this.nodeName = newName;
   }
-
+  updatePosition(left,top){
+    this.posLeft = left;
+    this.posTop = top;
+  }
+  getPosition(){
+    return [this.posLeft,this.posTop];
+  }
   print(){
     return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status
   }
@@ -420,6 +399,12 @@ function addNode(markerID, infoID)
     var n = new Node(markerID,nodeID, location, nodeName, infoID);
     createNodeContainer(n);
     nodeList.push(n);
+    for (var i =0; i< siteArray.length; i++){
+      if(siteArray[i][0] ==currentSite){ 
+        siteArray[i][1] =nodeList;
+        console.log("Current Site Nodes: " +siteArray[i][1].length);
+      }
+    }
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
@@ -448,4 +433,56 @@ function getNodeByMarkerID(markerID){
     alert("No Node found");
   }
   
+}
+
+//===============(Not Sure if a class should be made)=======SITE CLass===========================================
+//class TestSite{
+//  constructor(siteName, list){
+//    this.siteName = siteName;
+//    this.updateNodeList(list);
+//  }
+//  updateNodeList(updatedList){
+//      this.list = updatedList;
+//  }
+//}
+
+//Sites Related Functinos
+function switchSites(newSite){ //Toggle between Sites
+  console.log(currentSite);
+  clearSite(currentSite);
+  remapMarkers(newSite);
+
+}
+function remapMarkers(newSite){
+  for(var i = 0;i<siteArray.length;i++){ //loop all the sites
+    if(siteArray[i][0] == newSite ){
+      currentSite = newSite; // change to site
+      if(siteArray[i][1] !== undefined){ //in case site is created but no markers was added
+        for(var j = 0;j< siteArray[i][1].length; j++){ //Loop the nodes in that site
+          $("#"+siteArray[i][1][j].markerID).show();
+          $("#"+siteArray[i][1][j].nodeID).show();  
+        }
+        nodeList = siteArray[i][1];
+      }
+      else{
+        nodeList = [];
+      }
+      console.log(currentSite +" Added")
+    }
+  }
+}
+function clearSite(currentSite){
+  for(var i = 0;i<siteArray.length;i++){ //loop all the sites
+    if(siteArray[i][0] == currentSite ){
+      if(siteArray[i][1] !== undefined){ //in case site is created but no markers was added
+        for(var j = 0;j< siteArray[i][1].length; j++){ //Loop the nodes in that site
+          $("#"+siteArray[i][1][j].markerID).hide();
+          $("#"+siteArray[i][1][j].nodeID).hide();  
+          //$("#selectedMarker").text("None");
+          //selectedMarkerID ="";
+        }
+      }
+    }
+    console.log(currentSite +" Cleared")
+  }
 }
