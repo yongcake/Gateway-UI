@@ -5,6 +5,7 @@ var newMarker;
 var markerCount = 0;
 var nodeCount = 0;
 var markerAdded = false;
+var nodeExist = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], text;
@@ -145,7 +146,9 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
     removeUnwantedMarker();
     modeArray.viewingMode =false;
     modeArray.addingMode =true;
-  }else{
+    $("#errorText").hide(); // remove if unnecessary 
+  }
+  else{
     alert("Exit from Editing to delete");
   }
     //markerID.innerText = "None";
@@ -178,8 +181,17 @@ function moveMarker(marker){ //Used to move a Marker around
   console.log("marker is moving");
 }
 
-function noSignal(){
+function noSignal(markerID){
+  var nodeName;
+  for (var i = 0; i<nodeList.length; i++){  
+    if (nodeList[i].markerID == markerID){  
+      nodeName = nodeList[i].nodeName;
+    }
+  }
+  var errorText = "No connection between Node '" + nodeName + "' and Gateway, try: <br>- Moving the Gateway to a more optimal position <br>- Moving the Node to a more optimal position <br>- Checking if you have entered the right location for the node "
+  document.getElementById("errorText").innerHTML = errorText;
   $("#errorText").show();
+  //removeMarker(newMarker.id);
 }
 
 
@@ -195,8 +207,10 @@ function addPressed(){
     markerArray.push(newMarker);
     addNode(newMarker.id, ("nodeInfo"+markerCount));
     markerCount++;
-    var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
-    document.getElementById("formStatus").innerHTML = formStatus;
+    if (nodeExist == false){
+      var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
+      document.getElementById("formStatus").innerHTML = formStatus;
+    }
     newMarker = null; 
     document.getElementById("locationName").value = "";
     document.getElementById("nodeID").value = "";
@@ -230,6 +244,8 @@ function editSelectedNode(markerID){
         if(nodeList[i].markerID == selectedMarkerID){
           document.getElementById("locationName").value = nodeList[i].location;
           document.getElementById("nodeID").value = nodeList[i].nodeName;
+          var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
+          document.getElementById("formStatus").innerHTML = formStatus;
         }
       }
       $("#"+ node.nodeID +" #editNode").attr("value", "Cancel Edit");
@@ -277,6 +293,8 @@ function saveEdit(){
 }
 
 function cancelEdit(){
+  var formStatus = "Edit Cancelled";
+  document.getElementById("formStatus").innerHTML = formStatus;
   resetNodeDiv();
   var marker = document.getElementById(selectedMarkerID);
   marker.style.left = oldCord[0];
@@ -295,6 +313,7 @@ function cancelEdit(){
 }
 
 function cancelPressed(){
+  document.getElementById("formStatus").innerHTML = "Selection Cancelled";
   removeMarker(newMarker.id);
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
@@ -302,6 +321,14 @@ function cancelPressed(){
   $("#addNode").hide(); 
 }
 
+function testComplete(){
+  nodeList = []; // completely clear nodeList
+  markerArray = [];
+  document.getElementById("imageSource").innerHTML = ""; 
+  document.getElementById("formStatus").innerHTML = ""; 
+  document.getElementById("scrollInfoContainer").innerHTML = ""; 
+
+}
 
 
 
@@ -379,7 +406,7 @@ function createNodeContainer(newNode){ //Used to create a new container
         break;
       case 2: //No Signal
         buttonID = "noSignalNode"
-        onclickFunction ="onclick=\"noSignal()\"";
+        onclickFunction ='onclick="noSignal(\''+newNode.markerID+'\')"';
         text ="No Signal"
         break;
     }
@@ -399,7 +426,7 @@ function addNode(markerID, infoID)
   var nodeID = "node"+nodeCount;
   nodeCount++;
   var nodeName = document.getElementById("nodeID").value;
-  var nodeExist = false;
+  nodeExist = false;
   if (location == "" || nodeID == ""){
       alert("Please make sure both fields are filled before adding node.");
       return;
@@ -412,6 +439,7 @@ function addNode(markerID, infoID)
   }
 
   if(nodeExist == true){
+    document.getElementById("formStatus").innerHTML = "";
     alert("Node ID already exist, please enter a non-existing ID"); 
     removeMarker(markerID);
     return;
@@ -447,5 +475,4 @@ function getNodeByMarkerID(markerID){
   else{
     alert("No Node found");
   }
-  
 }
