@@ -295,8 +295,13 @@ function cancelPressed(){
 }
 
 function testComplete(){
-  nodeList = []; // completely clear nodeList
+  for (var i = 0; i<siteArray.length;i++)
+  {
+    siteArray[i][1] = [];
+  }
   markerArray = [];
+
+  //nodeList = []; // completely clear nodeList
   document.getElementById("imageSource").innerHTML = ""; 
   document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
