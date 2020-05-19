@@ -476,10 +476,10 @@ function getNodeByMarkerID(markerID){
 
 //Sites Related Functinos
 function switchSites(newSite){ //Toggle between Sites
-  console.log(currentSite);
+  console.log("Previous Site: "+ currentSite);
   clearSite(currentSite);
   remapMarkers(newSite);
-
+  console.log("Current Site: "+ currentSite);
 }
 function remapMarkers(newSite){
   for(var i = 0;i<siteArray.length;i++){ //loop all the sites
