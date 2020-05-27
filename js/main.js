@@ -331,25 +331,25 @@ function toggleVeryWeak(){
 function changeSignalStrength(){
   var veryWeak = 
     '#signal-strength' + newMarker.id + ' .bar-1{'
-    + 'background-color: #999;}';
+    + 'background-color: #e74c3c;}';
 
     var weak = 
     '#signal-strength' + newMarker.id +' .bar-1, ' +
     '#signal-strength' + newMarker.id + ' .bar-2{'
-    +  'background-color: #777;}'
+    +  'background-color: #e74c3c;}'
 
     var medium = 
     '#signal-strength' + newMarker.id +' .bar-1, ' + 
     '#signal-strength' + newMarker.id + ' .bar-2,' + 
     '#signal-strength' + newMarker.id + ' .bar-3{'
-    +  'background-color: #555;}';
+    +  'background-color: #f1c40f;}';
 
     var strong =  
     '#signal-strength' + newMarker.id +' .bar-1, ' + 
     '#signal-strength' + newMarker.id + ' .bar-2,' + 
     '#signal-strength' + newMarker.id + ' .bar-3,' +
     '#signal-strength' + newMarker.id + ' .bar-4{'
-    +  'background-color: #333;}';
+    +  'background-color: #16a085;}';
     
     var veryStrong = 
     '#signal-strength' + newMarker.id +' .bar-1, ' + 
@@ -357,7 +357,7 @@ function changeSignalStrength(){
     '#signal-strength' + newMarker.id + ' .bar-3,' +
     '#signal-strength' + newMarker.id + ' .bar-4,' +  
     '#signal-strength' + newMarker.id + ' .bar-5{'
-    +  'background-color: #111;}';
+    +  'background-color: #16a085;}';
 
     if (signalStrength == 1){
       var head = document.head || document.getElementsByTagName('head')[0]
