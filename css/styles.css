@@ -151,6 +151,23 @@ img{
 	border: black solid 1px;
 }
 
+.button {
+	border-radius: 12px;
+	padding: 10px;
+	text-align: center;
+	border: none;
+}
+
+#addSiteButton{
+	border-radius: 50%;
+	width: 35px;
+	height: 35px;
+	padding: 10px;
+	text-align: center;
+	border: none;
+}
+
+
 #TestCompleteButton {
 	padding: 15px 24px;
 	text-align: center;
@@ -159,13 +176,6 @@ img{
 	opacity: 0.6;
 	cursor: not-allowed;
 	margin: 1%
-}
-
-#button {
-	border-radius: 12px;
-	padding: 10px;
-	text-align: center;
-	border: none;
 }
 
 #addNode{
@@ -208,3 +218,54 @@ img{
 	top: 20px;
 	background-color: red;
 }
+
+
+
+/*============================================== Signal Strength=================================================*/
+
+.signal-strength {
+	width: 9vw;
+	height: 1.1vw;
+	display: inline-block;
+}
+
+.bar{
+	display: inline-block;
+	height: 100%;
+	width: 13%;
+	box-sizing: border-box;
+	background-color: rgb(231, 225, 223);
+  	border: thin solid #f3f3f3;
+}
+
+
+
+/*
+.signal-strength-1 .bar-1{
+	background-color: #999;
+}
+
+
+.signal-strength-2 .bar-1, .bar-2{
+	background-color: #777;
+}
+
+
+
+.signal-strength-3 .bar-1, .bar-2, .bar-3{
+	background-color: #555;
+}
+
+
+
+.signal-strength-4 .bar-1, .bar-2, .bar-3, .bar-4{
+	background-color: #333;
+}
+
+
+.signal-strength-5 .bar-1, .bar-2, .bar-3, .bar-4, .bar-5{
+	background-color: #111;
+}
+*/
+
+

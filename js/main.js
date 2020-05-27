@@ -8,7 +8,9 @@ var markerAdded = false;
 var nodeExist = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
-var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [["Test1"],["Test2"]],text;
+var signalStrength = 1; //1 to 5 
+
+var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [["Test1"],["Test2"]], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
@@ -308,9 +310,125 @@ function testComplete(){
 
 }
 
+function addSite(){
+  var siteID = prompt("Floor number (e.g. F1) [for now use 'Test1/2/3/4/5]");
+  var container = document.querySelector(".floorSelectionWrapper");
+  var newSite = document.createElement("input");
+  container.append(newSite); //create new input in .floorSelectionWrapper
+  newSite.classList.add("button");
+  newSite.type("button");
+  newSite.id(siteID);
+  newSite.value(siteID);
 
+  //newMarker.classList.toggle("marker"); // give .marker class css to the new div
+  //  newMarker.id = "marker" + (markerCount);
+}
 
+function toggleVeryWeak(){
 
+}
+
+function changeSignalStrength(){
+  var veryWeak = 
+    '#signal-strength' + newMarker.id + ' .bar-1{'
+    + 'background-color: #999;}';
+
+    var weak = 
+    '#signal-strength' + newMarker.id +' .bar-1, ' +
+    '#signal-strength' + newMarker.id + ' .bar-2{'
+    +  'background-color: #777;}'
+
+    var medium = 
+    '#signal-strength' + newMarker.id +' .bar-1, ' + 
+    '#signal-strength' + newMarker.id + ' .bar-2,' + 
+    '#signal-strength' + newMarker.id + ' .bar-3{'
+    +  'background-color: #555;}';
+
+    var strong =  
+    '#signal-strength' + newMarker.id +' .bar-1, ' + 
+    '#signal-strength' + newMarker.id + ' .bar-2,' + 
+    '#signal-strength' + newMarker.id + ' .bar-3,' +
+    '#signal-strength' + newMarker.id + ' .bar-4{'
+    +  'background-color: #333;}';
+    
+    var veryStrong = 
+    '#signal-strength' + newMarker.id +' .bar-1, ' + 
+    '#signal-strength' + newMarker.id + ' .bar-2,' + 
+    '#signal-strength' + newMarker.id + ' .bar-3,' +
+    '#signal-strength' + newMarker.id + ' .bar-4,' +  
+    '#signal-strength' + newMarker.id + ' .bar-5{'
+    +  'background-color: #111;}';
+
+    if (signalStrength == 1){
+      var head = document.head || document.getElementsByTagName('head')[0]
+      var style = document.createElement('style');
+      head.appendChild(style);
+      style.type = 'text/css';
+      if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = veryWeak;
+      } 
+      else {
+        style.appendChild(document.createTextNode(veryWeak));
+      }
+    }
+
+    if (signalStrength == 2){
+      var head = document.head || document.getElementsByTagName('head')[0]
+      var style = document.createElement('style');
+      head.appendChild(style);
+      style.type = 'text/css';
+      if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = weak;
+      } 
+      else {
+        style.appendChild(document.createTextNode(weak));
+      }
+    }
+
+    if (signalStrength == 3){
+      var head = document.head || document.getElementsByTagName('head')[0]
+      var style = document.createElement('style');
+      head.appendChild(style);
+      style.type = 'text/css';
+      if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = medium;
+      } 
+      else {
+        style.appendChild(document.createTextNode(medium));
+      }
+    }
+    
+    if (signalStrength == 4){
+      var head = document.head || document.getElementsByTagName('head')[0]
+      var style = document.createElement('style');
+      head.appendChild(style);
+      style.type = 'text/css';
+      if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = strong;
+      } 
+      else {
+        style.appendChild(document.createTextNode(strong));
+      }
+    }
+
+    if (signalStrength == 5){
+      var head = document.head || document.getElementsByTagName('head')[0]
+      var style = document.createElement('style');
+      head.appendChild(style);
+      style.type = 'text/css';
+      if (style.styleSheet){
+        // This is required for IE8 and below.
+        style.styleSheet.cssText = veryStrong;
+      } 
+      else {
+        style.appendChild(document.createTextNode(veryStrong));
+      }
+    }
+}
 
 
 
@@ -349,15 +467,41 @@ class Node{
     //$("#"+this.nodeID).attr("id",newID);
     this.nodeName = newName;
   }
+
   updatePosition(left,top){
     this.posLeft = left;
     this.posTop = top;
   }
+
   getPosition(){
     return [this.posLeft,this.posTop];
   }
+
   print(){
-    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status
+    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status;
+  }
+
+  print2(){
+    return "Name: " + this.nodeName + "<br> Location: " + this.location;
+  }
+
+  print3(){
+    changeSignalStrength();
+    var signalStrenghtBar = 
+    '<div class="signal-strength" id="signal-strength' + this.markerID + '">'
+    +     '<div class="bar bar-1"></div>'
+    +     '<div class="bar bar-2"></div>'
+    +     '<div class="bar bar-3"></div>'
+    +     '<div class="bar bar-4"></div>'
+    +     '<div class="bar bar-5"></div>'
+    +'</div>';
+
+    var signalStrengthTxt = "<br> Signal Strength: " + signalStrenghtBar;
+    return signalStrengthTxt;
+  }
+
+  print4(){
+    return "<br> Status: " + this.status
   }
 }
 
@@ -368,7 +512,7 @@ function createNodeContainer(newNode){ //Used to create a new container
   
   $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
-  $("#"+newNode.infoID).html(newNode.print());
+  $("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
   console.log("Elements created");
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
