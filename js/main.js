@@ -189,6 +189,7 @@ function addPressed(){
     document.getElementById("nodeID").value = "";
     $("#addNode").hide();
     $("#cancel").hide();
+    console.log("Node LIst:"+nodeList);
   }
 }
 
@@ -481,6 +482,7 @@ function switchSites(newSite){ //Toggle between Sites
   remapMarkers(newSite);
   console.log("Current Site: "+ currentSite);
 }
+ 
 function remapMarkers(newSite){
   for(var i = 0;i<siteArray.length;i++){ //loop all the sites
     if(siteArray[i][0] == newSite ){
