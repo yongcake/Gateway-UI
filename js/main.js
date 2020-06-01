@@ -583,6 +583,20 @@ function addNode(markerID, infoID)
         console.log("Current Site Nodes: " +siteArray[i][1].length);
       }
     }
+    $.post("createConfigHTML.php",
+    {
+      nodeName: nodeName,
+      markerID: markerID,
+      nodeID: nodeID,
+      infoID: infoID,
+      posLeft: 100,
+      posTop: 200,
+      location: location,
+      area: currentSite
+    },
+    function(){
+      alert("Info Sent to ConfigHTML");
+    });
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
