@@ -1,0 +1,65 @@
+{
+    "A001":
+    {
+        "markerID":"marker2",
+        "nodeID":"node2",
+        "infoID":"nodeInfo2",
+        "signal":1,
+        "status":"No Signal","location":"we",
+        "nodeName":"A001",
+        "posLeft":492,
+        "posTop":224
+    },
+    "A002":
+    {
+        "markerID":"marker3",
+        "nodeID":"node3",
+        "infoID":"nodeInfo3",
+        "signal":2,
+        "status":"No Signal",
+        "location":"wewe",
+        "nodeName":"A002",
+        "posLeft":472,
+        "posTop":154
+
+    },
+    "A003":
+    {
+        "markerID":"marker3",
+        "nodeID":"node3",
+        "infoID":"nodeInfo3",
+        "signal":3,
+        "status":"No Signal",
+        "location":"wewe",
+        "nodeName":"A002",
+        "posLeft":472,
+        "posTop":154
+
+    },
+    "A004":
+    {
+        "markerID":"marker3",
+        "nodeID":"node3",
+        "infoID":"nodeInfo3",
+        "signal":4,
+        "status":"No Signal",
+        "location":"wewe",
+        "nodeName":"A002",
+        "posLeft":472,
+        "posTop":154
+
+    },
+    "A005":
+    {
+        "markerID":"marker3",
+        "nodeID":"node3",
+        "infoID":"nodeInfo3",
+        "signal":5,
+        "status":"No Signal",
+        "location":"wewe",
+        "nodeName":"A002",
+        "posLeft":472,
+        "posTop":154
+
+    }
+}

@@ -448,7 +448,7 @@ class Node{
     this.markerID = markerID;
     this.nodeID = nodeID;
     this.infoID = infoID;
-    this.signal = "Low";
+    this.signal = 1;
     this.status = "No Signal";
     this.editNode(location,nodeName);
     this.updatePosition(xPosition,yPosition);
@@ -478,6 +478,8 @@ class Node{
   }
 
   print(){
+    console.log("i am being printed again hello.");
+    console.log(this.signal);
     return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status;
   }
 
@@ -512,7 +514,9 @@ function createNodeContainer(newNode){ //Used to create a new container
   
   $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
-  $("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
+  //$("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
+  $("#"+newNode.infoID).html(newNode.print());
+
   console.log("Elements created");
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
@@ -573,7 +577,7 @@ function addNode(markerID, infoID)
     return;
   }
   else{
-    var n = new Node(markerID,nodeID, location, nodeName, infoID);
+    var n = new Node(markerID, nodeID, location, nodeName, infoID);
     createNodeContainer(n);
     nodeList.push(n);
     for (var i =0; i< siteArray.length; i++){
@@ -586,6 +590,22 @@ function addNode(markerID, infoID)
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
   }
+
+  $.post("createConfigHTML.php",
+  {
+    nodeName: nodeName,
+    markerID: markerID,
+    nodeID: nodeID,
+    infoID: infoID,
+    posLeft: 100,
+    posTop: 200,
+    location: location,
+    area: currentSite
+  },
+  function(){
+    alert("Info Sent to ConfigHTML");
+  });
+
 }
 
 function removeNode(markerID){
@@ -664,3 +684,33 @@ function clearSite(currentSite){
     console.log(currentSite +" Cleared")
   }
 }
+
+//================================================= Update Config =================================================
+function updateSignal(){
+  var jsonFilePath = "../dummy.json"; //which file to look at
+  var searchKey = "signal"; //what to search for
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.getJSON(jsonFilePath, function(data){
+    console.log(data);
+    for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
+      for (var j in data){ //loop through first key ==> j
+        if (nodeList[i].nodeName == j){
+          for (var k in data[j]){ //loop through sub keys ==> k
+            if (k == searchKey){
+              var nodeObj = data[j];
+              var updatedSignal = data[j][k];
+              nodeList[i].signal = updatedSignal;
+              $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+              //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
+              console.log(nodeObj);
+              console.log(updatedSignal);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+$("document").ready(function(){
+setInterval(updateSignal, 1000);
+}); 
