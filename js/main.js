@@ -15,6 +15,63 @@ var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:fal
 var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
 
+$("document").ready(function(){
+  console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
+  var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
+  var jsonFilePath = "../dummy.json"; //which file to look at
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.getJSON(jsonFilePath, function(data){
+    for (var i in data){
+      var subData = data[i];
+      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================")
+      infoID = subData["infoID"];
+      location = subData["location"];
+      markerID = subData["markerID"];
+      nodeID = subData["nodeID"];
+      nodeName = subData["nodeName"];
+      posLeft = subData["posLeft"];
+      posTop = subData["posTop"];
+      signal = subData["signal"];
+      status = subData["status"];
+      area = subData["Area"];
+      var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
+      n.updatePosition(posLeft, posTop);
+      createNodeContainer(n); // create node container (info) according to json
+      nodeList.push(n); // add node to nodeList
+      for (var i =0; i< siteArray.length; i++){
+        if(siteArray[i][0] ==currentSite){ 
+          siteArray[i][1] =nodeList;
+          console.log("Current Site Nodes: " +siteArray[i][1].length);
+        }
+      }
+      initMarker(markerID, posLeft, posTop);
+      markerCount++;
+      nodeCount++;
+    }
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
+  });
+});
+
+function initMarker(markerID, xPos, yPos){ //add or move a marker
+  if(modeArray.enabled){
+    if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
+      var container = document.querySelector("#imageSource");
+      var initMarker = document.createElement("div");
+      container.append(initMarker); //create new div in #imageSource
+      initMarker.classList.toggle("marker"); // give .marker class css to the new div
+      initMarker.id = markerID;
+      initPlaceMarker(initMarker, xPos, yPos);
+      console.log("Maker is added");
+    }
+  }
+}
+
+function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker around
+  initMarkerDiv.style.left = xPos + "px";
+  initMarkerDiv.style.top = yPos + "px";
+}
+
+
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
   for (i = 0; i < arrayList.length; i++){
@@ -154,6 +211,8 @@ function moveMarker(marker){ //Used to move a Marker around
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
+  var n = getNodeByMarkerID(marker.id);
+  n.updatePosition(xPosition, yPosition); //update position of each node everytime a node is moved
 }
 
 function noSignal(markerID){
@@ -329,7 +388,7 @@ function toggleVeryWeak(){
 }
 
 function changeSignalStrength(){
-  var veryWeak = 
+    var veryWeak = 
     '#signal-strength' + newMarker.id + ' .bar-1{'
     + 'background-color: #e74c3c;}';
 
@@ -358,74 +417,75 @@ function changeSignalStrength(){
     '#signal-strength' + newMarker.id + ' .bar-4,' +  
     '#signal-strength' + newMarker.id + ' .bar-5{'
     +  'background-color: #16a085;}';
-
-    if (signalStrength == 1){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = veryWeak;
-      } 
-      else {
-        style.appendChild(document.createTextNode(veryWeak));
+    for (var i = 0; i<nodeList.length; i++){
+      if (nodeList[i].signal == 1){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = veryWeak;
+        } 
+        else {
+          style.appendChild(document.createTextNode(veryWeak));
+        }
       }
-    }
-
-    if (signalStrength == 2){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = weak;
-      } 
-      else {
-        style.appendChild(document.createTextNode(weak));
+  
+      if (nodeList[i].signal == 2){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = weak;
+        } 
+        else {
+          style.appendChild(document.createTextNode(weak));
+        }
       }
-    }
-
-    if (signalStrength == 3){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = medium;
-      } 
-      else {
-        style.appendChild(document.createTextNode(medium));
+  
+      if (nodeList[i].signal == 3){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = medium;
+        } 
+        else {
+          style.appendChild(document.createTextNode(medium));
+        }
       }
-    }
-    
-    if (signalStrength == 4){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = strong;
-      } 
-      else {
-        style.appendChild(document.createTextNode(strong));
+      
+      if (nodeList[i].signal == 4){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = strong;
+        } 
+        else {
+          style.appendChild(document.createTextNode(strong));
+        }
       }
-    }
-
-    if (signalStrength == 5){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = veryStrong;
-      } 
-      else {
-        style.appendChild(document.createTextNode(veryStrong));
+  
+      if (nodeList[i].signal == 5){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = veryStrong;
+        } 
+        else {
+          style.appendChild(document.createTextNode(veryStrong));
+        }
       }
     }
 }
@@ -478,8 +538,8 @@ class Node{
   }
 
   print(){
-    console.log("i am being printed again hello.");
-    console.log(this.signal);
+    //console.log("i am being printed again hello.");
+    //console.log(this.signal);
     return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status;
   }
 
@@ -499,7 +559,8 @@ class Node{
     +'</div>';
 
     var signalStrengthTxt = "<br> Signal Strength: " + signalStrenghtBar;
-    return signalStrengthTxt;
+    return "Name: " + this.nodeName + "<br> Location: " + this.location + signalStrengthTxt + "<br> Status: " + this.status;
+
   }
 
   print4(){
@@ -691,7 +752,7 @@ function updateSignal(){
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
-    console.log(data);
+    //console.log(data);
     for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
       for (var j in data){ //loop through first key ==> j
         if (nodeList[i].nodeName == j){
@@ -702,8 +763,8 @@ function updateSignal(){
               nodeList[i].signal = updatedSignal;
               $("#"+ nodeList[i].infoID).html(nodeList[i].print());
               //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
-              console.log(nodeObj);
-              console.log(updatedSignal);
+              //console.log(nodeObj);
+              //console.log(updatedSignal);
             }
           }
         }
