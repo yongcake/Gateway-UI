@@ -1,0 +1,71 @@
+{
+    "A001":
+    {
+        "markerID":"marker0",
+        "nodeID":"node0",
+        "infoID":"nodeInfo0",
+        "signal":1,
+        "status":"No Signal",
+        "location":"Toilet",
+        "nodeName":"A001",
+        "posLeft":492,
+        "posTop":224,
+        "Area": "Test1"
+    },
+    "A002":
+    {
+        "markerID":"marker1",
+        "nodeID":"node1",
+        "infoID":"nodeInfo1",
+        "signal":2,
+        "status":"No Signal",
+        "location":"Lift",
+        "nodeName":"A002",
+        "posLeft":472,
+        "posTop":204,
+        "Area": "Test1"
+
+    },
+    "A003":
+    {
+        "markerID":"marker2",
+        "nodeID":"node2",
+        "infoID":"nodeInfo2",
+        "signal":3,
+        "status":"No Signal",
+        "location":"Stairs",
+        "nodeName":"A003",
+        "posLeft":352,
+        "posTop":234,
+        "Area": "Test1"
+
+    },
+    "A004":
+    {
+        "markerID":"marker3",
+        "nodeID":"node3",
+        "infoID":"nodeInfo3",
+        "signal":4,
+        "status":"No Signal",
+        "location":"Garden",
+        "nodeName":"A004",
+        "posLeft":222,
+        "posTop":154,
+        "Area": "Test1"
+
+    },
+    "A005":
+    {
+        "markerID":"marker4",
+        "nodeID":"node4",
+        "infoID":"nodeInfo4",
+        "signal":5,
+        "status":"No Signal",
+        "location":"Roof",
+        "nodeName":"A005",
+        "posLeft":452,
+        "posTop":254,
+        "Area": "Test1"
+
+    }
+}

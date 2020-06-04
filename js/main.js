@@ -14,9 +14,70 @@ var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray 
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
+<<<<<<< HEAD
 $("document").ready(function(){
   setInterval(updateSignal, 1000);
   }); 
+=======
+
+$("document").ready(function(){
+  console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
+  var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
+  var jsonFilePath = "../dummy.json"; //which file to look at
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.getJSON(jsonFilePath, function(data){
+    for (var i in data){
+      var subData = data[i];
+      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================")
+      infoID = subData["infoID"];
+      location = subData["location"];
+      markerID = subData["markerID"];
+      nodeID = subData["nodeID"];
+      nodeName = subData["nodeName"];
+      posLeft = subData["posLeft"];
+      posTop = subData["posTop"];
+      signal = subData["signal"];
+      status = subData["status"];
+      area = subData["Area"];
+      var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
+      n.updatePosition(posLeft, posTop);
+      createNodeContainer(n); // create node container (info) according to json
+      nodeList.push(n); // add node to nodeList
+      for (var i =0; i< siteArray.length; i++){
+        if(siteArray[i][0] ==currentSite){ 
+          siteArray[i][1] =nodeList;
+          console.log("Current Site Nodes: " +siteArray[i][1].length);
+        }
+      }
+      initMarker(markerID, posLeft, posTop);
+      markerCount++;
+      nodeCount++;
+    }
+    console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
+  });
+});
+
+function initMarker(markerID, xPos, yPos){ //add or move a marker
+  if(modeArray.enabled){
+    if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
+      var container = document.querySelector("#imageSource");
+      var initMarker = document.createElement("div");
+      container.append(initMarker); //create new div in #imageSource
+      initMarker.classList.toggle("marker"); // give .marker class css to the new div
+      initMarker.id = markerID;
+      initPlaceMarker(initMarker, xPos, yPos);
+      console.log("Maker is added");
+    }
+  }
+}
+
+function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker around
+  initMarkerDiv.style.left = xPos + "px";
+  initMarkerDiv.style.top = yPos + "px";
+}
+
+
+>>>>>>> 2269a5d291b5e27d319e6ed88e3123e9ca0e3318
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
   for (i = 0; i < arrayList.length; i++){
@@ -156,6 +217,8 @@ function moveMarker(marker){ //Used to move a Marker around
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
+  var n = getNodeByMarkerID(marker.id);
+  n.updatePosition(xPosition, yPosition); //update position of each node everytime a node is moved
 }
 
 function noSignal(markerID){
@@ -332,7 +395,7 @@ function toggleVeryWeak(){
 }
 
 function changeSignalStrength(){
-  var veryWeak = 
+    var veryWeak = 
     '#signal-strength' + newMarker.id + ' .bar-1{'
     + 'background-color: #e74c3c;}';
 
@@ -361,74 +424,75 @@ function changeSignalStrength(){
     '#signal-strength' + newMarker.id + ' .bar-4,' +  
     '#signal-strength' + newMarker.id + ' .bar-5{'
     +  'background-color: #16a085;}';
-
-    if (signalStrength == 1){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = veryWeak;
-      } 
-      else {
-        style.appendChild(document.createTextNode(veryWeak));
+    for (var i = 0; i<nodeList.length; i++){
+      if (nodeList[i].signal == 1){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = veryWeak;
+        } 
+        else {
+          style.appendChild(document.createTextNode(veryWeak));
+        }
       }
-    }
-
-    if (signalStrength == 2){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = weak;
-      } 
-      else {
-        style.appendChild(document.createTextNode(weak));
+  
+      if (nodeList[i].signal == 2){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = weak;
+        } 
+        else {
+          style.appendChild(document.createTextNode(weak));
+        }
       }
-    }
-
-    if (signalStrength == 3){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = medium;
-      } 
-      else {
-        style.appendChild(document.createTextNode(medium));
+  
+      if (nodeList[i].signal == 3){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = medium;
+        } 
+        else {
+          style.appendChild(document.createTextNode(medium));
+        }
       }
-    }
-    
-    if (signalStrength == 4){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = strong;
-      } 
-      else {
-        style.appendChild(document.createTextNode(strong));
+      
+      if (nodeList[i].signal == 4){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = strong;
+        } 
+        else {
+          style.appendChild(document.createTextNode(strong));
+        }
       }
-    }
-
-    if (signalStrength == 5){
-      var head = document.head || document.getElementsByTagName('head')[0]
-      var style = document.createElement('style');
-      head.appendChild(style);
-      style.type = 'text/css';
-      if (style.styleSheet){
-        // This is required for IE8 and below.
-        style.styleSheet.cssText = veryStrong;
-      } 
-      else {
-        style.appendChild(document.createTextNode(veryStrong));
+  
+      if (nodeList[i].signal == 5){
+        var head = document.head || document.getElementsByTagName('head')[0]
+        var style = document.createElement('style');
+        head.appendChild(style);
+        style.type = 'text/css';
+        if (style.styleSheet){
+          // This is required for IE8 and below.
+          style.styleSheet.cssText = veryStrong;
+        } 
+        else {
+          style.appendChild(document.createTextNode(veryStrong));
+        }
       }
     }
 }
@@ -475,7 +539,7 @@ class Node{
     this.markerID = markerID;
     this.nodeID = nodeID;
     this.infoID = infoID;
-    this.signal = "Low";
+    this.signal = 1;
     this.status = "No Signal";
     this.editNode(location,nodeName);
     this.updatePosition(xPosition,yPosition);
@@ -505,6 +569,8 @@ class Node{
   }
 
   print(){
+    //console.log("i am being printed again hello.");
+    //console.log(this.signal);
     return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status;
   }
 
@@ -524,7 +590,8 @@ class Node{
     +'</div>';
 
     var signalStrengthTxt = "<br> Signal Strength: " + signalStrenghtBar;
-    return signalStrengthTxt;
+    return "Name: " + this.nodeName + "<br> Location: " + this.location + signalStrengthTxt + "<br> Status: " + this.status;
+
   }
 
   print4(){
@@ -539,7 +606,9 @@ function createNodeContainer(newNode){ //Used to create a new container
   
   $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
-  $("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
+  //$("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
+  $("#"+newNode.infoID).html(newNode.print());
+
   console.log("Elements created");
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
@@ -600,7 +669,7 @@ function addNode(markerID, infoID)
     return;
   }
   else{
-    var n = new Node(markerID,nodeID, location, nodeName, infoID);
+    var n = new Node(markerID, nodeID, location, nodeName, infoID);
     createNodeContainer(n);
     nodeList.push(n);
     for (var i =0; i< siteArray.length; i++){
@@ -627,6 +696,22 @@ function addNode(markerID, infoID)
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
   }
+
+  $.post("createConfigHTML.php",
+  {
+    nodeName: nodeName,
+    markerID: markerID,
+    nodeID: nodeID,
+    infoID: infoID,
+    posLeft: 100,
+    posTop: 200,
+    location: location,
+    area: currentSite
+  },
+  function(){
+    alert("Info Sent to ConfigHTML");
+  });
+
 }
 
 function removeNode(markerID){
@@ -706,3 +791,33 @@ function clearSite(currentSite){
     console.log(currentSite +" Cleared")
   }
 }
+
+//================================================= Update Config =================================================
+function updateSignal(){
+  var jsonFilePath = "../dummy.json"; //which file to look at
+  var searchKey = "signal"; //what to search for
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.getJSON(jsonFilePath, function(data){
+    //console.log(data);
+    for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
+      for (var j in data){ //loop through first key ==> j
+        if (nodeList[i].nodeName == j){
+          for (var k in data[j]){ //loop through sub keys ==> k
+            if (k == searchKey){
+              var nodeObj = data[j];
+              var updatedSignal = data[j][k];
+              nodeList[i].signal = updatedSignal;
+              $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+              //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
+              //console.log(nodeObj);
+              //console.log(updatedSignal);
+            }
+          }
+        }
+      }
+    }
+  });
+}
+$("document").ready(function(){
+setInterval(updateSignal, 1000);
+}); 
