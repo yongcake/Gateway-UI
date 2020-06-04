@@ -14,7 +14,9 @@ var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray 
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
-
+$("document").ready(function(){
+  setInterval(updateSignal, 1000);
+  }); 
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
   for (i = 0; i < arrayList.length; i++){
@@ -431,6 +433,30 @@ function changeSignalStrength(){
     }
 }
 
+function updateSignal(){
+  var jsonFilePath = "../config.json"; //which file to look at
+  var searchKey = "signal"; //what to search for
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.getJSON(jsonFilePath, function(data){
+    console.log(data);
+    for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
+      for (var j in data){ //loop through first key ==> j
+        if (nodeList[i].nodeName == j){
+          for (var k in data[j]){ //loop through sub keys ==> k
+            if (k == searchKey){
+              var nodeObj = data[j];
+              var updatedSignal = data[j][k];
+              nodeList[i].signal = updatedSignal;
+              $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+              console.log(nodeObj);
+              console.log(updatedSignal);
+            }
+          }
+        }
+      }
+    }
+  });
+}
 
 
 
@@ -589,8 +615,8 @@ function addNode(markerID, infoID)
       markerID: markerID,
       nodeID: nodeID,
       infoID: infoID,
-      posLeft: 100,
-      posTop: 200,
+      posLeft: newMarker.style.left,
+      posTop: newMarkertop.style.top,
       location: location,
       area: currentSite
     },
