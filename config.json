@@ -1,0 +1,38 @@
+{
+	"A011": {
+		"markerID": "marker1",
+		"nodeID": "node1",
+		"infoID": "nodeInfo1",
+		"signal": 5,
+		"status": "Connected",
+		"nodeName": "A011",
+		"posLeft": "747",
+		"posTop": "185",
+		"location": "Office ",
+		"area": "Test1"
+	},
+	"A012": {
+		"markerID": "marker0",
+		"nodeID": "node0",
+		"infoID": "nodeInfo0",
+		"signal": 5,
+		"status": "Connected",
+		"nodeName": "A012",
+		"posLeft": "76",
+		"posTop": "167",
+		"location": "Office NewNew",
+		"area": "Test1"
+	},
+	"A014": {
+		"markerID": "marker2",
+		"nodeID": "node2",
+		"infoID": "nodeInfo2",
+		"signal": 1,
+		"status": "Not Connected",
+		"nodeName": "A014",
+		"posLeft": "914",
+		"posTop": "289",
+		"location": "Mac",
+		"area": "Test1"
+	}
+}

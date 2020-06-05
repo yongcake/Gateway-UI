@@ -18,12 +18,13 @@ var currentSite = "Test1";
 $("document").ready(function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
-  var jsonFilePath = "../dummy.json"; //which file to look at
+  var jsonFilePath = "./config.json"; //which file to look at
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){
       var subData = data[i];
-      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================")
+      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
+      console.log(data);
       infoID = subData["infoID"];
       location = subData["location"];
       markerID = subData["markerID"];
@@ -34,19 +35,26 @@ $("document").ready(function(){
       signal = subData["signal"];
       status = subData["status"];
       area = subData["Area"];
-      var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
-      n.updatePosition(posLeft, posTop);
-      createNodeContainer(n); // create node container (info) according to json
-      nodeList.push(n); // add node to nodeList
-      for (var i =0; i< siteArray.length; i++){
-        if(siteArray[i][0] ==currentSite){ 
-          siteArray[i][1] =nodeList;
-          console.log("Current Site Nodes: " +siteArray[i][1].length);
+      if (markerID != null && posLeft != null && posTop != null){
+        var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
+        n.status = status;
+        n.updatePosition(posLeft, posTop);
+        createNodeContainer(n); // create node container (info) according to json
+        nodeList.push(n); // add node to nodeList
+        for (var i =0; i< siteArray.length; i++){
+          if(siteArray[i][0] ==currentSite){ 
+            siteArray[i][1] =nodeList;
+            console.log("Current Site Nodes: " +siteArray[i][1].length);
+          }
         }
+        initMarker(markerID, posLeft, posTop);
+        markerCount++;
+        nodeCount++;
       }
-      initMarker(markerID, posLeft, posTop);
-      markerCount++;
-      nodeCount++;
+      else{
+       //console.log("something went wrong here :(");
+      }
+
     }
     console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
   });
@@ -70,6 +78,7 @@ function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker aro
   initMarkerDiv.style.left = xPos + "px";
   initMarkerDiv.style.top = yPos + "px";
 }
+
 
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
@@ -211,8 +220,8 @@ function moveMarker(marker){ //Used to move a Marker around
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
-  var n = getNodeByMarkerID(marker.id);
-  n.updatePosition(xPosition, yPosition); //update position of each node everytime a node is moved
+  return true;
+
 }
 
 function noSignal(markerID){
@@ -296,15 +305,54 @@ function editSelectedNode(markerID){
   return true;
 }
 
+function editJson(newLocation, newID, oldNodeName, posLeft, posTop){
+  $.ajax({
+    url: '../updateJson.php',
+    type: 'POST',
+    data: {oldNodeName: oldNodeName, newNodeName: newID, nodeLocation: newLocation, nodePosLeft: posLeft, nodePosTop: posTop},
+    success: function(data){
+      console.log(data);
+    }
+  });
+}
+
 function saveEdit(){
   var markerID = $("#selectedMarker").text();
   var node =getNodeByMarkerID(markerID);
+  var oldNodeName = node.nodeName;
+  var oldLocation = node.location;
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   //document.getElementById("editNode").value = "Edit";
   //document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
   var newLocation = $("#locationName").val();
   var newID = $("#nodeID").val();
+  
+  
+  if (xPosition != null && yPosition != null){
+    node.updatePosition(xPosition, yPosition);
+  }
+  
+  $.post("updateJson.php",
+  {
+    oldNodeName: oldNodeName,
+    oldLocation: oldLocation,
+    nodeName: newID,
+    markerID: markerID,
+    nodeID: getNodeByMarkerID(markerID).nodeID,
+    infoID: getNodeByMarkerID(markerID).infoID,
+    posLeft: getNodeByMarkerID(markerID).posLeft,
+    posTop: getNodeByMarkerID(markerID).posTop,
+    location: newLocation,
+    area: currentSite
+  },
+  function(){
+    alert("Info Sent to ConfigHTML");
+  });
+
+  
+  
+
   $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
   for (var i = 0; i<nodeList.length; i++){
@@ -316,6 +364,7 @@ function saveEdit(){
       document.getElementById("formStatus").innerHTML = formStatus;
     }
   }
+
 
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
@@ -637,8 +686,9 @@ function addNode(markerID, infoID)
     removeMarker(markerID);
     return;
   }
-  else{
+  else{ //this is supposed to be the else statement
     var n = new Node(markerID, nodeID, location, nodeName, infoID);
+    n.updatePosition(xPosition, yPosition);
     createNodeContainer(n);
     nodeList.push(n);
     for (var i =0; i< siteArray.length; i++){
@@ -650,22 +700,27 @@ function addNode(markerID, infoID)
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
-  }
-
-  $.post("createConfigHTML.php",
+    
+    $.post("createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
     nodeID: nodeID,
     infoID: infoID,
-    posLeft: 100,
-    posTop: 200,
+    posLeft: getNodeByMarkerID(markerID).posLeft,
+    posTop: getNodeByMarkerID(markerID).posTop,
     location: location,
     area: currentSite
   },
   function(){
     alert("Info Sent to ConfigHTML");
   });
+  
+  }
+
+
+  
+    
 
 }
 
@@ -748,7 +803,7 @@ function clearSite(currentSite){
 
 //================================================= Update Config =================================================
 function updateSignal(){
-  var jsonFilePath = "../dummy.json"; //which file to look at
+  var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
@@ -762,6 +817,7 @@ function updateSignal(){
               var updatedSignal = data[j][k];
               nodeList[i].signal = updatedSignal;
               $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+              console.log("reading from json and printing info out");
               //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
               //console.log(nodeObj);
               //console.log(updatedSignal);
