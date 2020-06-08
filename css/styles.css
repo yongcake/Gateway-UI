@@ -222,7 +222,7 @@ img{
 
 
 /*============================================== Signal Strength=================================================*/
-
+/* 
 .signal-strength {
 	width: 9vw;
 	height: 1.1vw;
@@ -231,12 +231,12 @@ img{
 
 .bar{
 	display: inline-block;
-	height: 100%;
+	height: 100%;	
 	width: 13%;
 	box-sizing: border-box;
 	background-color: rgb(231, 225, 223);
   	border: thin solid #f3f3f3;
-}
+} */
 
 
 

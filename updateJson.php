@@ -29,9 +29,9 @@ if(isset($jsonArray[$oldNodeName])){
 		$jsonArray[$nodeName]['location'] = $location;
 		unset($jsonArray[$oldNodeName]);
 	}
-	else if($nodeName == $oldNodeName && $location == $oldLocation){
-		return;
-	}
+	//else if($nodeName == $oldNodeName && $location == $oldLocation){
+	//	return;
+	//}
 	else{
 		$jsonArray[$nodeName]['posLeft'] = $posLeft;
 		$jsonArray[$nodeName]['posTop'] = $posTop;
