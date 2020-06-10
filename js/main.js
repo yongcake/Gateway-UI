@@ -29,9 +29,11 @@ $("document").ready(function(){
       location = subData["location"];
       markerID = subData["markerID"];
       nodeID = subData["nodeID"];
-      nodeName = subData["nodeName"];
-      posLeft = subData["posLeft"];
-      posTop = subData["posTop"];
+      nodeName = subData["nodeName"] ;
+      posLeft = subData["posLeft"] * (imageWidth/divWidth);
+      posTop = subData["posTop"]  * (imageHeight/divHeight);
+      //* (imageWidth/divWidth)
+      //   * (imageHeight/divHeight
       signal = subData["signal"];
       status = subData["status"];
       area = subData["Area"];
@@ -274,15 +276,46 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   
 }
 
+<<<<<<< HEAD
+=======
+function showCoords(event) {
+  //getMetaDo('../Image/dummyButSmaller.jpg'); 
+  var container = document.querySelector("#imageSource");
+  var xCoord = event.clientX - container.getBoundingClientRect().left;
+  var yCoord = event.clientY - container.getBoundingClientRect().top;
+  var pagexCoord = event.clientX;
+  var pageyCoord = event.clientY;
+  var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " + yCoord + "<br><br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord + "<br><br>" + "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+  document.getElementById("instructions").innerHTML = coords;
+  //alert(coords);
+}
+>>>>>>> 762fc43777d547bac95ffbaad977d75da9fd3c04
+
+var imageWidth = 0;
+var imageHeight = 0;
+var divWidth = 0;
+var divHeight = 0;
+var imgSrc = '../Image/dummy.png'; //'../Image/dummyButSmaller.jpg';
+var img = new Image();
+img.addEventListener("load", function(){
+    //alert( this.naturalWidth +' '+ this.naturalHeight );
+    imageWidth = parseInt(this.naturalWidth);
+    imageHeight = parseInt(this.naturalHeight);
+    divWidth = document.getElementById("imageSource").offsetWidth;
+    divHeight = document.getElementById("imageSource").offsetHeight;
+    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+});
+img.src = imgSrc;
+
 
 function moveMarker(marker){ //Used to move a Marker around
   if(!modeArray.enabled){
     alert("Enable marker to move markers");
-    return
+    return;
   }
   var container = document.querySelector("#imageSource");
-  xPosition = event.clientX - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
-  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
+  xPosition = event.clientX  - container.scrollLeft - (marker.clientWidth); //* (imageWidth/divWidth); //container.scrollLeft is for when the div is scrollable
+  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); // * (imageHeight/divHeight) ; //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
