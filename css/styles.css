@@ -16,8 +16,6 @@ h1 {
 img{
 	max-width: 100%;
 	max-height: 100%;
-
-
 }
 
 .topContainer{
@@ -54,8 +52,8 @@ img{
 	background-image: url('../Image/dummy.png');
 	background-repeat: no-repeat;
 	background-size: cover;
-	width: 60vw;
-	height: 37vw;
+	width: 960px;
+	height: 600px;
 	max-width: 100%;
 	max-height: 100%;
 
@@ -212,10 +210,10 @@ img{
 
 .marker{
 	position: absolute;
-	width: 20px;
-	height: 20px;
-	left: 20px;
-	top: 20px;
+	width: 15px;
+	height: 15px;
+	left: 15px;
+	top: 15px;
 	background-color: red;
 }
 
