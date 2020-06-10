@@ -1,0 +1,62 @@
+{
+	"A011": {
+		"markerID": "marker1",
+		"nodeID": "node1",
+		"infoID": "nodeInfo1",
+		"signal": 1,
+		"status": "Connected",
+		"nodeName": "A011",
+		"posLeft": "747",
+		"posTop": "185",
+		"location": "Office ",
+		"area": "Test1"
+	},
+	"A012": {
+		"markerID": "marker0",
+		"nodeID": "node0",
+		"infoID": "nodeInfo0",
+		"signal": 2,
+		"status": "Connected",
+		"nodeName": "A012",
+		"posLeft": "76",
+		"posTop": "167",
+		"location": "Office NewNew",
+		"area": "Test1"
+	},
+	"A014": {
+		"markerID": "marker2",
+		"nodeID": "node2",
+		"infoID": "nodeInfo2",
+		"signal": 3,
+		"status": "Not Connected",
+		"nodeName": "A014",
+		"posLeft": "304",
+		"posTop": "509",
+		"location": "Mac",
+		"area": "Test1"
+	},
+	"A013": {
+		"markerID": "marker3",
+		"nodeID": "node3",
+		"infoID": "nodeInfo3",
+		"signal": 4,
+		"status": "Not Connected",
+		"nodeName": "A013",
+		"posLeft": "214",
+		"posTop": "600",
+		"location": "Mac",
+		"area": "Test1"
+	},
+	"A015": {
+		"markerID": "marker4",
+		"nodeID": "node4",
+		"infoID": "nodeInfo4",
+		"signal": 5,
+		"status": "Not Connected",
+		"nodeName": "A015",
+		"posLeft": "514",
+		"posTop": "189",
+		"location": "Mac",
+		"area": "Test1"
+	}
+}

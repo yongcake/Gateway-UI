@@ -9,7 +9,7 @@ var nodeExist = false;
 var selectedMarkerID = "";
 var addButtonPressed  = false;
 var signalStrength = 1; //1 to 5 
-
+var initMarkerCount = [], initNodeCount = [];
 var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [["Test1"],["Test2"]], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "Test1";
@@ -47,6 +47,7 @@ $("document").ready(function(){
             console.log("Current Site Nodes: " +siteArray[i][1].length);
           }
         }
+<<<<<<< HEAD
         initMarker(markerID, posLeft, posTop);
         markerCount++;
         nodeCount++;
@@ -55,7 +56,45 @@ $("document").ready(function(){
        //console.log("something went wrong here :(");
       }
       
+=======
+        //initMarker(markerID, posLeft, posTop);
+        //markerCount++;
+        //nodeCount++;
+        
+        initMarker(markerID, posLeft, posTop);
+        
+        var mCount = parseInt(markerID.slice(6, markerID.length));
+        initMarkerCount.push(mCount);
+        markerCount++;
+
+        var nCount = parseInt(nodeID.slice(4, nodeID.length));
+        initNodeCount.push(nCount);
+        nodeCount++;
+        
+      }
+      else{
+       //console.log("something went wrong here :(");
+      }
+
     }
+    
+    var mLargest = 0;
+    var nLargest = 0;
+    for (var i = 0; i<=mLargest; i++){
+      if (initMarkerCount[i]>mLargest){
+        mLargest = initMarkerCount[i];
+      }
+    }
+    markerCount = mLargest + 1;
+
+    for (var i = 0; i<=nLargest; i++){
+      if (initNodeCount[i]>nLargest){
+        nLargest = initNodeCount[i]
+      }
+>>>>>>> 668693ffd6d574fcd1887809f521deffd5ec9838
+    }
+    nodeCount = nLargest + 1;
+    
     console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
   });
 });
@@ -221,11 +260,21 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
   if(!modeArray.movingMode){
+    
+    $.post("deleteJsonObj.php",
+    {
+      nodeName: getNodeByMarkerID(markerID).nodeName
+    },
+    function(){
+      alert("Info Sent to ConfigHTML");
+    });
+    
     removeFromArray(markerArray, markerID); //Function to remove marker,
     removeUnwantedMarker();
     modeArray.viewingMode =false;
     modeArray.addingMode =true;
     $("#errorText").hide(); // remove if unnecessary 
+    
   }
   else{
     alert("Exit from Editing to delete");
@@ -425,7 +474,13 @@ function cancelEdit(){
 
 function cancelPressed(){
   document.getElementById("formStatus").innerHTML = "Selection Cancelled";
-  removeMarker(newMarker.id);
+  //removeMarker(newMarker.id);
+  removeFromArray(markerArray, newMarker.id); //Function to remove marker,
+  removeUnwantedMarker();
+  modeArray.viewingMode =false;
+  modeArray.addingMode =true;
+  $("#errorText").hide(); // remove if unnecessary
+  
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
   $("#cancel").hide();
@@ -464,109 +519,46 @@ function toggleVeryWeak(){
 
 }
 
-function changeSignalStrength(){
-    var veryWeak = 
-    '#signal-strength' + newMarker.id + ' .bar-1{'
-    + 'background-color: #e74c3c;}';
+function changeSignalStrengthNotation(markerID){
+  //console.log("function is invoked");
+  //console.log(markerID);
+  var node = getNodeByMarkerID(markerID);
+  if (node.signal == 1){
+    var element = document.getElementById("signal-strength" + markerID);
+    //console.log(element);
+    //element.className = "";
+    element.classList.add("signal-strength");
+    element.classList.add("signal-strength-1");
+  }
 
-    var weak = 
-    '#signal-strength' + newMarker.id +' .bar-1, ' +
-    '#signal-strength' + newMarker.id + ' .bar-2{'
-    +  'background-color: #e74c3c;}'
+  if (node.signal == 2){
+    var element = document.getElementById("signal-strength" + markerID);
+    element.className = "";
+    element.classList.add("signal-strength");
+    element.classList.add("signal-strength-2");
+  }
 
-    var medium = 
-    '#signal-strength' + newMarker.id +' .bar-1, ' + 
-    '#signal-strength' + newMarker.id + ' .bar-2,' + 
-    '#signal-strength' + newMarker.id + ' .bar-3{'
-    +  'background-color: #f1c40f;}';
+  if (node.signal == 3){
+    var element = document.getElementById("signal-strength" + markerID);
+    element.className = "";
+    element.classList.add("signal-strength");
+    element.classList.add("signal-strength-3");
+  }
 
-    var strong =  
-    '#signal-strength' + newMarker.id +' .bar-1, ' + 
-    '#signal-strength' + newMarker.id + ' .bar-2,' + 
-    '#signal-strength' + newMarker.id + ' .bar-3,' +
-    '#signal-strength' + newMarker.id + ' .bar-4{'
-    +  'background-color: #16a085;}';
-    
-    var veryStrong = 
-    '#signal-strength' + newMarker.id +' .bar-1, ' + 
-    '#signal-strength' + newMarker.id + ' .bar-2,' + 
-    '#signal-strength' + newMarker.id + ' .bar-3,' +
-    '#signal-strength' + newMarker.id + ' .bar-4,' +  
-    '#signal-strength' + newMarker.id + ' .bar-5{'
-    +  'background-color: #16a085;}';
-    for (var i = 0; i<nodeList.length; i++){
-      if (nodeList[i].signal == 1){
-        var head = document.head || document.getElementsByTagName('head')[0]
-        var style = document.createElement('style');
-        head.appendChild(style);
-        style.type = 'text/css';
-        if (style.styleSheet){
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = veryWeak;
-        } 
-        else {
-          style.appendChild(document.createTextNode(veryWeak));
-        }
-      }
-  
-      if (nodeList[i].signal == 2){
-        var head = document.head || document.getElementsByTagName('head')[0]
-        var style = document.createElement('style');
-        head.appendChild(style);
-        style.type = 'text/css';
-        if (style.styleSheet){
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = weak;
-        } 
-        else {
-          style.appendChild(document.createTextNode(weak));
-        }
-      }
-  
-      if (nodeList[i].signal == 3){
-        var head = document.head || document.getElementsByTagName('head')[0]
-        var style = document.createElement('style');
-        head.appendChild(style);
-        style.type = 'text/css';
-        if (style.styleSheet){
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = medium;
-        } 
-        else {
-          style.appendChild(document.createTextNode(medium));
-        }
-      }
-      
-      if (nodeList[i].signal == 4){
-        var head = document.head || document.getElementsByTagName('head')[0]
-        var style = document.createElement('style');
-        head.appendChild(style);
-        style.type = 'text/css';
-        if (style.styleSheet){
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = strong;
-        } 
-        else {
-          style.appendChild(document.createTextNode(strong));
-        }
-      }
-  
-      if (nodeList[i].signal == 5){
-        var head = document.head || document.getElementsByTagName('head')[0]
-        var style = document.createElement('style');
-        head.appendChild(style);
-        style.type = 'text/css';
-        if (style.styleSheet){
-          // This is required for IE8 and below.
-          style.styleSheet.cssText = veryStrong;
-        } 
-        else {
-          style.appendChild(document.createTextNode(veryStrong));
-        }
-      }
-    }
+  if (node.signal == 4){
+    var element = document.getElementById("signal-strength" + markerID);
+    element.className = "";
+    element.classList.add("signal-strength");
+    element.classList.add("signal-strength-4");
+  }
+
+  if (node.signal == 5){
+    var element = document.getElementById("signal-strength" + markerID);
+    //element.className = "";
+    element.classList.add("signal-strength");
+    element.classList.add("signal-strength-5");
+  }
 }
-
 
 
 
@@ -596,6 +588,8 @@ class Node{
 
   statusChange(){
       //this will be the function for changing status later
+      this.status = "Connected";
+      //console.log("Status is changed");
   }
 
   editNode(newLocation, newName){
@@ -613,19 +607,10 @@ class Node{
   getPosition(){
     return [this.posLeft,this.posTop];
   }
-
-  print(){
+  
+    print(){
     //console.log("i am being printed again hello.");
     //console.log(this.signal);
-    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<br> Signal Strength: " + this.signal + "<br> Status: " + this.status;
-  }
-
-  print2(){
-    return "Name: " + this.nodeName + "<br> Location: " + this.location;
-  }
-
-  print3(){
-    changeSignalStrength();
     var signalStrenghtBar = 
     '<div class="signal-strength" id="signal-strength' + this.markerID + '">'
     +     '<div class="bar bar-1"></div>'
@@ -634,14 +619,8 @@ class Node{
     +     '<div class="bar bar-4"></div>'
     +     '<div class="bar bar-5"></div>'
     +'</div>';
+    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<div style='display:flex; flex-direction:row; justify-content:flex-start; align-items:center;'> Signal Strength: " + /*this.signal*/ signalStrenghtBar + "</div> Status: " + this.status;
 
-    var signalStrengthTxt = "<br> Signal Strength: " + signalStrenghtBar;
-    return "Name: " + this.nodeName + "<br> Location: " + this.location + signalStrengthTxt + "<br> Status: " + this.status;
-
-  }
-
-  print4(){
-    return "<br> Status: " + this.status
   }
 }
 
@@ -843,8 +822,15 @@ function updateSignal(){
             if (k == searchKey){
               var nodeObj = data[j];
               var updatedSignal = data[j][k];
+              //var updatedStatus = data[j]["status"];
               nodeList[i].signal = updatedSignal;
+              nodeList[i].statusChange();
+              //nodeList[i].status = updatedStatus;
               $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+<<<<<<< HEAD
+=======
+              changeSignalStrengthNotation(nodeList[i].markerID);
+>>>>>>> 668693ffd6d574fcd1887809f521deffd5ec9838
               console.log("reading from json and printing info out");
               //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
               //console.log(nodeObj);
