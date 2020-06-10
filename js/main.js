@@ -14,21 +14,17 @@ var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray 
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
-<<<<<<< HEAD
-$("document").ready(function(){
-  setInterval(updateSignal, 1000);
-  }); 
-=======
 
 $("document").ready(function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
-  var jsonFilePath = "../dummy.json"; //which file to look at
+  var jsonFilePath = "./config.json"; //which file to look at
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){
       var subData = data[i];
-      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================")
+      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
+      console.log(data);
       infoID = subData["infoID"];
       location = subData["location"];
       markerID = subData["markerID"];
@@ -39,24 +35,69 @@ $("document").ready(function(){
       signal = subData["signal"];
       status = subData["status"];
       area = subData["Area"];
-      var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
-      n.updatePosition(posLeft, posTop);
-      createNodeContainer(n); // create node container (info) according to json
-      nodeList.push(n); // add node to nodeList
-      for (var i =0; i< siteArray.length; i++){
-        if(siteArray[i][0] ==currentSite){ 
-          siteArray[i][1] =nodeList;
-          console.log("Current Site Nodes: " +siteArray[i][1].length);
+      if (markerID != null && posLeft != null && posTop != null){
+        var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
+        n.status = status;
+        n.updatePosition(posLeft, posTop);
+        createNodeContainer(n); // create node container (info) according to json
+        nodeList.push(n); // add node to nodeList
+        for (var i =0; i< siteArray.length; i++){
+          if(siteArray[i][0] ==currentSite){ 
+            siteArray[i][1] =nodeList;
+            console.log("Current Site Nodes: " +siteArray[i][1].length);
+          }
         }
+        initMarker(markerID, posLeft, posTop);
+        markerCount++;
+        nodeCount++;
       }
-      initMarker(markerID, posLeft, posTop);
-      markerCount++;
-      nodeCount++;
+      else{
+       //console.log("something went wrong here :(");
+      }
+      
     }
     console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
   });
 });
+//=======================================Scaling========================================
+var imageWidth = 0;
+var imageHeight = 0;
+var divWidth = 0;
+var divHeight = 0;
 
+var imgSrc = 'C:/Users/MGSS-PC/Desktop/Intern/IoT%20Project/UI_Repo/Gateway-UI/Image/dummy.png'; //'../Image/dummyButSmaller.jpg';
+var img = new Image();
+img.addEventListener("load", function(){
+    alert( this.naturalWidth +' '+ this.naturalHeight );
+    imageWidth = parseInt(this.naturalWidth);
+    imageHeight = parseInt(this.naturalHeight);
+    divWidth = document.getElementById("imageSource").offsetWidth;
+    divHeight = document.getElementById("imageSource").offsetHeight;
+    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+});
+img.src = imgSrc;
+
+
+
+function showCoords(event) {
+  var container = document.querySelector("#imageSource");
+  var xCoord = event.clientX - container.getBoundingClientRect().left;
+  var yCoord = event.clientY - container.getBoundingClientRect().top;
+  var pagexCoord = event.clientX;
+  var pageyCoord = event.clientY;
+  //getImageSize('../Image/dummy.png');
+  //console.log(getImageSize('C:/Users/MGSS-PC/Desktop/Intern/IoT%20Project/UI_Repo/Gateway-UI/Image/dummy.png'));
+  
+  var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " 
+      + yCoord + "<br><br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord 
+      + "<br><br>" + "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+  //var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " + yCoord + "<br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord;
+  document.getElementById("instructions").innerHTML = coords;
+  //alert(coords);
+}
+
+
+//================================================================================
 function initMarker(markerID, xPos, yPos){ //add or move a marker
   if(modeArray.enabled){
     if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
@@ -77,7 +118,7 @@ function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker aro
 }
 
 
->>>>>>> 2269a5d291b5e27d319e6ed88e3123e9ca0e3318
+
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
   for (i = 0; i < arrayList.length; i++){
@@ -195,16 +236,6 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   
 }
 
-function showCoords(event) {
-  var container = document.querySelector("#imageSource");
-  var xCoord = event.clientX - container.getBoundingClientRect().left;
-  var yCoord = event.clientY - container.getBoundingClientRect().top;
-  var pagexCoord = event.clientX;
-  var pageyCoord = event.clientY;
-  var coords = "Position within imageContainer:<br>" + "X coords: " + xCoord + ", Y coords: " + yCoord + "<br> Position within page:<br>" + "Page X coords: " + pagexCoord + ", Page Y coords: " + pageyCoord;
-  document.getElementById("instructions").innerHTML = coords;
-  //alert(coords);
-}
 
 function moveMarker(marker){ //Used to move a Marker around
   if(!modeArray.enabled){
@@ -217,8 +248,8 @@ function moveMarker(marker){ //Used to move a Marker around
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving");
-  var n = getNodeByMarkerID(marker.id);
-  n.updatePosition(xPosition, yPosition); //update position of each node everytime a node is moved
+  return true;
+
 }
 
 function noSignal(markerID){
@@ -256,7 +287,6 @@ function addPressed(){
     document.getElementById("nodeID").value = "";
     $("#addNode").hide();
     $("#cancel").hide();
-    console.log("Node LIst:"+nodeList);
   }
 }
 
@@ -303,15 +333,54 @@ function editSelectedNode(markerID){
   return true;
 }
 
+function editJson(newLocation, newID, oldNodeName, posLeft, posTop){
+  $.ajax({
+    url: '../updateJson.php',
+    type: 'POST',
+    data: {oldNodeName: oldNodeName, newNodeName: newID, nodeLocation: newLocation, nodePosLeft: posLeft, nodePosTop: posTop},
+    success: function(data){
+      console.log(data);
+    }
+  });
+}
+
 function saveEdit(){
   var markerID = $("#selectedMarker").text();
   var node =getNodeByMarkerID(markerID);
+  var oldNodeName = node.nodeName;
+  var oldLocation = node.location;
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   //document.getElementById("editNode").value = "Edit";
   //document.getElementById("editNode").onclick = editSelectedNode(selectedMarkerID);
   var newLocation = $("#locationName").val();
   var newID = $("#nodeID").val();
+  
+  
+  if (xPosition != null && yPosition != null){
+    node.updatePosition(xPosition, yPosition);
+  }
+  
+  $.post("updateJson.php",
+  {
+    oldNodeName: oldNodeName,
+    oldLocation: oldLocation,
+    nodeName: newID,
+    markerID: markerID,
+    nodeID: getNodeByMarkerID(markerID).nodeID,
+    infoID: getNodeByMarkerID(markerID).infoID,
+    posLeft: getNodeByMarkerID(markerID).posLeft,
+    posTop: getNodeByMarkerID(markerID).posTop,
+    location: newLocation,
+    area: currentSite
+  },
+  function(){
+    alert("Info Sent to ConfigHTML");
+  });
+
+  
+  
+
   $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
   for (var i = 0; i<nodeList.length; i++){
@@ -323,6 +392,7 @@ function saveEdit(){
       document.getElementById("formStatus").innerHTML = formStatus;
     }
   }
+
 
   document.getElementById("locationName").value = "";
   document.getElementById("nodeID").value = "";
@@ -497,30 +567,6 @@ function changeSignalStrength(){
     }
 }
 
-function updateSignal(){
-  var jsonFilePath = "../config.json"; //which file to look at
-  var searchKey = "signal"; //what to search for
-  $.ajaxSetup({cache:false}); //disable cache so it can update 
-  $.getJSON(jsonFilePath, function(data){
-    console.log(data);
-    for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
-      for (var j in data){ //loop through first key ==> j
-        if (nodeList[i].nodeName == j){
-          for (var k in data[j]){ //loop through sub keys ==> k
-            if (k == searchKey){
-              var nodeObj = data[j];
-              var updatedSignal = data[j][k];
-              nodeList[i].signal = updatedSignal;
-              $("#"+ nodeList[i].infoID).html(nodeList[i].print());
-              console.log(nodeObj);
-              console.log(updatedSignal);
-            }
-          }
-        }
-      }
-    }
-  });
-}
 
 
 
@@ -668,8 +714,9 @@ function addNode(markerID, infoID)
     removeMarker(markerID);
     return;
   }
-  else{
+  else{ //this is supposed to be the else statement
     var n = new Node(markerID, nodeID, location, nodeName, infoID);
+    n.updatePosition(xPosition, yPosition);
     createNodeContainer(n);
     nodeList.push(n);
     for (var i =0; i< siteArray.length; i++){
@@ -678,39 +725,30 @@ function addNode(markerID, infoID)
         console.log("Current Site Nodes: " +siteArray[i][1].length);
       }
     }
-    $.post("createConfigHTML.php",
-    {
-      nodeName: nodeName,
-      markerID: markerID,
-      nodeID: nodeID,
-      infoID: infoID,
-      posLeft: newMarker.style.left,
-      posTop: newMarkertop.style.top,
-      location: location,
-      area: currentSite
-    },
-    function(){
-      alert("Info Sent to ConfigHTML");
-    });
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
-  }
-
-  $.post("createConfigHTML.php",
+    
+    $.post("createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
     nodeID: nodeID,
     infoID: infoID,
-    posLeft: 100,
-    posTop: 200,
+    posLeft: getNodeByMarkerID(markerID).posLeft,
+    posTop: getNodeByMarkerID(markerID).posTop,
     location: location,
     area: currentSite
   },
   function(){
     alert("Info Sent to ConfigHTML");
   });
+  
+  }
+
+
+  
+    
 
 }
 
@@ -756,7 +794,6 @@ function switchSites(newSite){ //Toggle between Sites
   remapMarkers(newSite);
   console.log("Current Site: "+ currentSite);
 }
- 
 function remapMarkers(newSite){
   for(var i = 0;i<siteArray.length;i++){ //loop all the sites
     if(siteArray[i][0] == newSite ){
@@ -794,7 +831,7 @@ function clearSite(currentSite){
 
 //================================================= Update Config =================================================
 function updateSignal(){
-  var jsonFilePath = "../dummy.json"; //which file to look at
+  var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
@@ -808,6 +845,7 @@ function updateSignal(){
               var updatedSignal = data[j][k];
               nodeList[i].signal = updatedSignal;
               $("#"+ nodeList[i].infoID).html(nodeList[i].print());
+              console.log("reading from json and printing info out");
               //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
               //console.log(nodeObj);
               //console.log(updatedSignal);
