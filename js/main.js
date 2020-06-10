@@ -816,10 +816,7 @@ function updateSignal(){
               nodeList[i].statusChange();
               //nodeList[i].status = updatedStatus;
               $("#"+ nodeList[i].infoID).html(nodeList[i].print());
-<<<<<<< HEAD
-=======
               changeSignalStrengthNotation(nodeList[i].markerID);
->>>>>>> 668693ffd6d574fcd1887809f521deffd5ec9838
               console.log("reading from json and printing info out");
               //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
               //console.log(nodeObj);
