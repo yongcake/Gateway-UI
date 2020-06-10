@@ -47,16 +47,6 @@ $("document").ready(function(){
             console.log("Current Site Nodes: " +siteArray[i][1].length);
           }
         }
-<<<<<<< HEAD
-        initMarker(markerID, posLeft, posTop);
-        markerCount++;
-        nodeCount++;
-      }
-      else{
-       //console.log("something went wrong here :(");
-      }
-      
-=======
         //initMarker(markerID, posLeft, posTop);
         //markerCount++;
         //nodeCount++;
@@ -91,7 +81,6 @@ $("document").ready(function(){
       if (initNodeCount[i]>nLargest){
         nLargest = initNodeCount[i]
       }
->>>>>>> 668693ffd6d574fcd1887809f521deffd5ec9838
     }
     nodeCount = nLargest + 1;
     
