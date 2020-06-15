@@ -10,36 +10,16 @@ var selectedMarkerID = "";
 var addButtonPressed  = false;
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
-var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [];
+var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [["Test1"],["Test2"]], text;
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-var currentSite = "";
+var currentSite = "Test1";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
-var imageWidth = 0;
-var imageHeight = 0;
-var divWidth = 0;
-var divHeight = 0;
-var imgSrc = '../Image/dummy.png'; //'../Image/dummyButSmaller.jpg';
-var img = new Image();
-img.addEventListener("load", function(){
-    //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
-    divWidth = document.getElementById("imageSource").offsetWidth;
-    divHeight = document.getElementById("imageSource").offsetHeight
-    //alert("divWIDTH:" +this.naturalWidth +" DIVHEIGHT:"+this.naturalHeight);
-    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
-});
 
-var imageWidth = 0;
-var imageHeight = 0;
-
-$(document).ready( function(){
+$("document").ready(function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
   var jsonFilePath = "./config.json"; //which file to look at
-  img.src = imgSrc;
-  imageWidth = img.naturalWidth;
-  imageHeight = img.naturalHeight;
-  //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
-  //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
+  var container = document.querySelector("#imageSource");
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){
@@ -50,27 +30,29 @@ $(document).ready( function(){
       location = subData["location"];
       markerID = subData["markerID"];
       nodeID = subData["nodeID"];
-      nodeName = subData["nodeName"];
-      posLeft = subData["posLeft"] ; 
-      posTop = subData["posTop"] ; 
+      nodeName = subData["nodeName"] ;
+      posLeft = subData["posLeft"] * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
+      posTop = subData["posTop"]  * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset;
       signal = subData["signal"];
       status = subData["status"];
-      area = subData["area"];
+      area = subData["Area"];
       if (markerID != null && posLeft != null && posTop != null){
-        var n = new Node(markerID, nodeID, location, nodeName, infoID,area); //create new node according to json
+        var n = new Node(markerID, nodeID, location, nodeName, infoID); //create new node according to json
         n.status = status;
-        //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
-
-        if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
-          $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
-          siteArray.push([area]); 
-        }
         n.updatePosition(posLeft, posTop);
-        
         createNodeContainer(n); // create node container (info) according to json
-        $("#"+n.nodeID).hide();  
         nodeList.push(n); // add node to nodeList
-      
+        for (var i =0; i< siteArray.length; i++){
+          if(siteArray[i][0] ==currentSite){ 
+            siteArray[i][1] =nodeList;
+            console.log("Current Site Nodes: " +siteArray[i][1].length);
+          }
+        }
+        //initMarker(markerID, posLeft, posTop);
+        //markerCount++;
+        //nodeCount++;
+        
+        initMarker(markerID, posLeft, posTop);
         
         var mCount = parseInt(markerID.slice(6, markerID.length));
         initMarkerCount.push(mCount);
@@ -86,35 +68,7 @@ $(document).ready( function(){
       }
 
     }
-    var container = document.querySelector("#imageSource");
-    divWidth = document.getElementById("imageSource").offsetWidth;
-    divHeight = document.getElementById("imageSource").offsetHeight
-    for (i =0 ; i <nodeList.length;i++){
-
-      var top = nodeList[i].posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset;
-      var left = nodeList[i].posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
-      nodeList[i].updatePosition(left,top);
-      initMarker(nodeList[i].markerID, left, top);
-    }
-
-    if (siteArray[0] != undefined){ //check if there is any site added
-      currentSite = siteArray[0][0];
-     switchSites(siteArray[0][0]);
-    }
-    else{
-      currentSite = "Site1";
-    }
-    //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
-    for (i = 0; i< siteArray.length;i++){
-      var siteNodes = [];
-      for (j = 0; j< nodeList.length;j++){
-        if(siteArray[i][0] == nodeList[j].area){
-          siteNodes.push(nodeList[j]);
-        }
-      }
-      siteArray[i][1] = siteNodes;
-    }
-
+    
     var mLargest = 0;
     var nLargest = 0;
     for (var i = 0; i<initMarkerCount.length; i++){
@@ -129,15 +83,11 @@ $(document).ready( function(){
         nLargest = initNodeCount[i]
       }
     }
-    
     nodeCount = nLargest + 1;
-
-   
+    
     console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
   });
-
 });
-
 
 
 
@@ -150,7 +100,6 @@ function initMarker(markerID, xPos, yPos){ //add or move a marker
       container.append(initMarker); //create new div in #imageSource
       initMarker.classList.toggle("marker"); // give .marker class css to the new div
       initMarker.id = markerID;
-      $("#"+markerID).hide();
       initPlaceMarker(initMarker, xPos, yPos);
       console.log("Maker is added");
     }
@@ -158,8 +107,8 @@ function initMarker(markerID, xPos, yPos){ //add or move a marker
 }
 
 function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker around
-  initMarkerDiv.style.left =xPos+ "px"; //Calculator where it should be on the container
-  initMarkerDiv.style.top = yPos+ "px"; //Calculator where it should be on the container
+  initMarkerDiv.style.left = xPos + "px";
+  initMarkerDiv.style.top = yPos + "px";
 }
 
 
@@ -303,7 +252,23 @@ function showCoords(event) {
   //alert(coords);
 }
 
-
+var imageWidth = 0;
+var imageHeight = 0;
+var divWidth = 0;
+var divHeight = 0;
+var imgSrc = '../Image/dummy.png'; //'../Image/dummyButSmaller.jpg';
+var img = new Image();
+img.addEventListener("load", function(){
+    //alert( this.naturalWidth +' '+ this.naturalHeight );
+    //imageWidth = parseInt(this.naturalWidth);
+    //imageHeight = parseInt(this.naturalHeight);
+    divWidth = document.getElementById("imageSource").offsetWidth;
+    divHeight = document.getElementById("imageSource").offsetHeight;
+    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+});
+img.src = imgSrc;
+var imageWidth = img.naturalWidth;
+var imageHeight = img.naturalHeight;
 
 function moveMarker(marker){ //Used to move a Marker around
   if(!modeArray.enabled){
@@ -437,8 +402,8 @@ function saveEdit(){
     markerID: markerID,
     nodeID: getNodeByMarkerID(markerID).nodeID,
     infoID: getNodeByMarkerID(markerID).infoID,
-    posLeft: getRelativeImageWidth(markerID),
-    posTop: getRelativeImageHeight(markerID),
+    posLeft: getNodeByMarkerID(markerID).posLeft,
+    posTop: getNodeByMarkerID(markerID).posTop,
     location: newLocation,
     area: currentSite
   },
@@ -592,7 +557,7 @@ function changeSignalStrengthNotation(markerID){
 
 //================================================== Node Class ====================================================
 class Node{
-  constructor(markerID, nodeID, location, nodeName, infoID, area){
+  constructor(markerID, nodeID, location, nodeName, infoID){
     this.markerID = markerID;
     this.nodeID = nodeID;
     this.infoID = infoID;
@@ -600,7 +565,6 @@ class Node{
     this.status = "No Signal";
     this.editNode(location,nodeName);
     this.updatePosition(xPosition,yPosition);
-    this.area = area;
   }
   signalChange(){
       //this will be the function for changing signal later
@@ -650,7 +614,7 @@ var nodeList = [];
 function createNodeContainer(newNode){ //Used to create a new container
   
   $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
-  $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');//Div that showcase node info
+  $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');  //Div that showcase node info
   //$("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
   $("#"+newNode.infoID).html(newNode.print());
 
@@ -714,33 +678,31 @@ function addNode(markerID, infoID)
     return;
   }
   else{ //this is supposed to be the else statement
-    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentSite);
+    var n = new Node(markerID, nodeID, location, nodeName, infoID);
     n.updatePosition(xPosition, yPosition);
     createNodeContainer(n);
     nodeList.push(n);
-    for (i = 0; i< siteArray.length;i++){
-      var siteNodes = [];
-      for (j = 0; j< nodeList.length;j++){
-        if(siteArray[i][0] == nodeList[j].area){
-          siteNodes.push(nodeList[j]);
-        }
+    for (var i =0; i< siteArray.length; i++){
+      if(siteArray[i][0] ==currentSite){ 
+        siteArray[i][1] =nodeList;
+        console.log("Current Site Nodes: " +siteArray[i][1].length);
       }
-      siteArray[i][1] = siteNodes;
     }
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
+    var container = document.querySelector("#imageSource");
     //alert("ImgWidth:"+getNodeByMarkerID(markerID).posLeft+"IMG" + imageWidth +"Div " + divWidth);
     //alert("ImgHeight:"+getNodeByMarkerID(markerID).posTop+"IMG" + imageHeight +"Div " + divHeight);
-    //alert((getNodeByMarkerID(markerID).posLeft-container.getBoundingClientRect().left) *(imageWidth/divWidth)+ "|||||" +(getNodeByMarkerID(markerID).posTop- container.getBoundingClientRect().top) *(imageHeight/divHeight));
-    $.post("./createConfigHTML.php",
+    alert((getNodeByMarkerID(markerID).posLeft-container.getBoundingClientRect().left) *(imageWidth/divWidth)+ "|||||" +(getNodeByMarkerID(markerID).posTop- container.getBoundingClientRect().top) *(imageHeight/divHeight));
+    $.post("createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
     nodeID: nodeID, 
     infoID: infoID,
-    posLeft: getRelativeImageWidth(markerID),
-    posTop:  getRelativeImageHeight(markerID),
+    posLeft: getNodeByMarkerID(markerID).posLeft * imageWidth,
+    posTop: getNodeByMarkerID(markerID).posTop/divHeight * imageHeight,
     location: location,
     area: currentSite
   },
@@ -780,14 +742,16 @@ function getNodeByMarkerID(markerID){
   
 }
 
-function getRelativeImageWidth(markerID){
-  var container = document.querySelector("#imageSource");
-  return (getNodeByMarkerID(markerID).posLeft-container.getBoundingClientRect().left) *(imageWidth/divWidth);
-}
-function getRelativeImageHeight(markerID){
-  var container = document.querySelector("#imageSource");
-  return (getNodeByMarkerID(markerID).posTop- container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight);
-}
+//===============(Not Sure if a class should be made)=======SITE CLass===========================================
+//class TestSite{
+//  constructor(siteName, list){
+//    this.siteName = siteName;
+//    this.updateNodeList(list);
+//  }
+//  updateNodeList(updatedList){
+//      this.list = updatedList;
+//  }
+//}
 
 //Sites Related Functinos
 function switchSites(newSite){ //Toggle between Sites
@@ -805,6 +769,10 @@ function remapMarkers(newSite){
           $("#"+siteArray[i][1][j].markerID).show();
           $("#"+siteArray[i][1][j].nodeID).show();  
         }
+        nodeList = siteArray[i][1];
+      }
+      else{
+        nodeList = [];
       }
       console.log(currentSite +" Added")
     }
