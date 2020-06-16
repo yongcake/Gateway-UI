@@ -36,13 +36,9 @@ $(document).ready( function(){
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
   var jsonFilePath = "./config.json"; //which file to look at
   img.src = imgSrc;
-  imageWidth = img.naturalWidth;
-  imageHeight = img.naturalHeight;
-  //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
-  //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
-    for (var i in data){
+    for (var i in data){    
       var subData = data[i];
       console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
       console.log(data);
@@ -86,9 +82,13 @@ $(document).ready( function(){
       }
 
     }
+    imageWidth = img.naturalWidth;
+    imageHeight = img.naturalHeight;
     var container = document.querySelector("#imageSource");
     divWidth = document.getElementById("imageSource").offsetWidth;
     divHeight = document.getElementById("imageSource").offsetHeight
+    //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
+    //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
     for (i =0 ; i <nodeList.length;i++){
 
       var top = nodeList[i].posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset;
@@ -507,12 +507,54 @@ function cancelPressed(){
 }
 
 function testComplete(){
+  var jsonFilePath = "./nodeSetting.json"; //which file to look at
+  var textToWrite ="===========Start============", nodename;
+  $.getJSON(jsonFilePath, function(data){
+    for (var i =0; i<nodeList.length;i++){
+      nodename = nodeList[i].nodeName;
+      if(data[nodename] != undefined){
+        //console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
+        textToWrite += "Node Name: "+nodename + "\r\n";
+        textToWrite += "Suitable TX Setting: " + data[nodename]["TX"]+"\r\n";
+        textToWrite += "Suitable SF Setting: " + data[nodename]["SF"]+"\r\n";
+        textToWrite += "Location: " + data[nodename]["location"]+"\r\n";
+        textToWrite += "Highest Strength Obtain: " + data[nodename]["strength"]+"\r\n";
+        textToWrite += "Floor Test: " + data[nodename]["area"]+"\r\n";
+        textToWrite += "============NEXT NODE=========";
+      }
+    }
+  }).done(function(d) {
+    textToWrite += "======END=========";
+    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
+    var fileNameToSaveAs = "";
+    var downloadLink = document.createElement("a");
+    downloadLink.download = fileNameToSaveAs;
+    downloadLink.innerHTML = "Download File";
+    if (window.webkitURL != null)
+    {
+      // Chrome allows the link to be clicked
+      // without actually adding it to the DOM.
+      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
+    }
+    else
+    {
+      // Firefox requires the link to be added to the DOM
+      // before it can be clicked.
+      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
+      downloadLink.onclick = destroyClickedElement;
+      downloadLink.style.display = "none";
+      document.body.appendChild(downloadLink);
+    }
+    downloadLink.click();
+  }).fail(function(d) {
+    alert("nodeSetting.json Not Found");
+  });
   for (var i = 0; i<siteArray.length;i++)
   {
     siteArray[i][1] = [];
   }
   markerArray = [];
-
+  
   //nodeList = []; // completely clear nodeList
   document.getElementById("imageSource").innerHTML = ""; 
   document.getElementById("formStatus").innerHTML = ""; 
