@@ -520,7 +520,7 @@ function testComplete(){
         textToWrite += "Location: " + data[nodename]["location"]+"\r\n";
         textToWrite += "Highest Strength Obtain: " + data[nodename]["strength"]+"\r\n";
         textToWrite += "Floor Test: " + data[nodename]["area"]+"\r\n";
-        textToWrite += "============NEXT NODE=========";
+        textToWrite += "============NEXT NODE=========\r\n";
       }
     }
   }).done(function(d) {
