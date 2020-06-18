@@ -75,7 +75,7 @@ img{
 
 .formButtonContainer{
 	display: flex;
-	margin: 4.8%;	
+	margin: 2.8%,2.8%,2.8%,0;	
 }
 
 .addButtonWrapper{
@@ -156,6 +156,7 @@ img{
 	padding: 10px;
 	text-align: center;
 	border: none;
+	margin-right: 7px;
 }
 
 #addSiteButton{
@@ -184,7 +185,14 @@ img{
 	align-self: flex-end;
 	width: 3.5rem;
 }
-
+.addNode{
+	padding: 20px;
+	float: left;
+	align-self: flex-end;
+	width: 10rem;
+	margin-right: 10px;
+	margin-bottom: 10px;
+}
 #cancel{
 	padding: 5px;
 	
@@ -219,6 +227,14 @@ img{
 	background-color: red;
 }
 
+.gateway{
+	position: absolute;
+	width: 15px;
+	height: 15px;
+	left: 15px;
+	top: 15px;
+	background-color: greenyellow;
+}
 
 
 /*============================================== Signal Strength=================================================*/

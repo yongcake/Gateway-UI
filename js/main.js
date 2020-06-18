@@ -1,16 +1,15 @@
 //Global varibles
-var xPosition;
-var yPosition;
+var xPosition,yPosition;
 var newMarker;
-var markerCount = 0;
-var nodeCount = 0;
+var markerCount = 0,nodeCount = 0;
 var markerAdded = false;
 var nodeExist = false;
-var selectedMarkerID = "";
 var addButtonPressed  = false;
+var gatewayPlaced = false;
+var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
-var buttonArray = [], textArray = [], markerArray = [], oldCord = [], siteArray = [];
+var buttonArray = ["A001","A002","A003","A004"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
@@ -20,16 +19,13 @@ var divWidth = 0;
 var divHeight = 0;
 var imgSrc = '../Image/dummy.png'; //'../Image/dummyButSmaller.jpg';
 var img = new Image();
-img.addEventListener("load", function(){
+//img.addEventListener("load", function(){
     //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
-    divWidth = document.getElementById("imageSource").offsetWidth;
-    divHeight = document.getElementById("imageSource").offsetHeight
+    //divWidth = document.getElementById("imageSource").offsetWidth;
+    //divHeight = document.getElementById("imageSource").offsetHeight
     //alert("divWIDTH:" +this.naturalWidth +" DIVHEIGHT:"+this.naturalHeight);
-    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
-});
-
-var imageWidth = 0;
-var imageHeight = 0;
+//    return "Image Width: " + imageWidth + ", Image Height: " +  imageHeight;
+//});
 
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
@@ -162,7 +158,21 @@ function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker aro
   initMarkerDiv.style.top = yPos+ "px"; //Calculator where it should be on the container
 }
 
+function changeSelectedNode(newNode){
+  $("#addNode").show();
+  $("#cancel").show();
+  selectedNode = newNode;
+  for (i = 0; i<buttonArray.length;i++){
+    $("#"+buttonArray[i]).attr('disabled',false);
+  }
+  $("#"+newNode).attr('disabled',true);
+}
 
+function disableAllNodeButton(){
+  for (i = 0; i<buttonArray.length;i++){
+    $("#"+buttonArray[i]).attr('disabled',true);
+  }
+}
 
 function removeFromArray(arrayList,itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
@@ -199,6 +209,10 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
+  if(!gatewayPlaced){
+    
+    return;
+  }
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
@@ -213,8 +227,11 @@ function createNewMarker(){ //add or move a a marker
       return;
     }
     if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
-      $("#addNode").show();
-      $("#cancel").show();
+      //$("#addNode").show();
+      //$("#cancel").show();
+      for (i = 0; i<buttonArray.length;i++){
+        $("#"+buttonArray[i]).attr('disabled',false);
+      }
       $("#addNode").attr("value","Add");
       $("#addNode").attr("onclick", "addPressed()")
       var container = document.querySelector("#imageSource");
@@ -265,6 +282,10 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
+  removeFromArray(markerArray, markerID); //Function to remove marker,
+  removeUnwantedMarker();
+  modeArray.viewingMode =false;
+  modeArray.addingMode =true;
   if(!modeArray.movingMode){
     
     $.post("deleteJsonObj.php",
@@ -275,10 +296,7 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
       alert("Info Sent to ConfigHTML");
     });
     
-    removeFromArray(markerArray, markerID); //Function to remove marker,
-    removeUnwantedMarker();
-    modeArray.viewingMode =false;
-    modeArray.addingMode =true;
+
     $("#errorText").hide(); // remove if unnecessary 
     
   }
@@ -311,8 +329,8 @@ function moveMarker(marker){ //Used to move a Marker around
     return;
   }
   var container = document.querySelector("#imageSource");
-  xPosition = event.clientX  - container.scrollLeft - (marker.clientWidth); //* (imageWidth/divWidth); //container.scrollLeft is for when the div is scrollable
-  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); // * (imageHeight/divHeight) ; //container.scrollTop is for when the div is scrollable
+  xPosition = event.clientX  - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
+  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
   marker.style.left = xPosition + "px";
   marker.style.top = yPosition + "px";  
   console.log("marker is moving" + container.scrollTop +"||" +container.scrollLeft);
@@ -336,7 +354,8 @@ function noSignal(markerID){
 
 function addPressed(){
   var location = $("#locationName").val(); //.value
-  var nodeID = $("#nodeID").val(); 
+  location = "ahh";
+  var nodeID = selectedNode; 
   if (location == "" || nodeID == ""){
     alert("Please make sure both fields are filled before adding node.");
     return;
@@ -351,10 +370,8 @@ function addPressed(){
       document.getElementById("formStatus").innerHTML = formStatus;
     }
     newMarker = null; 
-    document.getElementById("locationName").value = "";
-    document.getElementById("nodeID").value = "";
-    $("#addNode").hide();
-    $("#cancel").hide();
+    //document.getElementById("locationName").value = "";
+    //document.getElementById("nodeID").value = "";
   }
 }
 
@@ -498,10 +515,11 @@ function cancelPressed(){
   removeUnwantedMarker();
   modeArray.viewingMode =false;
   modeArray.addingMode =true;
-  $("#errorText").hide(); // remove if unnecessary
+  //$("#errorText").hide(); // remove if unnecessary
   
-  document.getElementById("locationName").value = "";
-  document.getElementById("nodeID").value = "";
+  //document.getElementById("locationName").value = "";
+  //document.getElementById("nodeID").value = "";
+  disableAllNodeButton();
   $("#cancel").hide();
   $("#addNode").hide(); 
 }
@@ -733,11 +751,15 @@ function createNodeContainer(newNode){ //Used to create a new container
 
 function addNode(markerID, infoID)
 {
-  var location = document.getElementById("locationName").value;
+  var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
   nodeCount++;
-  var nodeName = document.getElementById("nodeID").value;
+  var nodeName = selectedNode;
   nodeExist = false;
+  selectedNode = "";
+  disableAllNodeButton();
+  $("#addNode").hide();
+  $("#cancel").hide();
   if (location == "" || nodeID == ""){
       alert("Please make sure both fields are filled before adding node.");
       return;

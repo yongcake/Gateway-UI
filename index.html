@@ -45,31 +45,33 @@
 
 		<div class="floorPlanZoneContainer">
 			<div class="con">
-			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); showCoords(event);">
-
+			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); "><!--showCoords(event);-->
 			</div>
 			</div>
-
-
 			<div class="informationContainer" id ="informationContainerTest">
 
 				<div class="formContainer">
 					<div class="inputWrapper" id="inputInfo">
-						<label for="NodeID">Node ID:</label> <br>
+					<input type="button"  class="addNode" id="A001" disabled value="A001" onclick="changeSelectedNode('A001')"> 
+					<input type="button"  class="addNode" id="A002" disabled value="A002" onclick="changeSelectedNode('A002')">
+					
+					<input type="button"  class="addNode" id="A003" disabled value="A003" onclick="changeSelectedNode('A003')">
+					<input type="button"  class="addNode" id="A004" disabled value="A004" onclick="changeSelectedNode('A004')"><br>
+					<!-- <label for="NodeID">Node ID:</label> <br>
 						<input type="text" class ="formInput" id="nodeID" name="fname"><br><br>
 						<label for="LocalName">Location Name:</label> <br>
-						<input type="text" class ="formInput" id="locationName" name="fname"><br><br>
+						<input type="text" class ="formInput" id="locationName" name="fname"><br><br> -->
 					</div>
-					<div class="formButtonContainer">
-						<div class="addButtonWrapper" id="addButton"> 
-							<input type="button" hidden id="addNode" value="Add" onclick="addPressed()">
-						</div>
-						<div class="cancelButtonWrapper" id="cancelButton">
-							<input type="button" hidden id="cancel" value="Cancel" onclick="cancelPressed()">
-						</div>
+					
+				</div>
+				<div class="formButtonContainer">
+					<div class="addButtonWrapper" id="addButton"> 
+						<input type="button" hidden id="addNode" value="Add" onclick="addPressed()">
+					</div>
+					<div class="cancelButtonWrapper" id="cancelButton">
+						<input type="button" hidden id="cancel" value="Cancel" onclick="cancelPressed()">
 					</div>
 				</div>
-				
 				
 				<div class="formStatusWrapper" id="formStatus">
 					 <br>
