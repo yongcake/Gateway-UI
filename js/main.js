@@ -276,8 +276,6 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   
 }
 
-<<<<<<< HEAD
-=======
 function showCoords(event) {
   //getMetaDo('../Image/dummyButSmaller.jpg'); 
   var container = document.querySelector("#imageSource");
@@ -289,7 +287,6 @@ function showCoords(event) {
   document.getElementById("instructions").innerHTML = coords;
   //alert(coords);
 }
->>>>>>> 762fc43777d547bac95ffbaad977d75da9fd3c04
 
 var imageWidth = 0;
 var imageHeight = 0;
