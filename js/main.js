@@ -9,7 +9,7 @@ var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
-var buttonArray = ["A001","A002","A003","A004"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
+var buttonArray = ["A001","A002","A003","A004","A005","A006"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "";
 //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
@@ -209,10 +209,10 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-  if(!gatewayPlaced){
+  // if(!gatewayPlaced){
     
-    return;
-  }
+  //   return;
+  // }
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;

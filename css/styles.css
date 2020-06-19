@@ -39,6 +39,8 @@ img{
 	height: 1.5vw;	
 }
 
+
+
 .floorPlan {
 	float: left;
 }	
@@ -73,9 +75,16 @@ img{
 	display: flex;	
 }
 
+.inputWrapper{
+	width: 100%;
+	display: flex;
+	flex-wrap: wrap;
+	
+}
+
 .formButtonContainer{
 	display: flex;
-	margin: 2.8%,2.8%,2.8%,0;	
+	justify-content: flex-start;
 }
 
 .addButtonWrapper{
@@ -84,7 +93,7 @@ img{
 
 .cancelButtonWrapper{
 	align-self: flex-end;
-	margin-left: 6%;
+	margin-left: 2%;
 }
 
 .formStatusWrapper{
@@ -93,7 +102,7 @@ img{
 }
 
 .scrollInfoContainer{
-	width: 31vw;
+	width: 32vw;
 	height: 20vw; /*old vw 15.55*/
 	display: flex;
 	flex-direction: column;
@@ -101,7 +110,7 @@ img{
 	overflow-x: hidden;
 }
 	div.scrollInfoContainer::-webkit-scrollbar {
-	width: 8px;
+	width: 25px;
   }
   
   /* Track */
@@ -183,21 +192,23 @@ img{
 	padding: 5px;
 	float: right;
 	align-self: flex-end;
-	width: 3.5rem;
+	width: 4.5rem;
+	height: 3rem;
 }
 .addNode{
 	padding: 20px;
 	float: left;
 	align-self: flex-end;
-	width: 10rem;
+	width: 100%;
 	margin-right: 10px;
 	margin-bottom: 10px;
+	flex: 1 0 25%;
 }
 #cancel{
 	padding: 5px;
-	
 	align-self: flex-end;
-	width: 3.5rem;
+	width: 4.5rem;
+	height: 3rem;
 }
 
 #editNode{
