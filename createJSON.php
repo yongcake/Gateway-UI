@@ -16,7 +16,7 @@ else{
 
 }
 $sigStrength =calculateSignalStrength($rssi);
-$infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); //Used to find user input & The name that changes
+$infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); 			//Used to find user input & The name that changes
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
 fwrite($infoFile, "TX Power: $txPower \n");
 fwrite($infoFile, "SF: $sf \n");

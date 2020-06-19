@@ -1,7 +1,7 @@
 //Global varibles
 var xPosition,yPosition;
 var newMarker;
-var markerCount = 0,nodeCount = 0;
+var markerCount = 0, nodeCount = 0;
 var markerAdded = false;
 var nodeExist = false;
 var addButtonPressed  = false;
@@ -9,10 +9,40 @@ var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
-var buttonArray = ["A001","A002","A003","A004"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
+var buttonArray = ["A001","A002","A003","A004"],  testArray = [], oldCord = [], siteArray = [];
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "";
-//Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
+//Old Site Array format [[*Floor*,*NodeArrays[*nodes*]*],[*Floor*,*NodeArrays[*nodes*]*]]
+//New Site Array format [ [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] , [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] ]
+/*New Config Json format 
+{
+  "Test1"{
+    "testNo" : Test1;
+    "gatewayID" : gateway1,
+    "gatewayLeft" : GatewayLeft,
+    "gatewayTop" : GatewayTop,
+    "gatewayFloor" : Floor,
+    "floorArray":[
+     {
+       "floor": "F1",
+       "nodeList": [
+        "A001": {
+	    	"markerID": "marker0",
+	    	"nodeID": "node0",
+	    	"infoID": "nodeInfo0",
+	    	"signal": 1,
+	    	"status": "Not Connected",
+	    	"nodeName": "A001",
+    		"posLeft": "0",
+    		"posTop": "0",
+    		"location": "a",
+    		"area": "Floor1"
+        }...]
+     }...]
+   }
+  
+}
+*/
 var imageWidth = 0;
 var imageHeight = 0;
 var divWidth = 0;
@@ -174,13 +204,8 @@ function disableAllNodeButton(){
   }
 }
 
-function removeFromArray(arrayList,itemName){ //Remove Btn
+function removeFromArray(itemName){ //Remove Btn
   //document.getElementById("nodeInfoContainer").style.display = "none";
-  for (i = 0; i < arrayList.length; i++){
-    if(arrayList[i].id == itemName){
-      arrayList.splice(i,1);
-    }
-  }
   $("#"+itemName).remove();
   removeNode(itemName);
 }
@@ -210,7 +235,15 @@ function toggleMove(){ //Toggle between Viewing and Moving
 
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
-    
+    var testCounter = 1;
+    $("#imageSource").append('<div class="gateway" id="gateway"></div>');
+    var marker = document.getElementById("gateway");
+    moveMarker(marker);
+    gatewayPlaced =true;
+    var testNo = "Test"+testCounter;
+    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentSite, siteArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
+    testArray.push(test);
+    console.log("item pushed");
     return;
   }
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
@@ -257,16 +290,16 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
     textSelectedMarker.innerText = markerID;
     selectedMarkerID = markerID;
     resetNodeDiv();
-    for (var i = 0; i<markerArray.length; i++){
-      if (markerArray[i].id == markerID){ //Change css of selected marker
-        markerArray[i].style.opacity = 0.5;
-        markerArray[i].style.zIndex = 3; //Bring markers to the front
-        markerArray[i].style.backgroundColor ="green";
+    for (var i = 0; i<nodeList.length; i++){
+      if (nodeList[i].markerID == markerID){ //Change css of selected marker
+        $("#"+nodeList[i].markerID).css("opacity", 0.5);
+        $("#"+nodeList[i].markerID).css("zIndex", 3); //Bring markers to the front
+        $("#"+nodeList[i].markerID).css("backgroundColor", "green"); 
       }
       else{ //Revert css of other markers
-        markerArray[i].style.opacity = 1;
-        markerArray[i].style.zIndex = 1; //Bring markers to the back
-        markerArray[i].style.backgroundColor ="red";
+        $("#"+nodeList[i].markerID).css("opacity", 1);
+        $("#"+nodeList[i].markerID).css("zIndex", 1); //Bring markers to the front
+        $("#"+nodeList[i].markerID).css("backgroundColor", "red"); 
       }
     }
     //$("#btnToggleMove").show();
@@ -282,7 +315,7 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
-  removeFromArray(markerArray, markerID); //Function to remove marker,
+  removeFromArray(markerID); //Function to remove marker,
   removeUnwantedMarker();
   modeArray.viewingMode =false;
   modeArray.addingMode =true;
@@ -362,7 +395,6 @@ function addPressed(){
   }
   else{
     addButtonPressed = true;
-    markerArray.push(newMarker);
     addNode(newMarker.id, ("nodeInfo"+markerCount));
     markerCount++;
     if (nodeExist == false){
@@ -511,7 +543,7 @@ function cancelEdit(){
 function cancelPressed(){
   document.getElementById("formStatus").innerHTML = "Selection Cancelled";
   //removeMarker(newMarker.id);
-  removeFromArray(markerArray, newMarker.id); //Function to remove marker,
+  removeFromArray(newMarker.id); //Function to remove marker,
   removeUnwantedMarker();
   modeArray.viewingMode =false;
   modeArray.addingMode =true;
@@ -794,9 +826,15 @@ function addNode(markerID, infoID)
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
-    //alert("ImgWidth:"+getNodeByMarkerID(markerID).posLeft+"IMG" + imageWidth +"Div " + divWidth);
-    //alert("ImgHeight:"+getNodeByMarkerID(markerID).posTop+"IMG" + imageHeight +"Div " + divHeight);
-    //alert((getNodeByMarkerID(markerID).posLeft-container.getBoundingClientRect().left) *(imageWidth/divWidth)+ "|||||" +(getNodeByMarkerID(markerID).posTop- container.getBoundingClientRect().top) *(imageHeight/divHeight));
+    //testArray[x][0] = TestNo, [1] = testCompleted, [2] = siteArray 
+    var gatewayID, gatewayLeft,gatewayTop,testNo;
+    for (i = 0 ; i < testArray.length;i++){
+      if(testArray[i][1]){
+        testNo = testArray[i][0];
+        gatewayID = testArray[i][2][0];
+        return;
+      }
+    }
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
@@ -806,7 +844,8 @@ function addNode(markerID, infoID)
     posLeft: getRelativeImageWidth(markerID),
     posTop:  getRelativeImageHeight(markerID),
     location: location,
-    area: currentSite
+    area: currentSite,
+    test: testNo
   },
   function(){
     alert("Info Sent to ConfigHTML");
@@ -890,7 +929,71 @@ function clearSite(currentSite){
     console.log(currentSite +" Cleared")
   }
 }
+//================================================== Test Class ====================================================
+class Test{
+  constructor(testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray){
+    this.testNo = testNo;
+    this.gatewayID = gatewayID;
+    this.gatewayLeft = gatewayLeft;
+    this.gatewayTop = gatewayTop;
+    this.gatewayFloor = area;
+    this.floorArray = floorArray; //floorArray = [["F1",nodeList[node,node]],["F2",[nodeList[node,node]]]]
+    this.testCompleted = false;
+    console.log("Test created");
+  }
+  toggleTest(){
+    if(this.testCompleted){
+      this.testCompleted = false;
+    }
+    else{
+      this.testCompleted =true;
+    }
+  }
 
+  updateNode(floor, nodeName,node){//Update the node object
+    for(i = 0; i < this.floorArray.length;i++){  //loop all the floors
+      var testNodeList = this.floorArray[i][1];
+      if(this.floorArray[i][0] == floor){
+        for (j = 0; j< testNodeList.length;j++){ //loop all the nodes in that floor
+          if(testNodeList[j].nodeName =nodeName){
+            this.floorArray[i][1][j] = node;
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  updateNodePos(floor, nodeName, xPosition,yPosition){  //Update a specfic node position in test Array
+    for(i = 0; i < this.floorArray.length;i++){  //loop all the floors
+      var testNodeList = this.floorArray[i][1];
+      if(this.floorArray[i][0] == floor){
+        for (j = 0; j< testNodeList.length;j++){ //loop all the nodes in that floor
+          if(testNodeList[j].nodeName =nodeName){
+            testNodeList[j].updatePosition(xPosition,yPosition);
+            this.floorArray[i][1] = testNodeList[j];
+            return;
+          }
+        }
+      }
+    }
+  }
+
+  updateNodeName(floor, nodeName, newLocation,newID){  //Update a specfic nodeName in test Array
+    for(i = 0; i < this.floorArray.length;i++){ //loop all the floors
+      var testNodeList = this.floorArray[i][1];
+      if(this.floorArray[i][0] == floor){
+        for (j = 0; j< testNodeList.length;j++){  //loop all the nodes in that floor
+          if(testNodeList[j].nodeName =nodeName){
+            testNodeList[j].editNode(newLocation, newID);
+            this.floorArray[i][1] = testNodeList[j];
+            return;
+          }
+        }
+      }
+    }
+  }
+}
 //================================================= Update Config =================================================
 function updateSignal(){
   var jsonFilePath = "./config.json"; //which file to look at
