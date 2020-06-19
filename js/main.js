@@ -9,7 +9,11 @@ var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
+<<<<<<< HEAD
 var buttonArray = ["A001","A002","A003","A004"],  testArray = [], oldCord = [], siteArray = [];
+=======
+var buttonArray = ["A001","A002","A003","A004","A005","A006"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
+>>>>>>> 3ffd8e99132168839cb8a1dbfaca6a3a01e7ab58
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "";
 //Old Site Array format [[*Floor*,*NodeArrays[*nodes*]*],[*Floor*,*NodeArrays[*nodes*]*]]
@@ -234,6 +238,7 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
+<<<<<<< HEAD
   if(!gatewayPlaced){
     var testCounter = 1;
     $("#imageSource").append('<div class="gateway" id="gateway"></div>');
@@ -246,6 +251,12 @@ function createNewMarker(){ //add or move a a marker
     console.log("item pushed");
     return;
   }
+=======
+  // if(!gatewayPlaced){
+    
+  //   return;
+  // }
+>>>>>>> 3ffd8e99132168839cb8a1dbfaca6a3a01e7ab58
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
