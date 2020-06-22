@@ -223,11 +223,7 @@ function createNewMarker(){ //add or move a a marker
     var container = $("#imageSource")[0];
     moveMarker(marker);
 
-<<<<<<< HEAD
-    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
-=======
-    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
->>>>>>> 0fa0fa47842d12a5aa7ece8ae59eba682acf7c8b
+    var test = new Test(testNo, gatewayID, marker.style.left, marker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
     testArray.push(test);
     $.post("./createConfigHTML.php",
     {
