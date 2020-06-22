@@ -5,6 +5,7 @@ var markerCount = 0, nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
 var addButtonPressed  = false;
+var addGatewayButtonPressed = false;
 var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
@@ -33,6 +34,7 @@ $(document).ready( function(){
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
   var jsonFilePath = "./config.json"; //which file to look at
   img.src = imgSrc;
+  $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){    
@@ -61,7 +63,7 @@ $(document).ready( function(){
         n.updatePosition(posLeft, posTop);
         
         createNodeContainer(n); // create node container (info) according to json
-        $("#"+n.nodeID).hide();  
+        $("#"+n.nodeID).hide();
         nodeList.push(n); // add node to nodeList
       
         
@@ -204,16 +206,38 @@ function toggleMove(){ //Toggle between Viewing and Moving
   }
 }
 
+function addGatewayPressed(){
+  addGatewayButtonPressed = true;
+  $("addGateway").hide();
+  $("#inputInfo").show();
+  modeArray.movingMode = false;
+  return;
+}
+
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
-    $("#imageSource").append('<div class="gateway" id="gateway"></div>');
-    var marker = document.getElementById("gateway");
-    moveMarker(marker);
-    gatewayPlaced =true;
     var testNo = "Test"+testCounter;
-    testCounter++;
-    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentSite, siteArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
+    var gatewayID = "gateway"+testCounter;
+    $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
+    var marker = document.getElementById(gatewayID);
+    var container = $("#imageSource")[0];
+    moveMarker(marker);
+
+    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
     testArray.push(test);
+    $.post("./createConfigHTML.php",
+    {
+      markerID: gatewayID,
+      posLeft: (marker.style.left- container.getBoundingClientRect().left) *(imageWidth/divWidth),
+      posTop:  (marker.style.top - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
+      area: currentFloor,
+      test: testNo
+    },
+    function(){
+      console.log("Gateway Info Sent to ConfigHTML");
+    });
+    gatewayPlaced =true;
+    testCounter++;
     return;
   }
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
@@ -706,7 +730,7 @@ class Node{
   }
 }
 
-//=========================================== main (node class) ====================================================
+//========================================================= main (node class) ============================================================
 var nodeList = [];
 
 function createNodeContainer(newNode){ //Used to create a new container
@@ -815,11 +839,6 @@ function addNode(markerID, infoID)
   });
   
   }
-
-
-  
-    
-
 }
 
 function removeNode(markerID){
@@ -892,7 +911,7 @@ function clearSite(currentSite){
     console.log(currentSite +" Cleared")
   }
 }
-//================================================== Test Class ====================================================
+//========================================================== Test Class ==================================================================
 class Test{
   constructor(testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray){
     this.testNo = testNo;
@@ -904,6 +923,7 @@ class Test{
     this.testCompleted = false;
     console.log("Test created");
   }
+  
   toggleTestCompleted(){
     if(this.testCompleted){
       this.testCompleted = false;
@@ -957,7 +977,8 @@ class Test{
     }
   }
 }
-//================================================= Update Config =================================================
+
+//============================================================ Update Config =============================================================
 function updateSignal(){
   var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
