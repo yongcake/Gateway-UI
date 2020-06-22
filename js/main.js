@@ -5,6 +5,7 @@ var markerCount = 0, nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
 var addButtonPressed  = false;
+var addGatewayButtonPressed = false;
 var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
@@ -33,6 +34,7 @@ $(document).ready( function(){
   var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
   var jsonFilePath = "./config.json"; //which file to look at
   img.src = imgSrc;
+  $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){    
@@ -61,7 +63,7 @@ $(document).ready( function(){
         n.updatePosition(posLeft, posTop);
         
         createNodeContainer(n); // create node container (info) according to json
-        $("#"+n.nodeID).hide();  
+        $("#"+n.nodeID).hide();
         nodeList.push(n); // add node to nodeList
       
         
@@ -204,6 +206,14 @@ function toggleMove(){ //Toggle between Viewing and Moving
   }
 }
 
+function addGatewayPressed(){
+  addGatewayButtonPressed = true;
+  $("addGateway").hide();
+  $("#inputInfo").show();
+  modeArray.movingMode = false;
+  return;
+}
+
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
     var testNo = "Test"+testCounter;
@@ -213,7 +223,11 @@ function createNewMarker(){ //add or move a a marker
     var container = $("#imageSource")[0];
     moveMarker(marker);
 
+<<<<<<< HEAD
+    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
+=======
     var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
+>>>>>>> 0fa0fa47842d12a5aa7ece8ae59eba682acf7c8b
     testArray.push(test);
     $.post("./createConfigHTML.php",
     {
@@ -720,7 +734,7 @@ class Node{
   }
 }
 
-//=========================================== main (node class) ====================================================
+//========================================================= main (node class) ============================================================
 var nodeList = [];
 
 function createNodeContainer(newNode){ //Used to create a new container
@@ -829,11 +843,6 @@ function addNode(markerID, infoID)
   });
   
   }
-
-
-  
-    
-
 }
 
 function removeNode(markerID){
@@ -906,7 +915,7 @@ function clearSite(currentFloor){
     console.log(currentFloor +" Cleared")
   }
 }
-//================================================== Test Class ====================================================
+//========================================================== Test Class ==================================================================
 class Test{
   constructor(testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray){
     this.testNo = testNo;
@@ -918,6 +927,7 @@ class Test{
     this.testCompleted = false;
     console.log("Test created");
   }
+  
   toggleTestCompleted(){
     if(this.testCompleted){
       this.testCompleted = false;
@@ -971,7 +981,8 @@ class Test{
     }
   }
 }
-//================================================= Update Config =================================================
+
+//============================================================ Update Config =============================================================
 function updateSignal(){
   var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
