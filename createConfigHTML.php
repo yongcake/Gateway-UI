@@ -54,7 +54,7 @@ else{
 	$nodeArray[$nodeName]['strength'] = 0;
 	$nodeArray[$nodeName]['area'] = $area;
 }
-
+$jsonArray[$test][$area][$nodeName] = $node;
 fclose($infoFile);
 $myfile = fopen("nodeSetting.json", "w");
 fwrite($myfile, json_encode($nodeArray));

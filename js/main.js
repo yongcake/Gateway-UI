@@ -1,7 +1,7 @@
 //Global varibles
 var xPosition,yPosition;
 var newMarker;
-var markerCount = 0, nodeCount = 0;
+var markerCount = 0, nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
 var addButtonPressed  = false;
@@ -9,11 +9,7 @@ var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initMarkerCount = [], initNodeCount = [];
-<<<<<<< HEAD
-var buttonArray = ["A001","A002","A003","A004"],  testArray = [], oldCord = [], siteArray = [];
-=======
-var buttonArray = ["A001","A002","A003","A004","A005","A006"], textArray = [], markerArray = [], oldCord = [], siteArray = [];
->>>>>>> 3ffd8e99132168839cb8a1dbfaca6a3a01e7ab58
+var buttonArray = ["A001","A002","A003","A004","A005","A006"], textArray = [], oldCord = [], siteArray = [];
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentSite = "";
 //Old Site Array format [[*Floor*,*NodeArrays[*nodes*]*],[*Floor*,*NodeArrays[*nodes*]*]]
@@ -238,25 +234,17 @@ function toggleMove(){ //Toggle between Viewing and Moving
 }
 
 function createNewMarker(){ //add or move a a marker
-<<<<<<< HEAD
   if(!gatewayPlaced){
-    var testCounter = 1;
     $("#imageSource").append('<div class="gateway" id="gateway"></div>');
     var marker = document.getElementById("gateway");
     moveMarker(marker);
     gatewayPlaced =true;
     var testNo = "Test"+testCounter;
+    testCounter++;
     var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentSite, siteArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
     testArray.push(test);
-    console.log("item pushed");
     return;
   }
-=======
-  // if(!gatewayPlaced){
-    
-  //   return;
-  // }
->>>>>>> 3ffd8e99132168839cb8a1dbfaca6a3a01e7ab58
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
@@ -838,14 +826,7 @@ function addNode(markerID, infoID)
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = siteArray 
-    var gatewayID, gatewayLeft,gatewayTop,testNo;
-    for (i = 0 ; i < testArray.length;i++){
-      if(testArray[i][1]){
-        testNo = testArray[i][0];
-        gatewayID = testArray[i][2][0];
-        return;
-      }
-    }
+    
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
@@ -952,7 +933,7 @@ class Test{
     this.testCompleted = false;
     console.log("Test created");
   }
-  toggleTest(){
+  toggleTestCompleted(){
     if(this.testCompleted){
       this.testCompleted = false;
     }
