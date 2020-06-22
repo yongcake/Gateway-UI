@@ -28,8 +28,12 @@ fwrite($infoFile, $nodeID."\n");
 fwrite($infoFile, $infoID."\n");
 fwrite($infoFile, $area."\n");
 fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
+for ($row = 0 ; $row <  $jsonArray[$test]["floorArray"];$row++){
+	if($jsonArray[$test]["floorArray"][$row] == ){
 
-$node = $jsonArray[$test][$area][$nodeName];
+	}
+}
+$node = $jsonArray[$test]['floorArray'][$area][$nodeName];
 if(!isset($jsonArray[$test] && $test != ""){
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
@@ -37,32 +41,38 @@ if(!isset($jsonArray[$test] && $test != ""){
 	$jsonArray[$test]['gatewayLeft'] = $posLeft;
 	$jsonArray[$test]['gatewayTop'] = $posTop;
 	$jsonArray[$test]['gatewayFloor'] = $area;
+	$jsonArray[$test]['floorArray']["$area"]= array('floor'=>$area,'nodeList'=>array());
 
+	$nodeArray[$test]['testCompleted'] = false;
+	$nodeArray[$test]['testNo'] = $test;
+	$nodeArray[$test]['gatewayID'] = $markerID;
+	$nodeArray[$test]['gatewayFloor'] = $area;
 	$nodeArray[$test][$area][$nodeName]['TX'] ="";
 	$nodeArray[$test][$area][$nodeName]['SF'] = "";
-	//$nodeArray[$nodeName]['location'] = $location;
 	$nodeArray[$test][$area][$nodeName]['strength'] = 0;
 	$nodeArray[$test][$area][$nodeName]['area'] = $area;
 }
-else if(isset($node)){
+else {
 	//$node = $jsonArray[$test][$area][$nodeName];
 	$node['markerID'] = $markerID;
 	$node['nodeID'] = $nodeID;
 	$node['infoID'] = $infoID;
+	$node['signal'] =0;
+	$node['status'] ="Not Connected";
 	$node['posLeft'] = $posLeft;
 	$node['posTop'] = $posTop;
 	$node['area'] =$area;
 	//fwrite($infoFile, "\n Updated Marker ID of $nodename: ". $jsonArray[$nodeName]['markerID']."\n");
-	$jsonArray[$test][$area][$nodeName] = $node;
+	$jsonArray[$test]["floorArray"][$area][$nodeName] = $node;
 }
-else{
-	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
-	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
-	'nodeName'=>$nodeName, 'posLeft'=>$posLeft,'posTop'=>$posTop,'area' =>$area);
+//else{
+//	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
+//	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
+//	'nodeName'=>$nodeName, 'posLeft'=>$posLeft,'posTop'=>$posTop,'area' =>$area);
 	//fwrite($infoFile, "\n Number of Nodes: ".count($jsonArray)."\n");
 	//fwrite($infoFile, "\n New ID Created: ".$nodeName."\n");
-	$jsonArray[$test][$area][$nodeName] = $node;
-}
+//	$jsonArray[$test][$area][$nodeName] = $node;
+//}
 
 fclose($infoFile);
 $myfile = fopen("nodeSetting.json", "w");
