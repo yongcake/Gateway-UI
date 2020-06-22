@@ -221,7 +221,6 @@ function createNewMarker(){ //add or move a a marker
     $("#addGateway").attr('disabled',false);
     var testNo = "Test"+testCounter;
     var gatewayID = "gateway"+testCounter;
-<<<<<<< HEAD
     if (gatewayMarkerAdded == false){
       $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
       gatewayUniqueMarker = document.getElementById(gatewayID);
@@ -255,29 +254,6 @@ function createNewMarker(){ //add or move a a marker
       testCounter++;
       return;
     }
-=======
-    $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
-    var marker = document.getElementById(gatewayID);
-    var container = $("#imageSource")[0];
-    moveMarker(marker);
-
-    var test = new Test(testNo, gatewayID, marker.style.left, marker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
-    testArray.push(test);
-    $.post("./createConfigHTML.php",
-    {
-      markerID: gatewayID,
-      posLeft: (marker.style.left- container.getBoundingClientRect().left) *(imageWidth/divWidth),
-      posTop:  (marker.style.top - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
-      area: currentFloor,
-      test: testNo
-    },
-    function(){
-      console.log("Gateway Info Sent to ConfigHTML");
-    });
-    gatewayPlaced =true;
-    testCounter++;
-    return;
->>>>>>> 32371b6ac1ca665e7bc934ea276716be8198297a
   }
 
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
