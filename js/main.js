@@ -6,6 +6,9 @@ var markerAdded = false;
 var nodeExist = false;
 var addButtonPressed  = false;
 var addGatewayButtonPressed = false;
+var gatewayMarkerAdded = false;
+var gatewayUniqueMarker;
+var gatewayUniqueContainer;
 var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
@@ -208,38 +211,51 @@ function toggleMove(){ //Toggle between Viewing and Moving
 
 function addGatewayPressed(){
   addGatewayButtonPressed = true;
-  $("addGateway").hide();
+  $("#addGateway").hide();
   $("#inputInfo").show();
-  modeArray.movingMode = false;
   return;
 }
 
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
+    $("#addGateway").attr('disabled',false);
     var testNo = "Test"+testCounter;
     var gatewayID = "gateway"+testCounter;
-    $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
-    var marker = document.getElementById(gatewayID);
-    var container = $("#imageSource")[0];
-    moveMarker(marker);
+    if (gatewayMarkerAdded == false){
+      $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
+      gatewayUniqueMarker = document.getElementById(gatewayID);
+      gatewayUniqueContainer = $("#imageSource")[0];
+      gatewayMarkerAdded = true;
+    }
 
-    var test = new Test(testNo, "gateway1", marker.style.left, marker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
-    testArray.push(test);
-    $.post("./createConfigHTML.php",
-    {
-      markerID: gatewayID,
-      posLeft: (marker.style.left- container.getBoundingClientRect().left) *(imageWidth/divWidth),
-      posTop:  (marker.style.top - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
-      area: currentFloor,
-      test: testNo
-    },
-    function(){
-      console.log("Gateway Info Sent to ConfigHTML");
-    });
-    gatewayPlaced =true;
-    testCounter++;
-    return;
+    if(addGatewayButtonPressed == false){
+      moveMarker(gatewayUniqueMarker);
+      console.log('still moving gateway maker');
+      return;
+    }
+    
+    if(addGatewayButtonPressed == true){
+      var test = new Test(testNo, "gateway1", gatewayUniqueMarker.style.left, gatewayUniqueMarker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
+      testArray.push(test);
+      $.post("./createConfigHTML.php",
+      {
+        markerID: gatewayID,
+        posLeft: (gatewayUniqueMarker.style.left- gatewayUniqueContainer.getBoundingClientRect().left) *(imageWidth/divWidth),
+        posTop:  (gatewayUniqueMarker.style.top - gatewayUniqueContainer.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
+        area: currentFloor,
+        test: testNo
+      },
+      function(){
+        console.log("Gateway Info Sent to ConfigHTML");
+      });
+      gatewayPlaced = true;
+      gatewayUniqueMarker = null;
+      gatewayUniqueContainer = null;
+      testCounter++;
+      return;
+    }
   }
+
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
     modeArray.addingMode = true;
     addButtonPressed = false;
