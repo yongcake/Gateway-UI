@@ -14,35 +14,6 @@ var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:fal
 var currentSite = "";
 //Old Site Array format [[*Floor*,*NodeArrays[*nodes*]*],[*Floor*,*NodeArrays[*nodes*]*]]
 //New Site Array format [ [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] , [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] ]
-/*New Config Json format 
-{
-  "Test1"{
-    "testNo" : Test1;
-    "gatewayID" : gateway1,
-    "gatewayLeft" : GatewayLeft,
-    "gatewayTop" : GatewayTop,
-    "gatewayFloor" : Floor,
-    "floorArray":[
-     {
-       "floor": "F1",
-       "nodeList": [
-        "A001": {
-	    	"markerID": "marker0",
-	    	"nodeID": "node0",
-	    	"infoID": "nodeInfo0",
-	    	"signal": 1,
-	    	"status": "Not Connected",
-	    	"nodeName": "A001",
-    		"posLeft": "0",
-    		"posTop": "0",
-    		"location": "a",
-    		"area": "Floor1"
-        }...]
-     }...]
-   }
-  
-}
-*/
 var imageWidth = 0;
 var imageHeight = 0;
 var divWidth = 0;
