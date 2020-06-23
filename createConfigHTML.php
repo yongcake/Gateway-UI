@@ -28,13 +28,8 @@ fwrite($infoFile, $nodeID."\n");
 fwrite($infoFile, $infoID."\n");
 fwrite($infoFile, $area."\n");
 fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
-for ($row = 0 ; $row <  $jsonArray[$test]["floorArray"];$row++){
-	if($jsonArray[$test]["floorArray"][$row] == ){
 
-	}
-}
-$node = $jsonArray[$test]['floorArray'][$area][$nodeName];
-if(!isset($jsonArray[$test] && $test != ""){
+if(!isset($jsonArray[$test]) && $test != ""){
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
 	$jsonArray[$test]['gatewayID'] = $markerID;
@@ -54,6 +49,7 @@ if(!isset($jsonArray[$test] && $test != ""){
 }
 else {
 	//$node = $jsonArray[$test][$area][$nodeName];
+	$node = $jsonArray[$test]['floorArray'][$area][$nodeName];
 	$node['markerID'] = $markerID;
 	$node['nodeID'] = $nodeID;
 	$node['infoID'] = $infoID;
@@ -65,6 +61,7 @@ else {
 	//fwrite($infoFile, "\n Updated Marker ID of $nodename: ". $jsonArray[$nodeName]['markerID']."\n");
 	$jsonArray[$test]["floorArray"][$area][$nodeName] = $node;
 }
+
 //else{
 //	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
 //	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
