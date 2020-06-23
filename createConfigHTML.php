@@ -5,7 +5,7 @@ $nodeID = $_POST["nodeID"];
 $infoID = $_POST["infoID"];
 $posLeft =  $_POST["posLeft"];
 $posTop = $_POST["posTop"];
-//$location =  $_POST["location"];
+$location =  $_POST["location"];
 $area =  $_POST["area"];
 $test =  $_POST["test"];
 
@@ -20,21 +20,18 @@ if (file_exists('./config.json')){
 else{
 	$jsonArray = array();
 }
-
+/*
 $infoFile = fopen("./nodeinfo/infoHTML.txt", "w"); //Used to find user input & The name that changes
 fwrite($infoFile, $nodeName."\n");
 fwrite($infoFile, $markerID."\n");
 fwrite($infoFile, $nodeID."\n");
 fwrite($infoFile, $infoID."\n");
 fwrite($infoFile, $area."\n");
-fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
-for ($row = 0 ; $row <  $jsonArray[$test]["floorArray"];$row++){
-	if($jsonArray[$test]["floorArray"][$row] == ){
 
-	}
-}
-$node = $jsonArray[$test]['floorArray'][$area][$nodeName];
-if(!isset($jsonArray[$test] && $test != ""){
+fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
+fclose($infoFile);
+*/
+if(!isset($jsonArray[$test]) && $test != ""){
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
 	$jsonArray[$test]['gatewayID'] = $markerID;
@@ -53,7 +50,7 @@ if(!isset($jsonArray[$test] && $test != ""){
 	$nodeArray[$test][$area][$nodeName]['area'] = $area;
 }
 else {
-	//$node = $jsonArray[$test][$area][$nodeName];
+	$node = $jsonArray[$test]['floorArray'][$area][$nodeName];
 	$node['markerID'] = $markerID;
 	$node['nodeID'] = $nodeID;
 	$node['infoID'] = $infoID;
@@ -62,7 +59,6 @@ else {
 	$node['posLeft'] = $posLeft;
 	$node['posTop'] = $posTop;
 	$node['area'] =$area;
-	//fwrite($infoFile, "\n Updated Marker ID of $nodename: ". $jsonArray[$nodeName]['markerID']."\n");
 	$jsonArray[$test]["floorArray"][$area][$nodeName] = $node;
 }
 //else{
@@ -74,14 +70,13 @@ else {
 //	$jsonArray[$test][$area][$nodeName] = $node;
 //}
 
-fclose($infoFile);
-$myfile = fopen("nodeSetting.json", "w");
+
+/*$myfile = fopen("nodeSetting.json", "w");
 fwrite($myfile, json_encode($nodeArray));
-fclose($myfile);
+fclose($myfile); */
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
-
 
 	
 ?>
