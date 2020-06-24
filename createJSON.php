@@ -16,7 +16,7 @@ else{
 
 }
 $sigStrength =calculateSignalStrength($rssi);
-$infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); 			//Used to find user input & The name that changes
+/*$infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); 			//Used to find user input & The name that changes
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
 fwrite($infoFile, "TX Power: $txPower \n");
 fwrite($infoFile, "SF: $sf \n");
@@ -24,7 +24,7 @@ fwrite($infoFile, "RSSI: $rssi \n");
 fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
-
+fclose($infoFile);*/
 foreach($jsonArray as $key['testComplete'] => $value) {
 	if($value){
 		foreach($key['floorArray'] as $) {
@@ -55,7 +55,7 @@ foreach($jsonArray as $key['testComplete'] => $value) {
 }
 
 
-fclose($infoFile);
+
 $myfile = fopen("nodeSetting.json", "w");
 fwrite($myfile, json_encode($nodeArray));
 fclose($myfile);

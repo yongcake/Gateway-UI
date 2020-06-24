@@ -7,7 +7,8 @@ $posLeft =  $_POST["posLeft"];
 $posTop = $_POST["posTop"];
 $area =  $_POST["area"];
 $test =  $_POST["test"];
-$test =  $_POST["nodeCount"];
+$pointID =  $_POST["pointID"];
+$active =  $_POST["active"];
 
 $nodeJson= file_get_contents('./nodeSetting.json');
 $nodeArray = json_decode($nodeJson,true);
@@ -49,8 +50,10 @@ if(!isset($jsonArray[$test]) && $test != ""){
 	$nodeArray[$test][$area][$nodeName]['area'] = $area;
 }
 else {
-	$PointsNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
-	$node = $jsonArray[$test]['floorArray'][$area]['nodeList']['Point'.$PointsNo];
+	$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
+	$node = $jsonArray[$test]['floorArray'][$area]['nodeList']['Point'.$pointNo];
+
+	$node['pointID'] =$pointID;
 	$node['markerID'] = $markerID;
 	$node['nodeID'] = $nodeID;
 	$node['infoID'] = $infoID;
@@ -59,7 +62,8 @@ else {
 	$node['posLeft'] = $posLeft;
 	$node['posTop'] = $posTop;
 	$node['area'] =$area;
-	$jsonArray[$test]["floorArray"][$area][$nodeName] = $node;
+	$node['active'] =$active;
+	$jsonArray[$test]["floorArray"][$area]['nodeList']['Point'.$pointNo] = $node;
 }
 //else{
 //	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
