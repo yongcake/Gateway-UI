@@ -589,6 +589,20 @@ function cancelPressed(){
   $("#addNode").hide(); 
 }
 
+function moveGateway(){
+  document.getElementById("imageSource").innerHTML = ""; 
+  document.getElementById("formStatus").innerHTML = ""; 
+  document.getElementById("scrollInfoContainer").innerHTML = ""; 
+
+  markerArray = [];
+  nodeList = [];
+  for (var i = 0; i<floorArray.length;i++)
+  {
+    floorArray[i][1] = [];
+  }
+
+}
+
 function testComplete(){
   var jsonFilePath = "./nodeSetting.json"; //which file to look at
   var textToWrite ="===========Start============", nodename;
@@ -774,7 +788,7 @@ var nodeList = [];
 
 function createNodeContainer(newNode){ //Used to create a new container
   
-  $("#scrollInfoContainer").append('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
+  $("#scrollInfoContainer").prepend('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');//Div that showcase node info
   //$("#"+newNode.infoID).html(newNode.print2() + newNode.print3() + newNode.print4());
   $("#"+newNode.infoID).html(newNode.print());
@@ -798,11 +812,11 @@ function createNodeContainer(newNode){ //Used to create a new container
         onclickFunction ='onclick="removeMarker(\''+newNode.markerID+'\')"';
         text ="Delete"
         break;
-      case 2: //No Signal
+      /* case 2: //No Signal
         buttonID = "noSignalNode"
         onclickFunction ='onclick="noSignal(\''+newNode.markerID+'\')"';
         text ="No Signal"
-        break;
+        break; */
     }
     $("#Temp").append('<input type="button" ' + onclickFunction  
         + ' id="' + buttonID  
