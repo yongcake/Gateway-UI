@@ -24,26 +24,33 @@ fwrite($infoFile, "RSSI: $rssi \n");
 fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
-if(isset($jsonArray[$nodeName])){
-	$jsonArray[$nodeName]['signal'] =$sigStrength;
-	$jsonArray[$nodeName]['status'] ="Connected";
-	if($nodeArray[$nodeName]['strength'] <= $sigStrength){
-		$nodeArray[$nodeName]['TX'] = $txPower;
-		$nodeArray[$nodeName]['SF'] = $sf;
-		$nodeArray[$nodeName]['strength'] = $sigStrength;
-	}
-	
-}
-else{
-	$jsonArray[$nodeName] =array('markerID'=>null,'nodeID'=>null,
-	'infoID'=>null,'signal' =>calculateSignalStrength($rssi),'status'=>"Connected",
-	'nodeName'=>$nodeName, 'posLeft'=>null,'posTop'=>null,'location'=> null,'area' =>null);
-	if($nodeArray[$nodeName]['strength'] <= $sigStrength){
-		$nodeArray[$nodeName]['TX'] = $txPower;
-		$nodeArray[$nodeName]['SF'] = $sf;
-		$nodeArray[$nodeName]['location'] = "";
-		$nodeArray[$nodeName]['strength'] = $sigStrength;
-		$nodeArray[$nodeName]['area'] = "";
+
+foreach($jsonArray as $key['testComplete'] => $value) {
+	if($value){
+		foreach($key['floorArray'] as $) {
+
+		}
+		if(isset($key['floorArray'][])){
+			$jsonArray[$nodeName]['signal'] =$sigStrength;
+			$jsonArray[$nodeName]['status'] ="Connected";
+			if($nodeArray[$nodeName]['strength'] <= $sigStrength){
+				$nodeArray[$nodeName]['TX'] = $txPower;
+				$nodeArray[$nodeName]['SF'] = $sf;
+				$nodeArray[$nodeName]['strength'] = $sigStrength;
+			}
+			
+		}
+		else{
+			$jsonArray[$nodeName] =array('markerID'=>null,'nodeID'=>null,
+			'infoID'=>null,'signal' =>calculateSignalStrength($rssi),'status'=>"Connected",
+			'nodeName'=>$nodeName, 'posLeft'=>null,'posTop'=>null,'location'=> null,'area' =>null);
+			if($nodeArray[$nodeName]['strength'] <= $sigStrength){
+				$nodeArray[$nodeName]['TX'] = $txPower;
+				$nodeArray[$nodeName]['SF'] = $sf;
+				$nodeArray[$nodeName]['location'] = "";
+				$nodeArray[$nodeName]['strength'] = $sigStrength;
+				$nodeArray[$nodeName]['area'] = "";
+			}
 	}
 }
 
