@@ -592,16 +592,31 @@ function cancelPressed(){
 }
 
 function moveGateway(){
+  //reset the HTML 
   document.getElementById("imageSource").innerHTML = ""; 
   document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
+  // reset the arrays
   markerArray = [];
   nodeList = [];
   for (var i = 0; i<floorArray.length;i++)
   {
     floorArray[i][1] = [];
   }
+
+  // reset the buttons
+  $("#addGateway").show();
+  $("#inputInfo").hide();
+
+  // reset all the bool stuff 
+  markerAdded = false;
+  nodeExist = false;
+  addButtonPressed  = false;  
+  addGatewayButtonPressed = false;
+  gatewayMarkerAdded = false;
+  gatewayPlaced = false;
+  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
 }
 
@@ -771,7 +786,7 @@ class Node{
     return [this.posLeft,this.posTop];
   }
   
-    print(){
+  print(){
     //console.log("i am being printed again hello.");
     //console.log(this.signal);
     var signalStrenghtBar = 
@@ -782,7 +797,7 @@ class Node{
     +     '<div class="bar bar-4"></div>'
     +     '<div class="bar bar-5"></div>'
     +'</div>';
-    return "Name: " + this.nodeName + "<br> Location: " + this.location + "<div style='display:flex; flex-direction:row; justify-content:flex-start; align-items:center;'> Signal Strength: " + /*this.signal*/ signalStrenghtBar + "</div> Status: " + this.status;
+    return "Name: " + this.nodeName + "<div style='display:flex; flex-direction:row; justify-content:flex-start; align-items:center;'> Signal Strength: " + /*this.signal*/ signalStrenghtBar + "</div> Status: " + this.status;
 
   }
 }
@@ -801,7 +816,7 @@ function createNodeContainer(newNode){ //Used to create a new container
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
 
-  for (var i = 0; i<3;i++){
+  for (var i = 0; i<2;i++){
     var buttonID;
     var onclickFunction;
     var text;
