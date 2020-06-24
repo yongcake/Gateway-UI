@@ -136,6 +136,7 @@ img{
 
 .nodeInfoContainer{
 	width: inherit;
+	height: 22%;
 	border: black solid 1px;
 	padding: 2%;
 	margin-bottom: 2%;
@@ -144,17 +145,24 @@ img{
 	
 }
 
+.nodeInfoWrapper{
+	width: 60%;
+	flex-grow: 1;
+}
+
 .nodeButtonWrapper{
+	width: 40%;
 	height: 100%;
+	flex-grow: 1;
 	display: flex;
-	flex-direction: column;
+	flex-direction: row;
 	justify-content: center;
-	padding-right: 2%;
+	/* padding-right: 2%; */
 }
 
 .nodeButton{
 	width: 5vw;
-	margin:5%;
+	margin: 1%;
 	padding: 0.2vw;
 }
 
@@ -235,13 +243,16 @@ img{
 #editNode{
 	background-color: #999900;
 	border: none;
-	color: white;
+	color: white; /*text colour*/
+	width: 100%;
 }
 
 #deleteNode{
 	background-color: red;
 	border: none;
 	color: white;
+	width: 100%;
+	margin-left: 5%;
 }
 
 #noSignalNode{
