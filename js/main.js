@@ -263,7 +263,6 @@ function addGatewayPressed(){
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
     $("#addGateway").attr('disabled',false);
-    var testNo = "Test"+testCounter;
     var gatewayID = "gateway"+testCounter;
     if (gatewayMarkerAdded == false){
       $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
@@ -851,7 +850,7 @@ function addNode(markerID, infoID)
 {
   var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
-  var pointID ="pointID"+nodeCount;
+  var pointID ="P"+nodeCount;
   var nodeName = selectedNode;
   nodeExist = false;
   selectedNode = "";
@@ -892,6 +891,7 @@ function addNode(markerID, infoID)
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
+    var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
     
     $.post("./createConfigHTML.php",
@@ -905,7 +905,7 @@ function addNode(markerID, infoID)
     posTop:  getRelativeImageHeight(markerID),
     location: location,
     area: currentFloor,
-    test: testNo,
+    test: "Test"+(testCounter-1),
     pointID: pointID,
     active: true
   },

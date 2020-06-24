@@ -4,10 +4,15 @@ $txPower = htmlspecialchars($_GET["txPower"]);
 $sf = htmlspecialchars($_GET["SF"]);
 $rssi = htmlspecialchars($_GET["RSSI"]);
 $snr =  htmlspecialchars($_GET["SNR"]);
-$json= file_get_contents('./config.json');//encoded json
-$nodeJson= file_get_contents('./nodeSetting.json');
+
+$activeJson= file_get_contents('http://127.0.0.1/getActiveItems.php');//encoded json
+$json= file_get_contents('./config.json') //encoded json
+$nodeJson= file_get_contents('./packetInfo.json');
+
 $nodeArray = json_decode($nodeJson,true);
 $jsonArray = json_decode($json,true);
+$activeJsonArray = json_decode($activeJson,true);
+
 if(!file_exists("nodeinfo")){
   mkdir("./nodeinfo", 0777);
 
@@ -56,7 +61,7 @@ foreach($jsonArray as $key['testComplete'] => $value) {
 
 
 
-$myfile = fopen("nodeSetting.json", "w");
+$myfile = fopen("packetInfo.json", "w");
 fwrite($myfile, json_encode($nodeArray));
 fclose($myfile);
 

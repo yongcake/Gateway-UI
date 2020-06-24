@@ -10,7 +10,7 @@ $test =  $_POST["test"];
 $pointID =  $_POST["pointID"];
 $active =  $_POST["active"];
 
-$nodeJson= file_get_contents('./nodeSetting.json');
+$nodeJson= file_get_contents('./packetInfo.json');
 $nodeArray = json_decode($nodeJson,true);
 
 if (file_exists('./config.json')){
@@ -31,7 +31,7 @@ fwrite($infoFile, $area."\n");
 fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
 fclose($infoFile);
 */
-if(!isset($jsonArray[$test]) && $test != ""){
+if(!isset($jsonArray[$test]) && $test != ""){ //For Geteway
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
 	$jsonArray[$test]['gatewayID'] = $markerID;
@@ -40,23 +40,21 @@ if(!isset($jsonArray[$test]) && $test != ""){
 	$jsonArray[$test]['gatewayFloor'] = $area;
 	$jsonArray[$test]['floorArray']["$area"]= array('floor'=>$area,'nodeList'=>array());
 
-	$nodeArray[$test]['testCompleted'] = false;
-	$nodeArray[$test]['testNo'] = $test;
-	$nodeArray[$test]['gatewayID'] = $markerID;
+	//$nodeArray[$test]['testCompleted'] = false;
+	$nodeArray[$test]['gatewayLeft'] = $posLeft;
+	$nodeArray[$test]['gatewayTop'] = $posTop;
 	$nodeArray[$test]['gatewayFloor'] = $area;
-	$nodeArray[$test][$area][$nodeName]['TX'] ="";
-	$nodeArray[$test][$area][$nodeName]['SF'] = "";
-	$nodeArray[$test][$area][$nodeName]['strength'] = 0;
-	$nodeArray[$test][$area][$nodeName]['area'] = $area;
+	$jsonArray[$test]['floorArray']["$area"]= "";
 }
-else {
+else { //For Nodes
 	$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
 	$node = $jsonArray[$test]['floorArray'][$area]['nodeList']['Point'.$pointNo];
-
+	//config.json
 	$node['pointID'] =$pointID;
 	$node['markerID'] = $markerID;
 	$node['nodeID'] = $nodeID;
 	$node['infoID'] = $infoID;
+	$node['nodeName'] = $nodeName;
 	$node['signal'] =0;
 	$node['status'] ="Not Connected";
 	$node['posLeft'] = $posLeft;
@@ -64,6 +62,13 @@ else {
 	$node['area'] =$area;
 	$node['active'] =$active;
 	$jsonArray[$test]["floorArray"][$area]['nodeList']['Point'.$pointNo] = $node;
+
+	//packetInfo.json
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['pointID'] =$pointID;
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['nodeID'] =$nodeName;
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posLeft'] = $posLeft;
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posTop'] = $posTop;
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['trace'] = array();
 }
 //else{
 //	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
@@ -75,9 +80,9 @@ else {
 //}
 
 
-/*$myfile = fopen("nodeSetting.json", "w");
+$myfile = fopen("packetInfo.json", "w");
 fwrite($myfile, json_encode($nodeArray));
-fclose($myfile); */
+fclose($myfile); 
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
