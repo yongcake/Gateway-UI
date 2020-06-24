@@ -590,16 +590,31 @@ function cancelPressed(){
 }
 
 function moveGateway(){
+  //reset the HTML 
   document.getElementById("imageSource").innerHTML = ""; 
   document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
+  // reset the arrays
   markerArray = [];
   nodeList = [];
   for (var i = 0; i<floorArray.length;i++)
   {
     floorArray[i][1] = [];
   }
+
+  // reset the buttons
+  $("#addGateway").show();
+  $("#inputInfo").hide();
+
+  // reset all the bool stuff 
+  markerAdded = false;
+  nodeExist = false;
+  addButtonPressed  = false;  
+  addGatewayButtonPressed = false;
+  gatewayMarkerAdded = false;
+  gatewayPlaced = false;
+  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 
 }
 
