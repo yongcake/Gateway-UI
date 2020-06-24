@@ -800,7 +800,6 @@ function addNode(markerID, infoID)
 {
   var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
-  nodeCount++;
   var nodeName = selectedNode;
   nodeExist = false;
   selectedNode = "";
@@ -846,6 +845,7 @@ function addNode(markerID, infoID)
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
+    nodeCount: nodeCount,
     markerID: markerID,
     nodeID: nodeID, 
     infoID: infoID,
@@ -860,6 +860,7 @@ function addNode(markerID, infoID)
   });
   
   }
+  nodeCount++;
 }
 
 function removeNode(markerID){
