@@ -850,7 +850,7 @@ function addNode(markerID, infoID)
 {
   var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
-  var pointID ="P"+nodeCount;
+  var pointID ="point"+nodeCount;
   var nodeName = selectedNode;
   nodeExist = false;
   selectedNode = "";
