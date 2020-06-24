@@ -18,11 +18,16 @@
 			<h1>Gateway Signal Test Kit</h1>
 	
 			<div class="complete">
-				<input type="button" id="TestCompleteButton" value="Test Complete" ondblclick="testComplete()">
+				<input type="button" class="moveGatewayButton" id="MoveGatewayButton" value="Move Gateway" ondblclick="moveGateway()">
+				<input type="button" class="testCompleteButton" id="TestCompleteButton" value="Test Complete" ondblclick="testComplete()">
 			</div>	
 		</div>
 
-		<label><i>*Insert Area*</i></label> <br><br>
+		<!--
+		<label><i>*Insert Area*</i></label>
+		-->
+		<br>
+		
 	
 		<div class="floor">
 			<div class="floorSelectionWrapper" id="floorSelectionWrapper">
@@ -104,8 +109,8 @@
 			</div>
 		</div>
 		<div id="instructions">
-			- Tap on a new location to indicate the new node location <br>
-			- Tap on an existing location to view node activity
+			- Tap on a new location to place gateway/node location <br>
+			- Tap on the buttons to confirm placement
 		</div>
 	
 	</div>
