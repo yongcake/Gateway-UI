@@ -1,1 +1,51 @@
-{"Test0":{"testCompleted":false,"testNo":"Test0","gatewayID":"gateway0","gatewayLeft":"NaN","gatewayTop":"NaN","gatewayFloor":"","floorArray":{"":{"floor":"","nodeList":[]},"Floor1":{"":{"markerID":"gateway0","nodeID":null,"infoID":null,"signal":0,"status":"Not Connected","posLeft":"NaN","posTop":"NaN","area":"Floor1"}}}}}
+{
+	"Test1": {
+		"testCompleted": false,
+		"testNo": "Test1",
+		"gatewayID": "gateway1",
+		"gatewayLeft": "0",
+		"gatewayTop": "0",
+		"gatewayFloor": "Floor1",
+		"floorArray": {
+			"Floor1": {
+				"floor": "Floor1",
+				"nodeList": {
+					"A001": {
+						"markerID": "marker1",
+						"nodeID": "node1",
+						"infoID": "nodeInfo1",
+						"signal": 0,
+						"status": "Not Connected",
+						"posLeft": "200",
+						"posTop": "200",
+						"area": "Floor1"
+					},
+					"A002": {
+						"markerID": "marker1",
+						"nodeID": "node1",
+						"infoID": "nodeInfo1",
+						"signal": 0,
+						"status": "Not Connected",
+						"posLeft": "400",
+						"posTop": "400",
+						"area": "Floor1"
+					}
+				}
+			},
+			"Floor2": {
+				"nodeList": {
+					"A001": {
+						"markerID": "marker1",
+						"nodeID": "node1",
+						"infoID": "nodeInfo1",
+						"signal": 0,
+						"status": "Not Connected",
+						"posLeft": "200",
+						"posTop": "200",
+						"area": "Floor1"
+					}
+				}
+			}
+		}
+	}
+}

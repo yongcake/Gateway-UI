@@ -4,7 +4,7 @@ var newMarker;
 var markerCount = 0, nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
-var addButtonPressed  = false;
+var addButtonPressed  = false;  
 var addGatewayButtonPressed = false;
 var gatewayMarkerAdded = false;
 var gatewayUniqueMarker;
@@ -34,56 +34,74 @@ var img = new Image();
 
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
-  var infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area;
+  var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, floorArray, floor, nodeList, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test;
   var jsonFilePath = "./config.json"; //which file to look at
   img.src = imgSrc;
   $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){    
-      var subData = data[i];
-      console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
+      var testData = data[i]; //info inside "testn"
+      console.log("==========================" + JSON.stringify(subData["testNo"]) + "==========================");
       console.log(data);
-      infoID = subData["infoID"];
-      location = subData["location"];
-      markerID = subData["markerID"];
-      nodeID = subData["nodeID"];
-      nodeName = subData["nodeName"];
-      posLeft = subData["posLeft"] ; 
-      posTop = subData["posTop"] ; 
-      signal = subData["signal"];
-      status = subData["status"];
-      area = subData["area"];
-      if (markerID != null && posLeft != null && posTop != null){
-        var n = new Node(markerID, nodeID, location, nodeName, infoID,area); //create new node according to json
-        n.status = status;
-        //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
+      testCompleted = testData["testCompleted"];
+      testNo = testData["testNo"];
+      gatewayID = testData["gatewayID"];
+      gatewayLeft = testData["gatewayLeft"];
+      gatewayTop = testData["gatewayTop"];
+      gatewayFloor = testData["gatewayFloor"];
+      floorArray = testData["floorArray"];
 
-        if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
-          $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
-          floorArray.push([area]); 
-        }
-        n.updatePosition(posLeft, posTop);
-        
-        createNodeContainer(n); // create node container (info) according to json
-        $("#"+n.nodeID).hide();
-        nodeList.push(n); // add node to nodeList
-      
-        
-        var mCount = parseInt(markerID.slice(6, markerID.length));
-        initMarkerCount.push(mCount);
-        markerCount++;
+      for (var j in floorArray){
+        var floorData = j;
+        floor = j["floor"];
+        nodeList = j["nodeList"];
 
-        var nCount = parseInt(nodeID.slice(4, nodeID.length));
-        initNodeCount.push(nCount);
-        nodeCount++;
-        
+        for (var k in nodeList){
+          var nodeData = k;
+
+          markerID = nodeData["markerID"];
+          nodeID = nodeData["nodeID"];
+          infoID = nodeData["infoID"];
+          signal = nodeData["signal"];
+          status = nodeData["status"];
+          posLeft = nodeData["posLeft"] ; 
+          posTop = nodeData["posTop"] ; 
+          nodeName = nodeData["nodeName"];
+          area = nodeData["area"];
+          test = nodeData["testNo"]
+
+          if (markerID != null && posLeft != null && posTop != null){
+            var n = new Node(markerID, nodeID, location, nodeName, infoID,area); //create new node according to json
+            n.status = status;
+            //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
+
+            if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
+              $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
+              floorArray.push([area]); 
+            }
+            n.updatePosition(posLeft, posTop);
+
+            createNodeContainer(n); // create node container (info) according to json
+            $("#"+n.nodeID).hide();
+            nodeList.push(n); // add node to nodeList
+          
+
+            var mCount = parseInt(markerID.slice(6, markerID.length));
+            initMarkerCount.push(mCount);
+            markerCount++;
+
+            var nCount = parseInt(nodeID.slice(4, nodeID.length));
+            initNodeCount.push(nCount);
+            nodeCount++;
+
+          }
+          else{
+           //console.log("something went wrong here :(");
+          }
       }
-      else{
-       //console.log("something went wrong here :(");
-      }
-
     }
+  }
     imageWidth = img.naturalWidth;
     imageHeight = img.naturalHeight;
     var container = document.querySelector("#imageSource");
@@ -429,7 +447,7 @@ function resetNodeDiv(){
   $("#cancelEdit").hide();
 }
 
-//Function that interact with Node Class
+//Function that interact with 8-u
 function editSelectedNode(markerID){
   //if(modeArray.viewingMode){ //Only runs if viewing is enabled
     if(!modeArray.movingMode){ //Swap to Moving
@@ -585,11 +603,11 @@ function testComplete(){
         textToWrite += "Location: " + data[nodename]["location"]+"\r\n";
         textToWrite += "Highest Strength Obtain: " + data[nodename]["strength"]+"\r\n";
         textToWrite += "Floor Test: " + data[nodename]["area"]+"\r\n";
-        textToWrite += "============NEXT NODE=========\r\n";
+        textToWrite += "============NEXT NODE===========\r\n";
       }
     }
   }).done(function(d) {
-    textToWrite += "======END=========";
+    textToWrite += "=========END=========";
     var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
     var fileNameToSaveAs = "";
     var downloadLink = document.createElement("a");
@@ -999,7 +1017,7 @@ class Test{
   }
 }
 
-//============================================================ Update Config =============================================================
+//===================================================== Update Config =============================================================
 function updateSignal(){
   var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
