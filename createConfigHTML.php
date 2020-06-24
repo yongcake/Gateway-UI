@@ -5,10 +5,6 @@ $nodeID = $_POST["nodeID"];
 $infoID = $_POST["infoID"];
 $posLeft =  $_POST["posLeft"];
 $posTop = $_POST["posTop"];
-<<<<<<< HEAD
-$location =  $_POST["location"];
-=======
->>>>>>> 7fd2317154260a5f51dfc9eecd038a8c310abbfa
 $area =  $_POST["area"];
 $test =  $_POST["test"];
 
