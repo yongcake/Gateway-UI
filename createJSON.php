@@ -30,48 +30,32 @@ fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
 fclose($infoFile);*/
-foreach($activeJsonArray as $testNo =>$test){ // Loop through all the test
-    if($test['testCompleted']){
-        unset($activeJsonArray[$testNo]);
-    }
-    else{
-        foreach($test['floorArray'] as $floor){ //loop all the floors
-            $activeNodeOnFloor = false;
-            $currentFloor = $floor['floor'];
-            //echo($floor['floor']."<hr></hr>");
-            foreach($floor['nodeList'] as $pointID =>$point){
-                if($point['active']=="false"){ 
-                   //echo($pointID."Removed <hr></hr>");
-                   jsonArray[$testNo]['floorArray'][$currentFloor]['nodeList'][$pointID]); //Remove if point is not active
-                }
-                else{
-                    //echo($pointID."True <hr></hr>");
-                    $activeNodeOnFloor = true;
-                }
-                
-            }
-            if(!$activeNodeOnFloor){
-                jsonArray[$testNo]['floorArray'][$currentFloor]); //Remove floor if no node active at all in this floor       
-            }
-                
-        }
-    }
+if(count($activeJsonArray)>0){
+	foreach($activeJsonArray as $testNo =>$test){ // Loop through all the test
+		foreach($test['floorArray'] as $floor){ //loop all the floors
+			$currentFloor = $floor['floor'];
+			//echo($floor['floor']."<hr></hr>");
+			foreach($floor['nodeList'] as $pointID =>$point){
+				if($point['nodeName']=$nodeName){
+					$point['signal'] =$sigStrength;
+					$point['status'] ="Connected";
+					/*if($nodeArray[$nodeName]['strength'] <= $sigStrength){
+						$nodeArray[$nodeName]['TX'] = $txPower;
+						$nodeArray[$nodeName]['SF'] = $sf;
+						$nodeArray[$nodeName]['strength'] = $sigStrength;
+					}
+					//echo($pointID."Removed <hr></hr>");*/
+					$jsonArray[$testNo]['floorArray'][$currentFloor]['nodeList'][$pointID] = $point; //Remove if point is not active
+				}
+			}		
+		}
+	}
 }
 
+/*
 foreach($jsonArray as $key['testComplete'] => $value) {
 	if($value){
-		foreach($key['floorArray'] as $) {
-
-		}
-		if(isset($key['floorArray'][])){
-			$jsonArray[$nodeName]['signal'] =$sigStrength;
-			$jsonArray[$nodeName]['status'] ="Connected";
-			if($nodeArray[$nodeName]['strength'] <= $sigStrength){
-				$nodeArray[$nodeName]['TX'] = $txPower;
-				$nodeArray[$nodeName]['SF'] = $sf;
-				$nodeArray[$nodeName]['strength'] = $sigStrength;
-			}
-			
+		if(isset($key['floorArray'][])){		
 		}
 		else{
 			$jsonArray[$nodeName] =array('markerID'=>null,'nodeID'=>null,
@@ -85,7 +69,7 @@ foreach($jsonArray as $key['testComplete'] => $value) {
 				$nodeArray[$nodeName]['area'] = "";
 			}
 	}
-}
+}*/
 
 
 
@@ -99,6 +83,27 @@ fclose($myfile);
 
 function calculateSignalStrength($rssIndicator){
 	$signalStrength = 0;
+	$snrReachedMin = false;
+	if($snr > (-20) && $sf == 12){
+		$snrReachedMin = true;
+	}
+	else if ($snr > (-17.5) && $sf == 11)
+	{
+		$snrReachedMin = true;
+	}
+	else if ($snr > (-15) && $sf == 10){
+		$snrReachedMin = true;
+	}
+	else if ($snr > (-12.5) && $sf == 9){
+		$snrReachedMin = true;
+	}
+	else if ($snr > (-10) && $sf == 8){
+		$snrReachedMin = true;
+	}
+	else if ($snr > (-7.5) && $sf == 7){
+		$snrReachedMin = true;
+	}
+
 	if($rssIndicator >60){
 		$signalStrength =5;
 	}
@@ -115,7 +120,9 @@ function calculateSignalStrength($rssIndicator){
 	else if ($rssIndicator >0){
 		$signalStrength =1;
 	}
-	
+	if(!$snrReachedMin && $signalStrength >2){
+		$signalStrength =1;
+	}
 	return $signalStrength;
 }
 	
