@@ -35,14 +35,14 @@ var img = new Image();
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, floorArray, floor, nodeList, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;
-  var jsonFilePath = "./config.json"; //which file to look at
+  var jsonFilePath = "http://192.168.43.10/getActiveItems.php"; //which file to look at
   img.src = imgSrc;
   $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     for (var i in data){    
       var testData = data[i]; //info inside "testn"
-      console.log("==========================" + JSON.stringify(subData["testNo"]) + "==========================");
+      console.log("==========================" + JSON.stringify(i) + "==========================");
       console.log(data);
       testCompleted = testData["testCompleted"];
       testNo = testData["testNo"];
@@ -53,13 +53,13 @@ $(document).ready( function(){
       floorArray = testData["floorArray"];
 
       for (var j in floorArray){
-        var floorData = j;
-        floor = j["floor"];
-        nodeList = j["nodeList"];
-
+        var floorData = floorArray[j];
+        floor = floorData["floor"];
+        nodeList = floorData["nodeList"];
+        console.log(floorData);
         for (var k in nodeList){
-          var nodeData = k;
-
+          var nodeData = nodeList[k];
+          console.log(nodeData);
           markerID = nodeData["markerID"];
           nodeID = nodeData["nodeID"];
           infoID = nodeData["infoID"];
@@ -87,7 +87,7 @@ $(document).ready( function(){
             createNodeContainer(n); // create node container (info) according to json
             $("#"+n.nodeID).hide();
             nodeList.push(n); // add node to nodeList
-          
+            console.log(n);
 
             var mCount = parseInt(markerID.slice(6, markerID.length));
             initMarkerCount.push(mCount);
@@ -111,6 +111,7 @@ $(document).ready( function(){
     divHeight = document.getElementById("imageSource").offsetHeight
     //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
     //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
+
     for (i =0 ; i <nodeList.length;i++){
 
       var top = nodeList[i].posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset;
@@ -181,10 +182,8 @@ function initMarker(markerID, xPos, yPos){ //add or move a marker
 }
 
 function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker around
-  initMarkerDiv.style.left =xPos+ "px"; //Calculator where it should be on the container
-  initMarkerDiv.style.top = yPos+ "px"; //Calculator where it should be on the container
+  initMarkerDiv.style.left =xPos+ "px"; 
 }
-
 var prevSelectedNode;
 function changeSelectedNode(newNode){
   var count = 0;
@@ -262,8 +261,10 @@ function toggleMove(){ //Toggle between Viewing and Moving
 
 function addGatewayPressed(){
   addGatewayButtonPressed = true;
+  currentFloor = "Floor1";
   var testNo = "Test"+testCounter;
   var gatewayID = "gateway"+testCounter;
+  var container = document.querySelector("#imageSource");
   if(addGatewayButtonPressed == true){
       var test = new Test(testNo, "gateway1", gatewayUniqueMarker.style.left, gatewayUniqueMarker.style.top, currentFloor, floorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area, floorArray
       testArray.push(test);
@@ -272,8 +273,8 @@ function addGatewayPressed(){
       $.post("./createConfigHTML.php",
       {
         markerID: gatewayID,
-        posLeft: (gatewayUniqueMarker.style.left- gatewayUniqueContainer.getBoundingClientRect().left) *(imageWidth/divWidth),
-        posTop:  (gatewayUniqueMarker.style.top - gatewayUniqueContainer.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
+        posLeft: (gatewayUniqueMarker.style.left- container.getBoundingClientRect().left) *(imageWidth/divWidth),
+        posTop:  (gatewayUniqueMarker.style.top - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
         area: currentFloor,
         test: testNo
       },

@@ -44,7 +44,7 @@ if(!isset($jsonArray[$test]) && $test != ""){ //For Geteway
 	$nodeArray[$test]['gatewayLeft'] = $posLeft;
 	$nodeArray[$test]['gatewayTop'] = $posTop;
 	$nodeArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]= "";
+	//$jsonArray[$test]['floorArray']["$area"]= ;
 }
 else { //For Nodes
 	$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
