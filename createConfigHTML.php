@@ -14,7 +14,7 @@ $nodeJson= file_get_contents('./packetInfo.json');
 $nodeArray = json_decode($nodeJson,true);
 
 if (file_exists('./config.json')){
-	$json= file_get_contents('./config.json');//encoded json
+	$json= file_get_contents('./config.json'); //encoded json
 	$jsonArray = json_decode($json,true);
 }
 else{
@@ -31,7 +31,7 @@ fwrite($infoFile, $area."\n");
 fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
 fclose($infoFile);
 */
-if(!isset($jsonArray[$test]) && $test != ""){ //For Geteway
+if(!isset($jsonArray[$test]) && $test != ""){ //For Gateway
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
 	$jsonArray[$test]['gatewayID'] = $markerID;

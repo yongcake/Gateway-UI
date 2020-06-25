@@ -23,7 +23,10 @@ else{
 	$jsonArray = array();
 }
 
-if(isset($jsonArray[$oldNodeName])){
+$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posTop'] = $posTop;
+$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posLeft'] = $posLeft;
+
+/* if(isset($jsonArray[$oldNodeName])){
 	if($nodeName != $oldNodeName){
 		$jsonArray[$nodeName] = $jsonArray[$oldNodeName];
 		$jsonArray[$nodeName]['nodeName'] = $nodeName;
@@ -52,8 +55,8 @@ else{
 	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
 	'nodeName'=>$nodeName, 'posLeft'=>$posLeft,'posTop'=>$posTop,'location' =>$location,'area' =>$area);
 }
-
-}
+ 
+}*/
 $myfile = fopen("nodeSetting.json", "w");
 fwrite($myfile, json_encode($nodeArray));
 fclose($myfile);
@@ -65,4 +68,3 @@ fclose($myfile);
 
 	
 ?>
-

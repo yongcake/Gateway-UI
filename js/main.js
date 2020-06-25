@@ -196,7 +196,7 @@ function changeSelectedNode(newNode){
   for (i = 0; i<buttonArray.length;i++){
     $("#"+buttonArray[i]).attr('disabled',false); //loop through buttons to enable it
   }
-  $("#"+newNode).attr('disabled',true);
+  //$("#"+newNode).attr('disabled',true);
 
   if (prevSelectedNode != "" && prevSelectedNode != selectedNode){ // will not pass if there is no prevSelectedNode and if user click on same button again
     $("#"+prevSelectedNode).removeClass("addBorder");
@@ -332,6 +332,7 @@ function createNewMarker(){ //add or move a a marker
       selectiveDisableNodeButton();
       $("#addNode").attr("value","Add");
       $("#addNode").attr("onclick", "addPressed()")
+      console.log("change to addPressed");
       var container = document.querySelector("#imageSource");
       newMarker = document.createElement("div"); 
       container.append(newMarker); //create new div in #imageSource
@@ -412,13 +413,15 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   modeArray.viewingMode =false;
   modeArray.addingMode =true;
   if(!modeArray.movingMode){
-    
+    unset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]);
     $.post("deleteJsonObj.php",
     {
-      nodeName: getNodeByMarkerID(markerID).nodeName
+      test: "Test"+(testCounter-1),
+      area: getNodeByMarkerID(markerID).area,
+      pointID: getNodeByMarkerID(markerID).pointID
     },
     function(){
-      alert("Info Sent to ConfigHTML");
+      console.log("Info Sent to ConfigHTML");
     });
     
 
@@ -492,8 +495,8 @@ function addPressed(){
     selectiveDisableNodeButton();
     markerCount++;
     if (nodeExist == false){
-      var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
-      document.getElementById("formStatus").innerHTML = formStatus;
+      //var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
+      //document.getElementById("formStatus").innerHTML = formStatus;
     }
     newMarker = null; 
     
@@ -526,9 +529,9 @@ function editSelectedNode(markerID){
       for (var i = 0; i<nodeList.length; i++){
         if(nodeList[i].markerID == selectedMarkerID){
           //document.getElementById("locationName").value = nodeList[i].location;
-          document.getElementById("nodeID").value = nodeList[i].nodeName;
-          var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
-          document.getElementById("formStatus").innerHTML = formStatus;
+          //document.getElementById("nodeID").value = nodeList[i].nodeName;
+          //var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
+          //document.getElementById("formStatus").innerHTML = formStatus;
         }
       }
       $("#"+ node.nodeID +" #editNode").attr("value", "Cancel Edit");
@@ -538,8 +541,11 @@ function editSelectedNode(markerID){
       
       document.getElementById("addNode").value = "Save";
       $("#addNode").show();
+      document.getElementById("addNode").style.display = "block";
       $("#cancel").hide();
       document.getElementById("addNode").onclick = saveEdit;
+      
+      console.log("change to saveEdit");
     }
   //}
   return true;
@@ -558,9 +564,7 @@ function editJson(newLocation, newID, oldNodeName, posLeft, posTop){
 
 function saveEdit(){
   var markerID = $("#selectedMarker").text();
-  var node =getNodeByMarkerID(markerID);
-  var oldNodeName = node.nodeName;
-  var oldLocation = node.location;
+  var node = getNodeByMarkerID(markerID);
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   //document.getElementById("editNode").value = "Edit";
@@ -575,19 +579,14 @@ function saveEdit(){
   
   $.post("updateJson.php",
   {
-    oldNodeName: oldNodeName,
-    oldLocation: oldLocation,
-    nodeName: newID,
-    markerID: markerID,
-    nodeID: getNodeByMarkerID(markerID).nodeID,
-    infoID: getNodeByMarkerID(markerID).infoID,
+    test: "Test"+(testCounter-1),
+    area: getNodeByMarkerID(markerID).area,
+    pointID: getNodeByMarkerID(markerID).pointID,
     posLeft: getRelativeImageWidth(markerID),
     posTop: getRelativeImageHeight(markerID),
-    location: newLocation,
-    area: currentFloor
   },
   function(){
-    alert("Info Sent to ConfigHTML");
+    console.log("Info Sent to ConfigHTML");
   });
 
   
@@ -595,19 +594,19 @@ function saveEdit(){
 
   $("#addNode").hide();
   document.getElementById("addNode").value = "Add";
-  for (var i = 0; i<nodeList.length; i++){
+/*   for (var i = 0; i<nodeList.length; i++){
     if (nodeList[i].markerID == selectedMarkerID){
       nodeList[i].editNode(newLocation, newID);
       $("#"+ node.nodeID +" #"+node.infoID).html(nodeList[i].print());
-      //document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
+      document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
       var formStatus = "Node '" + nodeList[i].nodeName + "' changes saved "
       document.getElementById("formStatus").innerHTML = formStatus;
     }
-  }
+  } */
 
 
-  document.getElementById("locationName").value = "";
-  document.getElementById("nodeID").value = "";
+  //document.getElementById("locationName").value = "";
+  //document.getElementById("nodeID").value = "";
   modeArray.movingMode =false; //Swap back to Adding
   modeArray.viewingMode =false; 
   modeArray.addingMode = true;
@@ -616,8 +615,8 @@ function saveEdit(){
 }
 
 function cancelEdit(){
-  var formStatus = "Edit Cancelled";
-  document.getElementById("formStatus").innerHTML = formStatus;
+  //var formStatus = "Edit Cancelled";
+  //document.getElementById("formStatus").innerHTML = formStatus;
   resetNodeDiv();
   var marker = document.getElementById(selectedMarkerID);
   marker.style.left = oldCord[0];
@@ -636,7 +635,7 @@ function cancelEdit(){
 }
 
 function cancelPressed(){
-  document.getElementById("formStatus").innerHTML = "Selection Cancelled";
+  //document.getElementById("formStatus").innerHTML = "Selection Cancelled";
   //removeMarker(newMarker.id);
   removeFromArray(newMarker.id); //Function to remove marker,
   removeUnwantedMarker();
@@ -647,6 +646,9 @@ function cancelPressed(){
   //document.getElementById("locationName").value = "";
   //document.getElementById("nodeID").value = "";
   disableAllNodeButton();
+  for (i = 0; i<buttonArray.length;i++){ //remove all border
+    $("#"+buttonArray[i]).removeClass("addBorder");
+  }
   $("#cancel").hide();
   $("#addNode").hide(); 
 }
@@ -654,7 +656,7 @@ function cancelPressed(){
 function moveGateway(){
   //reset the HTML 
   document.getElementById("imageSource").innerHTML = ""; 
-  document.getElementById("formStatus").innerHTML = ""; 
+  //document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
   // reset the arrays
@@ -731,7 +733,7 @@ function testComplete(){
   
   //nodeList = []; // completely clear nodeList
   document.getElementById("imageSource").innerHTML = ""; 
-  document.getElementById("formStatus").innerHTML = ""; 
+  //document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
 }
@@ -931,7 +933,7 @@ function addNode(markerID, infoID)
   }
 
   if(nodeExist == true){
-    document.getElementById("formStatus").innerHTML = "";
+    //document.getElementById("formStatus").innerHTML = "";
     alert("Node ID already exist, please enter a non-existing ID"); 
     removeMarker(markerID);
     return;
@@ -1117,6 +1119,7 @@ class Test{
 }
 
 //===================================================== Update Config =============================================================
+//node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
   var jsonFilePath = "./config.json"; //which file to look at
   var searchKey = "signal"; //what to search for
@@ -1150,3 +1153,14 @@ function updateSignal(){
 $("document").ready(function(){
 setInterval(updateSignal, 1000);
 }); 
+
+function testUpdate(){
+  var filePath = "./getActiveItems.php";
+  var searchKey = "signal";
+  $.ajaxSetup({cache:false}); //disable cache so it can update 
+  $.get(filePath, function(data){
+    console.log(data);
+  });
+
+
+}
