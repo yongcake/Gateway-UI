@@ -185,19 +185,49 @@ function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker aro
   initMarkerDiv.style.top = yPos+ "px"; //Calculator where it should be on the container
 }
 
+var prevSelectedNode;
 function changeSelectedNode(newNode){
+  var count = 0;
   $("#addNode").show();
   $("#cancel").show();
+  prevSelectedNode = selectedNode;
   selectedNode = newNode;
+
+  for (i = 0; i<buttonArray.length;i++){
+    $("#"+buttonArray[i]).attr('disabled',false); //loop through buttons to enable it
+  }
+  $("#"+newNode).attr('disabled',true);
+
+  if (prevSelectedNode != "" && prevSelectedNode != selectedNode){ // will not pass if there is no prevSelectedNode and if user click on same button again
+    $("#"+prevSelectedNode).removeClass("addBorder");
+  }
+
+  $("#"+newNode).addClass("addBorder");
+  selectiveDisableNodeButton(); //disable those selected ones
+
+
+}
+
+function disableAllNodeButton(){  //disable all node buttons 
+  for (i = 0; i<buttonArray.length;i++){
+    $("#"+buttonArray[i]).attr('disabled',true);
+  }
+}
+
+function enableAllNodeButton(){
   for (i = 0; i<buttonArray.length;i++){
     $("#"+buttonArray[i]).attr('disabled',false);
   }
-  $("#"+newNode).attr('disabled',true);
 }
 
-function disableAllNodeButton(){
-  for (i = 0; i<buttonArray.length;i++){
-    $("#"+buttonArray[i]).attr('disabled',true);
+function selectiveDisableNodeButton(){ //only disable those that are selected 
+  for (var i = 0; i<nodeList.length; i++){
+    for (var j = 0; j<buttonArray.length; j++){
+      if (nodeList[i]["nodeName"] == buttonArray[j]){
+        $("#"+ nodeList[i]["nodeName"]).attr('disabled', true);
+        $("#" +nodeList[i]["nodeName"]).removeClass("addBorder");
+      }
+    }
   }
 }
 
@@ -299,6 +329,7 @@ function createNewMarker(){ //add or move a a marker
       for (i = 0; i<buttonArray.length;i++){
         $("#"+buttonArray[i]).attr('disabled',false);
       }
+      selectiveDisableNodeButton();
       $("#addNode").attr("value","Add");
       $("#addNode").attr("onclick", "addPressed()")
       var container = document.querySelector("#imageSource");
@@ -316,6 +347,33 @@ function createNewMarker(){ //add or move a a marker
     }
   }
   console.log("this is created" + newMarker.id);
+
+  //check if all node have been used
+  var count = 0;
+  for(i = 0; i<buttonArray.length;i++){
+    if (document.getElementById(buttonArray[i]).hasAttribute("disabled")){
+      count++;
+    }
+  }
+  if (count == 6){
+    var ans  = confirm("All node has been used, would you like to reuse the node? (Press 'OK' to continue)");
+    if (ans == true) {
+      enableAllNodeButton();
+    } 
+    else {
+      return;
+    }
+  }
+}
+
+function showAlert(){
+  document.getElementById("formContainerID").style.display = "none";
+  document.getElementById("alertForm").style.display = "flex";
+}
+
+function hideAlert(){
+  document.getElementById("formContainerID").style.display = "flex";
+  document.getElementById("alertForm").style.display = "none";
 }
 
 function displayCurrentMarker(markerID){ //function runs when a marker is clicked (Currently not Used)
@@ -429,13 +487,16 @@ function addPressed(){
   }
   else{
     addButtonPressed = true;
+    $("#" +selectedNode).removeClass("addBorder"); //remove the border on the button
     addNode(newMarker.id, ("nodeInfo"+markerCount));
+    selectiveDisableNodeButton();
     markerCount++;
     if (nodeExist == false){
       var formStatus = "Node '" + nodeID + "' added at '" + location + "'"
       document.getElementById("formStatus").innerHTML = formStatus;
     }
     newMarker = null; 
+    
     //document.getElementById("locationName").value = "";
     //document.getElementById("nodeID").value = "";
   }
@@ -855,6 +916,7 @@ function addNode(markerID, infoID)
   nodeExist = false;
   selectedNode = "";
   disableAllNodeButton();
+  selectiveDisableNodeButton();
   $("#addNode").hide();
   $("#cancel").hide();
   if (location == "" || nodeID == ""){

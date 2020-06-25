@@ -51,7 +51,7 @@ img{
 .floorPlanZoneContainer{
 	display: flex;
 	justify-content: flex-start;
-	
+
 }
 .con{
 	background-image: url('../Image/image19.jpg');
@@ -65,6 +65,18 @@ img{
 .imageContainer{
 	padding-top: 62.5%;
 
+}
+
+.alert{
+	/* display flex */
+	border: black solid 1px;
+	width: inherit;
+	height: 15vw;
+	flex-grow: 1;
+}
+
+#alertFormYes{
+	margin-left: 3%;
 }
 
 .informationContainer{
@@ -256,7 +268,7 @@ img{
 	border: none;
 	color: white;
 	width: 100%;
-	margin-left: 5%;
+	/* margin-left: 5%; */
 }
 
 #noSignalNode{
@@ -283,5 +295,7 @@ img{
 	background-color: green;
 }
 
-
+.addBorder{ /*adds border around an element */
+	border: black solid 2px;
+}
 
