@@ -53,9 +53,27 @@
 			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); "><!--showCoords(event);-->
 			</div>
 			</div>
+			
 			<div class="informationContainer" id ="informationContainerTest">
-
-				<div class="formContainer">
+<!-- 				<div class="alert" id="alertForm" style="display: none;">
+					<table>
+						<tr>
+							<th colspan="2">
+								Text
+							</th>
+						</tr>
+						<tr>
+							<td>
+								<input type="button"  class="addNode" id="alertFormYes" value="Yes" onclick="hideAlert()">
+							</td>
+							<td>
+								<input type="button"  class="addNode" id="alertFormNo" value="No" onclick="hideAlert()"> 
+							</td>
+						</tr>
+					</table>
+	
+				</div> -->
+				<div class="formContainer" id="formContainerID" style="display: flex;">
 					<input type="button"  class="addNode" id="addGateway" disabled value="Place Gateway" onclick=addGatewayPressed()>
 					<div class="inputWrapper" id="inputInfo">
 						<input type="button"  class="addNode" id="A001" disabled value="A001" onclick="changeSelectedNode('A001')"> 
