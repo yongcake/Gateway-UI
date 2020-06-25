@@ -34,7 +34,7 @@ var img = new Image();
 
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
-  var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, floorArray, floor, nodeList, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test;
+  var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, floorArray, floor, nodeList, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;
   var jsonFilePath = "./config.json"; //which file to look at
   img.src = imgSrc;
   $("#inputInfo").hide();
@@ -70,9 +70,11 @@ $(document).ready( function(){
           nodeName = nodeData["nodeName"];
           area = nodeData["area"];
           test = nodeData["testNo"]
+          pointID = nodeData["pointID"];
+          active = nodeData["active"];
 
           if (markerID != null && posLeft != null && posTop != null){
-            var n = new Node(markerID, nodeID, location, nodeName, infoID,area); //create new node according to json
+            var n = new Node(markerID, nodeID, location, nodeName, infoID,area,pointID,active); //create new node according to json
             n.status = status;
             //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
 
@@ -291,7 +293,6 @@ function addGatewayPressed(){
 function createNewMarker(){ //add or move a a marker
   if(!gatewayPlaced){
     $("#addGateway").attr('disabled',false);
-    var testNo = "Test"+testCounter;
     var gatewayID = "gateway"+testCounter;
     if (gatewayMarkerAdded == false){
       $("#imageSource").append('<div class="gateway" id="' +gatewayID+ '"></div>');
@@ -524,7 +525,7 @@ function editSelectedNode(markerID){
 
       for (var i = 0; i<nodeList.length; i++){
         if(nodeList[i].markerID == selectedMarkerID){
-          document.getElementById("locationName").value = nodeList[i].location;
+          //document.getElementById("locationName").value = nodeList[i].location;
           document.getElementById("nodeID").value = nodeList[i].nodeName;
           var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
           document.getElementById("formStatus").innerHTML = formStatus;
@@ -807,7 +808,7 @@ function changeSignalStrengthNotation(markerID){
 
 //================================================== Node Class ====================================================
 class Node{
-  constructor(markerID, nodeID, location, nodeName, infoID, area){
+  constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active){
     this.markerID = markerID;
     this.nodeID = nodeID;
     this.infoID = infoID;
@@ -816,6 +817,8 @@ class Node{
     this.editNode(location,nodeName);
     this.updatePosition(xPosition,yPosition);
     this.area = area;
+    this.pointID = pointID;
+    this.active = active;
   }
   signalChange(){
       //this will be the function for changing signal later
@@ -908,7 +911,7 @@ function addNode(markerID, infoID)
 {
   var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
-  nodeCount++;
+  var pointID ="point"+nodeCount;
   var nodeName = selectedNode;
   nodeExist = false;
   selectedNode = "";
@@ -934,7 +937,7 @@ function addNode(markerID, infoID)
     return;
   }
   else{ //this is supposed to be the else statement
-    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor);
+    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
     n.updatePosition(xPosition, yPosition);
     createNodeContainer(n);
     nodeList.push(n);
@@ -950,11 +953,13 @@ function addNode(markerID, infoID)
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
+    var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
     
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
+    nodeCount: nodeCount,
     markerID: markerID,
     nodeID: nodeID, 
     infoID: infoID,
@@ -962,13 +967,16 @@ function addNode(markerID, infoID)
     posTop:  getRelativeImageHeight(markerID),
     location: location,
     area: currentFloor,
-    test: testNo
+    test: "Test"+(testCounter-1),
+    pointID: pointID,
+    active: true
   },
   function(){
     console.log("Info Sent to ConfigHTML");
   });
   
   }
+  nodeCount++;
 }
 
 function removeNode(markerID){
