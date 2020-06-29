@@ -38,7 +38,7 @@ if(!isset($jsonArray[$test]) && $test != ""){ //For Gateway
 	$jsonArray[$test]['gatewayLeft'] = $posLeft;
 	$jsonArray[$test]['gatewayTop'] = $posTop;
 	$jsonArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]= 'nodeList'=>array();
+	$jsonArray[$test]['floorArray']["$area"]['nodeList'] =array();
 
 	//$nodeArray[$test]['testCompleted'] = false;
 	$nodeArray[$test]['gatewayLeft'] = $posLeft;

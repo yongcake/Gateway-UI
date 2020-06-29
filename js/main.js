@@ -54,6 +54,10 @@ $(document).ready( function(){
       gatewayTop = testData["gatewayTop"];
       gatewayFloor = testData["gatewayFloor"];
       floors = testData["floorArray"];
+      $("#imageSource").append("<div class='gateway' id='" + gatewayID + ">'</div>");
+      posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
+      posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset
+      initPlaceMarker($("#"+gatewayID)[0],posX,posY);
       for (var j in floors){ //j == Floor'floorNo'
         var floorData = floors[j];
         nodeList = floorData["nodeList"];
@@ -67,8 +71,8 @@ $(document).ready( function(){
           infoID = nodeData["infoID"];
           signal = nodeData["signal"];
           status = nodeData["status"];
-          posLeft = 0;//nodeData["posLeft"] ; 
-          posTop = 0;//nodeData["posTop"] ; 
+          posLeft = nodeData["posLeft"] ; 
+          posTop = nodeData["posTop"] ; 
           nodeName = nodeData["nodeName"];
           area = nodeData["area"];
           test = nodeData["testNo"]
@@ -263,15 +267,15 @@ function addGatewayPressed(){
   var gatewayID = "gateway"+testCounter;
   var container = document.querySelector("#imageSource");
   if(addGatewayButtonPressed == true){
-      var test = new Test(testNo, "gateway1", gatewayUniqueMarker.style.left, gatewayUniqueMarker.style.top, currentFloor, [currentFloor,[]]); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
+      var test = new Test(testNo, "gateway1", parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, [currentFloor,[]]); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
       testArray.push(test);
       //gatewayUniqueMarker = document.getElementById(gatewayID);
       //gatewayUniqueContainer = $("#imageSource")[0];
       $.post("./createConfigHTML.php",
       {
         markerID: gatewayID,
-        posLeft: (gatewayUniqueMarker.style.left- container.getBoundingClientRect().left) *(imageWidth/divWidth),
-        posTop:  (gatewayUniqueMarker.style.top - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
+        posLeft: (test.gatewayLeft - container.getBoundingClientRect().left) *(imageWidth/divWidth),
+        posTop:  (test.gatewayTop - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
         area: currentFloor,
         test: testNo
       },
@@ -924,11 +928,9 @@ function addNode(markerID, infoID)
     console.log("Node ID: " + n.nodeID);
     var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
-    
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
-    nodeCount: nodeCount,
     markerID: markerID,
     nodeID: nodeID, 
     infoID: infoID,
@@ -1004,18 +1006,18 @@ function getActiveNodeListByFloor(floor){//Get or Create new floor
 }
 function getAllActiveNode(){
   var allNodes = [];
-  for(var i = 0;i<testArray.length;i++){ //loop all the sites
-    if(!testArray[i].testCompleted){
-      for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-        if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
-          for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
-            if(testArray[i].floorArray[floor][1][k].active){
-              allNodes.push(testArray[i]['floorArray'][floor][1][k]);
+    for(var i = 0;i<testArray.length;i++){ //loop all the sites
+      if(!testArray[i].testCompleted){
+        for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
+          if(testArray[i].floorArray[i][floor][1] !== undefined){ //in case site is created but no markers was added
+            for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
+              if(testArray[i].floorArray[floor][1][k].active){
+                allNodes.push(testArray[i]['floorArray'][floor][1][k]);
+              }
             }
           }
         }
       }
-    }
   }
   //console.log(allNodes);
   return allNodes;
@@ -1089,7 +1091,7 @@ class Test{
   }
   
   toggleTestCompleted(){
-    if(this.testCompleted){
+    if(!this.testCompleted){
       this.testCompleted = false;
     }
     else{
