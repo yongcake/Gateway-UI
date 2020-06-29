@@ -1,5 +1,5 @@
 <?php
-
+header("Access-Control-Allow-Origin: *");
 $json= file_get_contents('./config.json');//encoded json
 $jsonArray = json_decode($json,true);
 

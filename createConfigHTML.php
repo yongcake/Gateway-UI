@@ -38,13 +38,13 @@ if(!isset($jsonArray[$test]) && $test != ""){ //For Gateway
 	$jsonArray[$test]['gatewayLeft'] = $posLeft;
 	$jsonArray[$test]['gatewayTop'] = $posTop;
 	$jsonArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]= array('floor'=>$area,'nodeList'=>array());
+	$jsonArray[$test]['floorArray']["$area"]= 'nodeList'=>array();
 
 	//$nodeArray[$test]['testCompleted'] = false;
 	$nodeArray[$test]['gatewayLeft'] = $posLeft;
 	$nodeArray[$test]['gatewayTop'] = $posTop;
 	$nodeArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]= "";
+	//$jsonArray[$test]['floorArray']["$area"]= ;
 }
 else { //For Nodes
 	$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
