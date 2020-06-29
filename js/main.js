@@ -1150,6 +1150,7 @@ function updateSignal(){
     }
   });
 }
+
 $("document").ready(function(){
 setInterval(updateSignal, 1000);
 }); 
@@ -1160,7 +1161,5 @@ function testUpdate(){
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.get(filePath, function(data){
     console.log(data);
-  });
-
-
+  }); 
 }
