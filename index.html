@@ -31,6 +31,8 @@
 	
 		<div class="floor">
 			<div class="floorSelectionWrapper" id="floorSelectionWrapper">
+				<input type="button" class="button" id="Floor2" onclick="switchSites('Floor2')" value="Floor2">
+				<input type="button" class="button" id="Floor3" onclick="switchSites('Floor3')" value="Floor3">
 				<!--<input type="button" class="button" id="Test1" onclick="switchSites('Test1')" value="Test1">
 				<input type="button" class="button" id="Test2" onclick="switchSites('Test2')" value="Test2">
 				
@@ -41,15 +43,12 @@
 			<div class="markerStatusWrapper" hidden>
 				<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
 			</div>
-			
-			<!--<button id="btnToggleMode" onclick="toggleMode()">switch mode</button>
-			<button id="btnToggleMove" hidden onclick="toggleMove()">Move Marker</button> -->
 		</div>
 		
 		<br>
 
 		<div class="floorPlanZoneContainer">
-			<div class="con">
+			<div class="con" id="con">
 			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); "><!--showCoords(event);-->
 			</div>
 			</div>
