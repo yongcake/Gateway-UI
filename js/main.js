@@ -978,7 +978,6 @@ function getNodeByMarkerID(markerID){
         }
       }
     }
-    console.log(currentFloor +" Cleared")
   }
 }
 
