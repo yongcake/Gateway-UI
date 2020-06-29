@@ -525,15 +525,8 @@ function editSelectedNode(markerID){
       var nodeList = getAllActiveNode();
       for (var i = 0; i<nodeList.length; i++){
         if(nodeList[i].markerID == selectedMarkerID){
-<<<<<<< HEAD
-          //document.getElementById("locationName").value = nodeList[i].location;
-          //document.getElementById("nodeID").value = nodeList[i].nodeName;
-          //var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
-          //document.getElementById("formStatus").innerHTML = formStatus;
-=======
           var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
           document.getElementById("formStatus").innerHTML = formStatus;
->>>>>>> 65b30654f370d5b6ad18ec252157072f92ff5dd8
         }
       }
       $("#"+ node.nodeID +" #editNode").attr("value", "Cancel Edit");
@@ -915,15 +908,9 @@ function addNode(markerID, infoID)
     }
   }
 
-<<<<<<< HEAD
-  if(nodeExist == true){
-    //document.getElementById("formStatus").innerHTML = "";
-    alert("Node ID already exist, please enter a non-existing ID"); 
-=======
   if(nodeExist){
     document.getElementById("formStatus").innerHTML = "";
     alert("Node ID already exist and is active, please select a differnt node"); 
->>>>>>> 65b30654f370d5b6ad18ec252157072f92ff5dd8
     removeMarker(markerID);
     return;
   }
