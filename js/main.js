@@ -1122,23 +1122,21 @@ function updateSignal(){
   $.getJSON(jsonFilePath, function(data){
     //console.log(data);
     var nodeList = getAllActiveNode();
-    for (var i = 0; i<nodeList.length; i++){ //loop through all nodes
-      for (var j in data){ //loop through first key ==> j
-        if (nodeList[i].nodeName == j){
-          for (var k in data[j]){ //loop through sub keys ==> k
-            if (k == searchKey){
-              var nodeObj = data[j];
-              var updatedSignal = data[j][k];
-              //var updatedStatus = data[j]["status"];
-              nodeList[i].signal = updatedSignal;
-              nodeList[i].statusChange();
-              //nodeList[i].status = updatedStatus;
-              $("#"+ nodeList[i].infoID).html(nodeList[i].print());
-              changeSignalStrengthNotation(nodeList[i].markerID);
-              console.log("reading from json and printing info out");
-              //document.getElementById(nodeList[i].infoID).innerText(nodeList[i].print());
-              //console.log(nodeObj);
-              //console.log(updatedSignal);
+    for (var i in data){ //Test0,1,2,3
+      var testData = data[i]; //data in Test0,1,2,3
+      var floorArrayData = testData["floorArray"];  //floorArray in Test
+      for (var j in floorArrayData){ 
+        if (j == currentFloor){
+          var nodeListData = floorArrayData["nodeList"]; //each points in nodeList
+          for (var k = 0; k<nodeList.length; k++){
+            for (l in nodeListData){
+              if (nodeList[k].pointID == l){
+                nodeList[k].signal = nodeListData[l]["signal"];
+                nodeList[k].statusChange();
+                $("#"+ nodeList[k].infoID).html(nodeList[i].print());
+                changeSignalStrengthNotation(nodeList[k].markerID);
+                console.log("reading from json and printing info out");
+              }
             }
           }
         }
