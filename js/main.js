@@ -54,7 +54,7 @@ $(document).ready( function(){
       gatewayTop = testData["gatewayTop"];
       gatewayFloor = testData["gatewayFloor"];
       floors = testData["floorArray"];
-      $("#imageSource").append("<div class='gateway' id='" + gatewayID + ">'</div>");
+      $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
       posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
       posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset
       initPlaceMarker($("#"+gatewayID)[0],posX,posY);
