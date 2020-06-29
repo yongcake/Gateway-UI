@@ -28,7 +28,7 @@ img.src = '../Image/image19.jpg';
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//floorArray, nodeList,
-  var jsonFilePath = "http://192.168.43.10/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
   var newFloorArray = [];
   //var imgSrc = $("#con").css('background-image');
   //imgSrc = imgSrc.replace('url(','').replace(')','');
@@ -1118,7 +1118,7 @@ class Test{
 //===================================================== Update Config =============================================================
 //node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
-  var jsonFilePath = "http://192.168.43.10/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
@@ -1148,7 +1148,7 @@ function updateSignal(){
 }
 
 $("document").ready(function(){
-//setInterval(updateSignal, 1000);
+setInterval(updateSignal, 1000);
 }); 
 
 function testUpdate(){
