@@ -58,11 +58,16 @@ $(document).ready( function(){
       posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
       posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset
       initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+      $("#"+gatewayID).hide();
       for (var j in floors){ //j == Floor'floorNo'
         var floorData = floors[j];
         nodeList = floorData["nodeList"];
         //console.log(floorData);
         var newNodeList = [];
+        //.length to check if already exist
+        if($("#"+j).length == 0 && j != undefined){ //Create the floorSelect button if it doesn't already exist
+        $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + j + "' onclick=switchSites('"+j+"') value='" +j+ "'></input>");
+        }
         for (var k in nodeList){
           var nodeData = nodeList[k];
          // console.log(nodeData);
@@ -83,10 +88,6 @@ $(document).ready( function(){
             var n = new Node(markerID, nodeID, location, nodeName, infoID,area,pointID,active); //create new node according to json
             n.status = status;
             //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
-
-            if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
-              $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
-            }
             n.updatePosition(posLeft, posTop);
 
             createNodeContainer(n); // create node container (info) according to json
@@ -138,11 +139,12 @@ $(document).ready( function(){
 
     if (testArray[0]['floorArray'][0] != undefined){ //check if there is any site added
       currentFloor = testArray[0]['floorArray'][0][0];
-     switchSites(currentFloor);
+      switchSites(currentFloor);
     }
     else{
       currentFloor = "Floor1";
-        $("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
+      switchSites(currentFloor);
+      $("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
     }
     //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
     /*for (i = 0; i< floorArray.length;i++){
@@ -261,7 +263,6 @@ function removeUnwantedMarker(){
 
 function addGatewayPressed(){
   addGatewayButtonPressed = true;
-  currentFloor = "Floor1";
   testCounter++;
   var testNo = "Test"+testCounter;
   var gatewayID = "gateway"+testCounter;
@@ -1042,6 +1043,9 @@ function switchSites(newSite){ //Toggle between Sites
 function remapMarkers(newSite){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+      if(testArray[i].gatewayFloor == newSite){
+        $("#"+testArray[i].gatewayID).show();
+      }
       for(j = 0; j <testArray[i].floorArray.length;j++){
         if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
           if(testArray[i].floorArray[j][0]== newSite){
@@ -1062,6 +1066,9 @@ function remapMarkers(newSite){
 function clearSite(currentFloor){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+      if(testArray[i].gatewayFloor == currentFloor){
+        $("#"+testArray[i].gatewayID).hide();
+      }
       for(j = 0; j <testArray[i].floorArray.length;j++){
         if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
           if(testArray[i].floorArray[j][0]== currentFloor){
