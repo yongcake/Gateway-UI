@@ -5,8 +5,10 @@ $nodeID = $_POST["nodeID"];
 $infoID = $_POST["infoID"];
 $posLeft =  $_POST["posLeft"];
 $posTop = $_POST["posTop"];
-$location =  $_POST["location"];
 $area =  $_POST["area"];
+$test =  $_POST["test"];
+$pointID =  $_POST["pointID"];
+$active =  $_POST["active"];
 
 
 
@@ -18,8 +20,8 @@ else{
 	$jsonArray = array();
 }
 
-if(isset($jsonArray[$nodeName])){
-	unset($jsonArray[$nodeName]);
+if(isset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID])){
+	unset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]);
 }
 
 

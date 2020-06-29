@@ -8,7 +8,7 @@ body {
 	position: relative;
 }
 
-h1 {
+h2 {
 	flex-grow: 1;
 	margin-top: 0;
 	margin-bottom: 0;
@@ -57,7 +57,7 @@ img{
 	background-image: url('../Image/image19.jpg');
 	background-repeat: no-repeat;
 	background-size: contain;
-	width: 	1080px;
+	width: 	678px;
 	max-width: 100%;
 	margin-right: 3%;
 	
@@ -88,7 +88,7 @@ img{
 }
 
 .formContainer{
-	width: inherit;
+	width: 345px;
 	display: flex;	
 	
 }
@@ -128,7 +128,7 @@ img{
 	overflow-x: hidden;
 }
 	div.scrollInfoContainer::-webkit-scrollbar {
-	width: 25px;
+	width: 10px;
   }
   
   /* Track */
@@ -148,6 +148,7 @@ img{
 
 
 .nodeInfoContainer{
+	font-size: 16px;
 	width: inherit;
 	border: black solid 1px;
 	padding: 2%;
@@ -158,12 +159,12 @@ img{
 }
 
 .nodeInfoWrapper{
-	width: 60%;
+	width: 65%;
 	flex-grow: 1;
 }
 
 .nodeButtonWrapper{
-	width: 40%;
+	width: 35%;
 	height: 100%;
 	flex-grow: 1;
 	display: flex;
@@ -212,7 +213,7 @@ img{
 	text-align: center;
 	text-decoration: none;
 	opacity: 0.6;
-	height: 4vw;
+	height: 6vw;
 	/*cursor: not-allowed;*/
 	margin: 1%
 }
@@ -222,7 +223,7 @@ img{
 	text-align: center;
 	text-decoration: none;
 	opacity: 0.6;
-	height: 4vw;
+	height: 6vw;
 	/*cursor: not-allowed;*/
 	margin: 1%;
 }
@@ -234,8 +235,8 @@ img{
 	padding: 5px;
 	float: right;
 	align-self: flex-end;
-	width: 5vw;
-	height: 3.5vw;
+	width: 9vw;
+	height: 5vw;
 }
 .addNode{
 	padding: 20px;
@@ -250,12 +251,12 @@ img{
 	font-size: 24px;
 	padding: 5px;
 	align-self: flex-end;
-	width: 5vw;
-	height: 3.5vw;
+	width: 9vw;
+	height: 5vw;
 }
 
 #editNode{
-	font-size: 24px;
+	font-size: 16px;
 	background-color: #999900;
 	border: none;
 	color: white; /*text colour*/
@@ -263,7 +264,7 @@ img{
 }
 
 #deleteNode{
-	font-size: 24px;
+	font-size: 16px;
 	background-color: red;
 	border: none;
 	color: white;
