@@ -10,6 +10,7 @@ $posTop = $_POST["posTop"];
 $location =  $_POST["location"];
 $area =  $_POST["area"];
 $test =  $_POST["test"];
+$pointID = $_POST["pointID"];
 $nodeJson= file_get_contents('./nodeSetting.json');
 $nodeArray = json_decode($nodeJson,true);
 
