@@ -1018,7 +1018,7 @@ function getAllActiveNode(){
           }
         }
       }
-  }
+    }
   //console.log(allNodes);
   return allNodes;
 }
@@ -1118,6 +1118,7 @@ class Test{
 //===================================================== Update Config =============================================================
 //node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
+  console.log("letting u know this is going through")
   var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
@@ -1138,7 +1139,9 @@ function updateSignal(){
               if (nodeList[k].pointID == l.toLowerCase()){
                 nodeList[k].signal = nodeListData[l]["signal"];
                 console.log(nodeList[k].signal);
-                nodeList[k].statusChange();
+                if (nodeList[k].signal != 0){
+                  nodeList[k].statusChange();
+                }
                 $("#"+ nodeList[k].infoID).html(nodeList[k].print());
                 changeSignalStrengthNotation(nodeList[k].markerID);
                 console.log("reading from json and printing info out");
