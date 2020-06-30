@@ -70,14 +70,6 @@ else { //For Nodes
 	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posTop'] = $posTop;
 	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['trace'] = array();
 }
-//else{
-//	$node =array('markerID'=>$markerID,'nodeID'=>$nodeID,
-//	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
-//	'nodeName'=>$nodeName, 'posLeft'=>$posLeft,'posTop'=>$posTop,'area' =>$area);
-	//fwrite($infoFile, "\n Number of Nodes: ".count($jsonArray)."\n");
-	//fwrite($infoFile, "\n New ID Created: ".$nodeName."\n");
-//	$jsonArray[$test][$area][$nodeName] = $node;
-//}
 
 
 $myfile = fopen("packetInfo.json", "w");
