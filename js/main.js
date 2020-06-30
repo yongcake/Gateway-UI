@@ -261,7 +261,7 @@ function removeUnwantedMarker(){
 
 function addGatewayPressed(){
   addGatewayButtonPressed = true;
-  currentFloor = "Floor1";
+  //currentFloor = "Floor1";
   testCounter++;
   var testNo = "Test"+testCounter;
   var gatewayID = "gateway"+testCounter;
@@ -673,7 +673,7 @@ function moveGateway(){
 }
 
 function testComplete(){
-  var jsonFilePath = "./nodeSetting.json"; //which file to look at
+  /*var jsonFilePath = "./nodeSetting.json"; //which file to look at
   var textToWrite ="===========Start============", nodename;
   $.getJSON(jsonFilePath, function(data){
     for (var i =0; i<nodeList.length;i++){
@@ -715,8 +715,12 @@ function testComplete(){
   }).fail(function(d) {
     alert("nodeSetting.json Not Found");
   });
- 
-  
+ */
+  for(i = 0; i<testArray.length;i++){
+    if(testArray[i].testCompleted){
+      testArray.stopTest();
+    }
+  }
   document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
   document.getElementById("scrollInfoContainer").innerHTML = ""; 
@@ -1008,7 +1012,7 @@ function getAllActiveNode(){
     for(var i = 0;i<testArray.length;i++){ //loop all the sites
       if(!testArray[i].testCompleted){
         for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-          if(testArray[i].floorArray[i][floor][1] !== undefined){ //in case site is created but no markers was added
+          if(testArray[i]['floorArray'][i][floor][1] !== undefined){ //in case site is created but no markers was added
             for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
               if(testArray[i].floorArray[floor][1][k].active){
                 allNodes.push(testArray[i]['floorArray'][floor][1][k]);
@@ -1089,16 +1093,31 @@ class Test{
     console.log("Test created");
   }
   
-  toggleTestCompleted(){
+  stopTest(){
+    console.log("Yes");
     if(!this.testCompleted){
-      this.testCompleted = false;
-    }
-    else{
       this.testCompleted =true;
+      if(this.floorArray.length!= undefined){
+        for(i = 0; i < this.floorArray.length;i++){//Floors
+          for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
+            var node = this.floorArray[i][1][j];
+            node.active =false;
+            $("#"+node.markerID).remove();
+            $("#"+node.nodeID).remove();
+            $("#"+node.infoID).remove();
+          }
+        }
+      }  
+      $("#addGateway").show();
+      $("#inputInfo").hide();
+      testCounter++;
+      addGatewayButtonPressed = false;
+      gatewayPlaced = false;
+      gatewayMarkerAdded = true;
     }
   }
 
-
+  //redundant since you can use getNodeByMarker
   updateNodePos(floor, nodeName, xPosition,yPosition){  //Update a specfic node position in test Array
     for(i = 0; i < this.floorArray.length;i++){  //loop all the floors
       var testNodeList = this.floorArray[i][1];
