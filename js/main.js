@@ -37,7 +37,7 @@ $(document).ready( function(){
   imageHeight = img.naturalHeight;
   var container = document.querySelector("#imageSource");
   divWidth = document.getElementById("imageSource").offsetWidth;
-  divHeight = document.getElementById("imageSource").offsetHeight
+  divHeight = document.getElementById("imageSource").offsetHeight;
 
   $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
@@ -55,8 +55,8 @@ $(document).ready( function(){
       gatewayFloor = testData["gatewayFloor"];
       floors = testData["floorArray"];
       $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
-      posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
-      posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset
+      posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+      posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
       initPlaceMarker($("#"+gatewayID)[0],posX,posY);
       for (var j in floors){ //j == Floor'floorNo'
         var floorData = floors[j];
@@ -83,7 +83,7 @@ $(document).ready( function(){
             var n = new Node(markerID, nodeID, location, nodeName, infoID,area,pointID,active); //create new node according to json
             n.status = status;
             //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
-
+			console.log("ArEA: "+area);	
             if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
               $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
             }
@@ -128,17 +128,19 @@ $(document).ready( function(){
         for(k = 0; k<nodes.length;k++){    //nodes
           //console.log("|||||||||||||3||||||||||||||");
           var node = testArray[i].floorArray[j][1][k]; //1 node class
-          var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top -15 + window.pageYOffset;
-          var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left -15;
+          var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
+          var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
           node.updatePosition(left,top);
           initMarker(node.markerID, left, top);
         }
       }
     }
 
-    if (testArray[0]['floorArray'][0] != undefined){ //check if there is any site added
-      currentFloor = testArray[0]['floorArray'][0][0];
-     switchSites(currentFloor);
+    if (testArray[0] != undefined){ //check if there is any site added
+		if (testArray[0]['floorArray'][0] != undefined){ //check if there is any site added
+			currentFloor = testArray[0]['floorArray'][0][0];
+			switchSites(currentFloor);
+		}
     }
     else{
       currentFloor = "Floor1";
@@ -421,7 +423,7 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
     {
       test: "Test"+(testCounter),
       area: node.area,
-      pointID: upperCaseFirstLetter(node.pointID)
+      pointID: node.pointID
     },
     function(){
       console.log("Info Sent to ConfigHTML");
@@ -577,13 +579,14 @@ function saveEdit(){
     node.updatePosition(xPosition, yPosition);
   }
   
+  
   $.post("updateJson.php",
   {
-    test: "Test"+(testCounter-1),
+    test: "Test"+(testCounter),
     area: getNodeByMarkerID(markerID).area,
-    pointID: upperCaseFirstLetter(getNodeByMarkerID(markerID).pointID),
-    posLeft: getRelativeImageWidth(markerID),
-    posTop: getRelativeImageHeight(markerID),
+    pointID: getNodeByMarkerID(markerID).pointID,
+    posLeft: getRelativeImageWidth(node.posLeft),
+    posTop: getRelativeImageHeight(node.posTop),
   },
   function(){
     console.log("Info Sent to ConfigHTML");
@@ -717,14 +720,25 @@ function testComplete(){
     alert("nodeSetting.json Not Found");
   });
  */
+  var testCleared = false;
   for(i = 0; i<testArray.length;i++){
-    if(testArray[i].testCompleted){
-      testArray.stopTest();
+	  console.log(testArray[i].testCompleted);
+    if(!testArray[i].testCompleted){
+      testArray[i].stopTest();
+	  testCleared= true;
     }
   }
-  document.getElementById("imageSource").innerHTML = ""; 
+  if(testCleared){
+	  $("#addGateway").show();
+      $("#inputInfo").hide();
+      testCounter++;
+      addGatewayButtonPressed = false;
+      gatewayPlaced = false;
+      gatewayMarkerAdded = false;
+  }
+  //document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
-  document.getElementById("scrollInfoContainer").innerHTML = ""; 
+  //document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
 }
 
@@ -748,38 +762,39 @@ function changeSignalStrengthNotation(markerID){
   //console.log("function is invoked");
   //console.log(markerID);
   var node = getNodeByMarkerID(markerID);
+  var element = document.getElementById("signal-strength" + node.markerID);
   if (node.signal == 1){
-    var element = document.getElementById("signal-strength" + markerID);
+    
     //console.log(element);
-    //element.className = "";
+    element.className = "";
     element.classList.add("signal-strength");
     element.classList.add("signal-strength-1");
   }
 
   if (node.signal == 2){
-    var element = document.getElementById("signal-strength" + markerID);
+    //var element = document.getElementById("signal-strength" + markerID);
     element.className = "";
     element.classList.add("signal-strength");
     element.classList.add("signal-strength-2");
   }
 
   if (node.signal == 3){
-    var element = document.getElementById("signal-strength" + markerID);
+    //var element = document.getElementById("signal-strength" + markerID);
     element.className = "";
     element.classList.add("signal-strength");
     element.classList.add("signal-strength-3");
   }
 
   if (node.signal == 4){
-    var element = document.getElementById("signal-strength" + markerID);
+    //var element = document.getElementById("signal-strength" + markerID);
     element.className = "";
     element.classList.add("signal-strength");
     element.classList.add("signal-strength-4");
   }
 
   if (node.signal == 5){
-    var element = document.getElementById("signal-strength" + markerID);
-    //element.className = "";
+    //var element = document.getElementById("signal-strength" + markerID);
+    element.className = "";
     element.classList.add("signal-strength");
     element.classList.add("signal-strength-5");
   }
@@ -931,6 +946,10 @@ function addNode(markerID, infoID)
     console.log("Marker ID: " + n.markerID);
     console.log("Node Location: " + n.location);
     console.log("Node ID: " + n.nodeID);
+	console.log("Node Top: " + n.posTop);
+	console.log("Node Left: " + n.posLeft);	
+	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
+	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));
     var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
     $.post("./createConfigHTML.php",
@@ -939,8 +958,8 @@ function addNode(markerID, infoID)
     markerID: markerID,
     nodeID: nodeID, 
     infoID: infoID,
-    posLeft: getRelativeImageWidth(markerID),
-    posTop:  getRelativeImageHeight(markerID),
+    posLeft: getRelativeImageWidth(n.posLeft),
+    posTop:  getRelativeImageHeight(n.posTop),
     location: location,
     area: currentFloor,
     test: "Test"+(testCounter),
@@ -974,7 +993,7 @@ function getNodeByMarkerID(markerID){
           if(testArray[i].floorArray[j][0]== currentFloor){
             for(var k = 0;k< testArray[i].floorArray[j][1].length; k++){ //Loop the nodes in that site
               if(testArray[i].floorArray[j][1][k].active){
-                console.log("NODE FOUND "+testArray[i].floorArray[j][1][k].markerID);
+                //console.log("NODE FOUND "+testArray[i].floorArray[j][1][k].markerID);
                 return(testArray[i].floorArray[j][1][k]);
               }
             }
@@ -1013,7 +1032,7 @@ function getAllActiveNode(){
     for(var i = 0;i<testArray.length;i++){ //loop all the sites
       if(!testArray[i].testCompleted){
         for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-          if(testArray[i]['floorArray'][floor][1] !== undefined){ //in case site is created but no markers was added
+          if(testArray[i]['floorArray'][floor][1] != undefined){ //in case site is created but no markers was added
             for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
               if(testArray[i].floorArray[floor][1][k].active){
                 allNodes.push(testArray[i]['floorArray'][floor][1][k]);
@@ -1027,13 +1046,14 @@ function getAllActiveNode(){
   return allNodes;
 }
 
-function getRelativeImageWidth(markerID){
+function getRelativeImageWidth(width){
   var container = document.querySelector("#imageSource");
-  return (getNodeByMarkerID(markerID).posLeft-container.getBoundingClientRect().left) *(imageWidth/divWidth);
+  //console.log(getNodeByMarkerID(markerID).posLeft);
+  return (width-container.getBoundingClientRect().left) *(imageWidth/divWidth); //
 }
-function getRelativeImageHeight(markerID){
+function getRelativeImageHeight(top){
   var container = document.querySelector("#imageSource");
-  return (getNodeByMarkerID(markerID).posTop- container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight);
+  return (top- container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight);//
 }
 
 //Sites Related Functinos
@@ -1103,6 +1123,7 @@ class Test{
   stopTest(){
     console.log("Test Completed");
     if(!this.testCompleted){
+	  $("#"+this.gatewayID).remove();
       this.testCompleted =true;
       if(this.floorArray.length!= undefined){
         for(i = 0; i < this.floorArray.length;i++){//Floors
@@ -1115,12 +1136,6 @@ class Test{
           }
         }
       }  
-      $("#addGateway").show();
-      $("#inputInfo").hide();
-      testCounter++;
-      addGatewayButtonPressed = false;
-      gatewayPlaced = false;
-      gatewayMarkerAdded = true;
     }
   }
 
@@ -1162,12 +1177,13 @@ function updateSignal(){
               //console.log(l.toLowerCase());
               if (nodeList[k].pointID == l.toLowerCase()){
                 getNodeByMarkerID(nodeList[k].markerID).signal = nodeListData[l]["signal"];
-                console.log(getNodeByMarkerID(nodeList[k].markerID).signal);
                 //console.log(nodeList[k].signal);
+				if (nodeList[k].signal != 0){
                 getNodeByMarkerID(nodeList[k].markerID).statusChange();
-                $("#"+ nodeList[k].infoID).html(getNodeByMarkerID(nodeList[k].markerID).print());
-                changeSignalStrengthNotation(getNodeByMarkerID(nodeList[k].markerID).markerID);
-                console.log("reading from json and printing info out");
+				}
+                $("#"+ getNodeByMarkerID(nodeList[k].markerID).infoID).html(getNodeByMarkerID(nodeList[k].markerID).print());
+                changeSignalStrengthNotation(nodeList[k].markerID);
+                //console.log("reading from json and printing info out");
               }
             }
           }

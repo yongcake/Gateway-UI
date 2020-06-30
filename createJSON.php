@@ -24,6 +24,9 @@ else{
 $infoFile = fopen('./nodeinfo/'.$nodeName.'2Info.txt', "a"); 			//Used to find user input & The name that changes
 $sigStrength =calculateSignalStrength($rssi);
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
+$a = ($sf == 12);
+$b = ($snr >=(-20));
+fwrite($infoFile, "A SF: $a , B SNR: $b \n");
 fwrite($infoFile, "TX Power: $txPower \n");
 fwrite($infoFile, "SF: $sf \n");
 fwrite($infoFile, "RSSI: $rssi \n");
@@ -37,7 +40,7 @@ if(count($activeJsonArray)>0){
 			$currentFloor = $floor;
 			//echo($floor['floor']."<hr></hr>");
 			foreach($floorNode['nodeList'] as $pointNo =>$point){
-				if($point['nodeName']=$nodeName){
+				if($point['nodeName']==$nodeName){
 					$point['signal'] =$sigStrength;
 					$point['status'] ="Connected";
 					/*if($nodeArray[$nodeName]['strength'] <= $sigStrength){
