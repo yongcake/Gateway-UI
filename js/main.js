@@ -28,7 +28,7 @@ img.src = '../Image/image19.jpg';
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//floorArray, nodeList,
-  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at
   var newFloorArray = [];
   //var imgSrc = $("#con").css('background-image');
   //imgSrc = imgSrc.replace('url(','').replace(')','');
@@ -1013,7 +1013,7 @@ function getAllActiveNode(){
     for(var i = 0;i<testArray.length;i++){ //loop all the sites
       if(!testArray[i].testCompleted){
         for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-          if(testArray[i]['floorArray'][i][floor][1] !== undefined){ //in case site is created but no markers was added
+          if(testArray[i]['floorArray'][floor][1] !== undefined){ //in case site is created but no markers was added
             for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
               if(testArray[i].floorArray[floor][1][k].active){
                 allNodes.push(testArray[i]['floorArray'][floor][1][k]);
@@ -1046,6 +1046,9 @@ function switchSites(newSite){ //Toggle between Sites
 function remapMarkers(newSite){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+		if(testArray[i].gatewayFloor == newSite){
+			$("#"+testArray[i].gatewayID).show();
+		}
       for(j = 0; j <testArray[i].floorArray.length;j++){
         if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
           if(testArray[i].floorArray[j][0]== newSite){
@@ -1057,15 +1060,18 @@ function remapMarkers(newSite){
           }
         }
       }
-      currentFloor = newSite; // change to site
-      console.log(currentFloor +" Added")
     }
   }
+  currentFloor = newSite; // change to site
+  console.log(currentFloor +" Added")
 }
 
 function clearSite(currentFloor){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+		if(testArray[i].gatewayFloor == currentFloor){
+			$("#"+testArray[i].gatewayID).hide();
+		}
       for(j = 0; j <testArray[i].floorArray.length;j++){
         if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
           if(testArray[i].floorArray[j][0]== currentFloor){
@@ -1078,8 +1084,8 @@ function clearSite(currentFloor){
         }
       }
     }
-    console.log(currentFloor +" Cleared")
   }
+  console.log(currentFloor +" Cleared")
 }
 //========================================================== Test Class ==================================================================
 class Test{
@@ -1095,7 +1101,7 @@ class Test{
   }
   
   stopTest(){
-    console.log("Yes");
+    console.log("Test Completed");
     if(!this.testCompleted){
       this.testCompleted =true;
       if(this.floorArray.length!= undefined){
@@ -1137,7 +1143,7 @@ class Test{
 //===================================================== Update Config =============================================================
 //node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
-  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
@@ -1148,18 +1154,19 @@ function updateSignal(){
       var floorArrayData = testData["floorArray"];  //floorArray in Test
       for (var j in floorArrayData){ 
         if (j == currentFloor){
-          //console.log(j);
+          //console.log("DATA: "+testData);
           var nodeListData = floorArrayData[j]["nodeList"]; //each points in nodeList
           //console.log(nodeListData); 
           for (var k = 0; k<nodeList.length; k++){
             for (l in nodeListData){
               //console.log(l.toLowerCase());
               if (nodeList[k].pointID == l.toLowerCase()){
-                nodeList[k].signal = nodeListData[l]["signal"];
-                console.log(nodeList[k].signal);
-                nodeList[k].statusChange();
-                $("#"+ nodeList[k].infoID).html(nodeList[k].print());
-                changeSignalStrengthNotation(nodeList[k].markerID);
+                getNodeByMarkerID(nodeList[k].markerID).signal = nodeListData[l]["signal"];
+                console.log(getNodeByMarkerID(nodeList[k].markerID).signal);
+                //console.log(nodeList[k].signal);
+                getNodeByMarkerID(nodeList[k].markerID).statusChange();
+                $("#"+ nodeList[k].infoID).html(getNodeByMarkerID(nodeList[k].markerID).print());
+                changeSignalStrengthNotation(getNodeByMarkerID(nodeList[k].markerID).markerID);
                 console.log("reading from json and printing info out");
               }
             }
