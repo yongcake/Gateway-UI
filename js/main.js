@@ -410,6 +410,7 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
+  var node = getNodeByMarkerID(markerID);
   removeFromArray(markerID); //Function to remove marker,
   removeUnwantedMarker();
   modeArray.viewingMode =false;
@@ -418,9 +419,9 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
     unset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]);
     $.post("deleteJsonObj.php",
     {
-      test: "Test"+(testCounter-1),
-      area: getNodeByMarkerID(markerID).area,
-      pointID: getNodeByMarkerID(markerID).pointID
+      test: "Test"+(testCounter),
+      area: node.area,
+      pointID: upperCaseFirstLetter(node.pointID)
     },
     function(){
       console.log("Info Sent to ConfigHTML");
@@ -580,7 +581,7 @@ function saveEdit(){
   {
     test: "Test"+(testCounter-1),
     area: getNodeByMarkerID(markerID).area,
-    pointID: getNodeByMarkerID(markerID).pointID,
+    pointID: upperCaseFirstLetter(getNodeByMarkerID(markerID).pointID),
     posLeft: getRelativeImageWidth(markerID),
     posTop: getRelativeImageHeight(markerID),
   },
@@ -1155,3 +1156,6 @@ $("document").ready(function(){
 setInterval(updateSignal, 1000);
 }); 
 
+function upperCaseFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
