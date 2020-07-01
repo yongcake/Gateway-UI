@@ -123,17 +123,20 @@ $(document).ready( function(){
     //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
 
     for (i =0 ; i <testArray.length;i++){ //Test
-      for(j = 0; j<testArray[i].floorArray.length;j++){ //floors
-        var nodes = testArray[i].floorArray[j][1];
-        for(k = 0; k<nodes.length;k++){    //nodes
-          //console.log("|||||||||||||3||||||||||||||");
-          var node = testArray[i].floorArray[j][1][k]; //1 node class
-          var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
-          var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
-          node.updatePosition(left,top);
-          initMarker(node.markerID, left, top);
-        }
-      }
+	  if(testArray[i].floorArray != null){
+		for(j = 0; j<testArray[i].floorArray.length;j++){ //floors
+			var nodes = testArray[i].floorArray[j][1];
+			for(k = 0; k<nodes.length;k++){    //nodes
+			//console.log("|||||||||||||3||||||||||||||");
+				var node = testArray[i].floorArray[j][1][k]; //1 node class
+				var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
+				var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+				node.updatePosition(left,top);
+				initMarker(node.markerID, left, top);
+			}
+		}
+	  }
+      
     }
 
     if (testArray[0] != undefined){ //check if there is any site added
@@ -677,49 +680,6 @@ function moveGateway(){
 }
 
 function testComplete(){
-  /*var jsonFilePath = "./nodeSetting.json"; //which file to look at
-  var textToWrite ="===========Start============", nodename;
-  $.getJSON(jsonFilePath, function(data){
-    for (var i =0; i<nodeList.length;i++){
-      nodename = nodeList[i].nodeName;
-      if(data[nodename] != undefined){
-        //console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
-        textToWrite += "Node Name: "+nodename + "\r\n";
-        textToWrite += "Suitable TX Setting: " + data[nodename]["TX"]+"\r\n";
-        textToWrite += "Suitable SF Setting: " + data[nodename]["SF"]+"\r\n";
-        textToWrite += "Location: " + data[nodename]["location"]+"\r\n";
-        textToWrite += "Highest Strength Obtain: " + data[nodename]["strength"]+"\r\n";
-        textToWrite += "Floor Test: " + data[nodename]["area"]+"\r\n";
-        textToWrite += "============NEXT NODE===========\r\n";
-      }
-    }
-  }).done(function(d) {
-    textToWrite += "=========END=========";
-    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = "";
-    var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    if (window.webkitURL != null)
-    {
-      // Chrome allows the link to be clicked
-      // without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    }
-    else
-    {
-      // Firefox requires the link to be added to the DOM
-      // before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-    }
-    downloadLink.click();
-  }).fail(function(d) {
-    alert("nodeSetting.json Not Found");
-  });
- */
   var testCleared = false;
   for(i = 0; i<testArray.length;i++){
 	  console.log(testArray[i].testCompleted);
@@ -735,6 +695,7 @@ function testComplete(){
       addGatewayButtonPressed = false;
       gatewayPlaced = false;
       gatewayMarkerAdded = false;
+	  removeUnwantedMarker();
   }
   //document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
@@ -1031,17 +992,19 @@ function getAllActiveNode(){
   var allNodes = [];
     for(var i = 0;i<testArray.length;i++){ //loop all the sites
       if(!testArray[i].testCompleted){
-        for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-          if(testArray[i]['floorArray'][floor][1] != undefined){ //in case site is created but no markers was added
-            for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
-              if(testArray[i].floorArray[floor][1][k].active){
-                allNodes.push(testArray[i]['floorArray'][floor][1][k]);
-              }
-            }
-          }
-        }
+		if(testArray[i]['floorArray'] != undefined){
+			for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
+				if(testArray[i]['floorArray'][floor][1] != undefined){ //in case site is created but no markers was added
+					for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
+						if(testArray[i].floorArray[floor][1][k].active){
+							allNodes.push(testArray[i]['floorArray'][floor][1][k]);
+						}		
+					}
+				}
+			}
+		}
       }
-    }
+  }
   //console.log(allNodes);
   return allNodes;
 }
@@ -1121,12 +1084,13 @@ class Test{
   }
   
   stopTest(){
-    console.log("Test Completed");
     if(!this.testCompleted){
+	  var testNo = this.testNo;
 	  $("#"+this.gatewayID).remove();
       this.testCompleted =true;
-      if(this.floorArray.length!= undefined){
+      if(this.floorArray != undefined){
         for(i = 0; i < this.floorArray.length;i++){//Floors
+		if(this.floorArray[i][1].length> 0){
           for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
             var node = this.floorArray[i][1][j];
             node.active =false;
@@ -1135,7 +1099,15 @@ class Test{
             $("#"+node.infoID).remove();
           }
         }
-      }  
+		}
+      }
+	  $.post("./completeTest.php",
+      {
+        test: this.testNo
+      },
+      function(){
+        console.log(testNo+" status has been updated in JSON");
+      });
     }
   }
 
@@ -1158,8 +1130,7 @@ class Test{
 //===================================================== Update Config =============================================================
 //node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
-  console.log("letting u know this is going through")
-  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){

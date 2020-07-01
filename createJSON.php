@@ -20,8 +20,8 @@ if(!file_exists("nodeinfo")){
 else{
 
 }
-//$sigStrength =calculateSignalStrength($rssi);
-$infoFile = fopen('./nodeinfo/'.$nodeName.'2Info.txt', "a"); 			//Used to find user input & The name that changes
+$sigStrength =calculateSignalStrength($rssi);
+/*$infoFile = fopen('./nodeinfo/'.$nodeName.'2Info.txt', "a"); 			//Used to find user input & The name that changes
 $sigStrength =calculateSignalStrength($rssi);
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
 $a = ($sf == 12);
@@ -33,7 +33,7 @@ fwrite($infoFile, "RSSI: $rssi \n");
 fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
-fclose($infoFile);
+fclose($infoFile);*/
 if(count($activeJsonArray)>0){
 	foreach($activeJsonArray as $testNo =>$test){ // Loop through all the test
 		foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
@@ -43,12 +43,6 @@ if(count($activeJsonArray)>0){
 				if($point['nodeName']==$nodeName){
 					$point['signal'] =$sigStrength;
 					$point['status'] ="Connected";
-					/*if($nodeArray[$nodeName]['strength'] <= $sigStrength){
-						$nodeArray[$nodeName]['TX'] = $txPower;
-						$nodeArray[$nodeName]['SF'] = $sf;
-						$nodeArray[$nodeName]['strength'] = $sigStrength;
-					}
-					//echo($pointID."Removed <hr></hr>");*/
 					$jsonArray[$testNo]['floorArray'][$currentFloor]['nodeList'][$pointNo] = $point; 
 				}
 			}		
@@ -56,30 +50,11 @@ if(count($activeJsonArray)>0){
 	}
 }
 
-/*
-foreach($jsonArray as $key['testComplete'] => $value) {
-	if($value){
-		if(isset($key['floorArray'][])){		
-		}
-		else{
-			$jsonArray[$nodeName] =array('markerID'=>null,'nodeID'=>null,
-			'infoID'=>null,'signal' =>calculateSignalStrength($rssi),'status'=>"Connected",
-			'nodeName'=>$nodeName, 'posLeft'=>null,'posTop'=>null,'location'=> null,'area' =>null);
-			if($nodeArray[$nodeName]['strength'] <= $sigStrength){
-				$nodeArray[$nodeName]['TX'] = $txPower;
-				$nodeArray[$nodeName]['SF'] = $sf;
-				$nodeArray[$nodeName]['location'] = "";
-				$nodeArray[$nodeName]['strength'] = $sigStrength;
-				$nodeArray[$nodeName]['area'] = "";
-			}
-	}
-}*/
 
 
-
-$myfile = fopen("packetInfo.json", "w");
+/*$myfile = fopen("packetInfo.json", "w");
 fwrite($myfile, json_encode($nodeArray));
-fclose($myfile);
+fclose($myfile);*/
 
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
@@ -88,6 +63,7 @@ fclose($myfile);
 function calculateSignalStrength($rssIndicator){
 	$signalStrength = 0;
 	$snrReachedMin = false;
+	$snr = (int)$snr;
 	if($snr > (-20) && $sf == 12){
 		$snrReachedMin = true;
 	}
@@ -124,9 +100,9 @@ function calculateSignalStrength($rssIndicator){
 	else if ($rssIndicator >0){
 		$signalStrength =1;
 	}
-	/*if(!$snrReachedMin && $signalStrength >2){
+	if(!$snrReachedMin && $signalStrength >2){
 		$signalStrength =1;
-	}*/
+	}
 	return $signalStrength;
 }
 	

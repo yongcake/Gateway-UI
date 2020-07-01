@@ -10,11 +10,11 @@ $test =  $_POST["test"];
 $pointID =  $_POST["pointID"];
 $active =  $_POST["active"];
 
-$nodeJson= file_get_contents('./packetInfo.json');
-$nodeArray = json_decode($nodeJson,true);
+/*$nodeJson= file_get_contents('./packetInfo.json');
+$nodeArray = json_decode($nodeJson,true);*/
 
 if (file_exists('./config.json')){
-	$json= file_get_contents('./config.json'); //encoded json
+	$json= file_get_contents('./config.json');//encoded json
 	$jsonArray = json_decode($json,true);
 }
 else{
@@ -31,14 +31,15 @@ fwrite($infoFile, $area."\n");
 fwrite($infoFile, "~~~~End of Item HTML Recieved~~~\n");
 fclose($infoFile);
 */
-if(!isset($jsonArray[$test]) && $test != ""){ //For Gateway
+if(!isset($jsonArray[$test]) && $test != ""){ //For Geteway
 	$jsonArray[$test]['testCompleted'] = false;
 	$jsonArray[$test]['testNo'] = $test;
 	$jsonArray[$test]['gatewayID'] = $markerID;
 	$jsonArray[$test]['gatewayLeft'] = $posLeft;
 	$jsonArray[$test]['gatewayTop'] = $posTop;
 	$jsonArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]['nodeList'] =array();
+	$jsonArray[$test]['floorArray']["$area"]['floor'] = $area;
+	$jsonArray[$test]['floorArray']["$area"]['nodeList']= array();
 
 	//$nodeArray[$test]['testCompleted'] = false;
 	$nodeArray[$test]['gatewayLeft'] = $posLeft;
@@ -47,8 +48,9 @@ if(!isset($jsonArray[$test]) && $test != ""){ //For Gateway
 	//$jsonArray[$test]['floorArray']["$area"]= ;
 }
 else { //For Nodes
-	$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
-	$node = $jsonArray[$test]['floorArray'][$area]['nodeList']['Point'.$pointNo];
+	//$pointNo = count($jsonArray[$test]['floorArray'][$area]['nodeList']);
+	$jsonArray[$test]['floorArray']["$area"]['floor'] = $area;
+	$node = $jsonArray[$test]['floorArray'][$area]['nodeList'][$pointID];
 	//config.json
 	$node['pointID'] =$pointID;
 	$node['markerID'] = $markerID;
@@ -61,20 +63,21 @@ else { //For Nodes
 	$node['posTop'] = $posTop;
 	$node['area'] =$area;
 	$node['active'] =$active;
-	$jsonArray[$test]["floorArray"][$area]['nodeList']['Point'.$pointNo] = $node;
+	$jsonArray[$test]["floorArray"][$area]['nodeList'][$pointID] = $node;
 
 	//packetInfo.json
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['pointID'] =$pointID;
+	/*$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['pointID'] =$pointID;
 	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['nodeID'] =$nodeName;
 	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posLeft'] = $posLeft;
 	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posTop'] = $posTop;
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['trace'] = array();
+	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['trace'] = array();*/
 }
 
 
-$myfile = fopen("packetInfo.json", "w");
+
+/*$myfile = fopen("packetInfo.json", "w");
 fwrite($myfile, json_encode($nodeArray));
-fclose($myfile); 
+fclose($myfile); */
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
