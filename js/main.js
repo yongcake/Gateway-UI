@@ -219,7 +219,6 @@ function changeSelectedNode(newNode){
   $("#"+newNode).addClass("addBorder");
   selectiveDisableNodeButton(); //disable those selected ones
 
-
 }
 
 function disableAllNodeButton(){  //disable all node buttons 
@@ -234,7 +233,12 @@ function enableAllNodeButton(){
   }
 }
 
+var allNodeUsed = false;
 function selectiveDisableNodeButton(){ //only disable those that are selected 
+  if (allNodeUsed == true){
+    enableAllNodeButton();
+    return;
+  }
   var nodeList = getAllActiveNode();
   for (var i = 0; i<nodeList.length; i++){
     for (var j = 0; j<buttonArray.length; j++){
@@ -361,6 +365,7 @@ function createNewMarker(){ //add or move a a marker
   if (count == 6){
     var ans  = confirm("All node has been used, would you like to reuse the node? (Press 'OK' to continue)");
     if (ans == true) {
+      allNodeUsed = true; 
       enableAllNodeButton();
     } 
     else {
@@ -918,22 +923,36 @@ function addNode(markerID, infoID)
   }
 
   if(nodeExist){
-    document.getElementById("formStatus").innerHTML = "";
-    alert("Node ID already exist and is active, please select a differnt node"); 
+    //alert("Node ID already exist and is active, please select a differnt node");
+    var repeatedNode = getNodeByMarkerID(markerID);
+    repeatedNode.active = false; 
+    console.log("there MIGHT be issues with the test id you pass into the php")
+    $.post("updateJson.php",
+    {
+      test: "Test"+(testCounter),
+      area: getNodeByMarkerID(markerID).area,
+      pointID: upperCaseFirstLetter(getNodeByMarkerID(markerID).pointID),
+      active: repeatedNode.active
+    },
+    function(){
+      console.log("Info Sent to ConfigHTML");
+    });
+    //set the current selected one to active: false 
+    //continue with the else statement 
     removeMarker(markerID);
-    return;
+    //return;
   }
-  else{ //this is supposed to be the else statement
-    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
-    n.updatePosition(xPosition, yPosition);
-    createNodeContainer(n);
-    getActiveNodeListByFloor(currentFloor).push(n);
-    console.log("Marker ID: " + n.markerID);
-    console.log("Node Location: " + n.location);
-    console.log("Node ID: " + n.nodeID);
-    var pointID = n.pointID;
-    //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
-    $.post("./createConfigHTML.php",
+
+  var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
+  n.updatePosition(xPosition, yPosition);
+  createNodeContainer(n);
+  getActiveNodeListByFloor(currentFloor).push(n);
+  console.log("Marker ID: " + n.markerID);
+  console.log("Node Location: " + n.location);
+  console.log("Node ID: " + n.nodeID);
+  var pointID = n.pointID;
+  //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
+  $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
@@ -951,7 +970,6 @@ function addNode(markerID, infoID)
     console.log("Info Sent to ConfigHTML");
   });
   
-  }
   nodeCount++;
 }
 
