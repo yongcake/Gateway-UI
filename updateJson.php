@@ -11,10 +11,9 @@ $location =  $_POST["location"];
 $area =  $_POST["area"];
 $test =  $_POST["test"];
 $pointID = $_POST["pointID"];
+$active =  $_POST["active"];
 $nodeJson= file_get_contents('./nodeSetting.json');
 $nodeArray = json_decode($nodeJson,true);
-
-
 
 if (file_exists('./config.json')){
 	$json= file_get_contents('./config.json');//encoded json
@@ -26,6 +25,7 @@ else{
 
 $jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posTop'] = $posTop;
 $jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posLeft'] = $posLeft;
+$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['active'] = $active;
 
 /* if(isset($jsonArray[$oldNodeName])){
 	if($nodeName != $oldNodeName){
