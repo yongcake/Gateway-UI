@@ -20,20 +20,18 @@ if(!file_exists("nodeinfo")){
 else{
 
 }
-$sigStrength =calculateSignalStrength($rssi);
-/*$infoFile = fopen('./nodeinfo/'.$nodeName.'2Info.txt', "a"); 			//Used to find user input & The name that changes
-$sigStrength =calculateSignalStrength($rssi);
+$sigStrength =calculateSignalStrength($rssi, $sf,$snr);
+$infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); 			//Used to find user input & The name that changes
+//$sigStrength =calculateSignalStrength($rssi);
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
-$a = ($sf == 12);
-$b = ($snr >=(-20));
-fwrite($infoFile, "A SF: $a , B SNR: $b \n");
 fwrite($infoFile, "TX Power: $txPower \n");
 fwrite($infoFile, "SF: $sf \n");
 fwrite($infoFile, "RSSI: $rssi \n");
 fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
-fclose($infoFile);*/
+fclose($infoFile);
+
 if(count($activeJsonArray)>0){
 	foreach($activeJsonArray as $testNo =>$test){ // Loop through all the test
 		foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
@@ -52,18 +50,16 @@ if(count($activeJsonArray)>0){
 
 
 
-/*$myfile = fopen("packetInfo.json", "w");
-fwrite($myfile, json_encode($nodeArray));
-fclose($myfile);*/
+
 
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
 
-function calculateSignalStrength($rssIndicator){
+function calculateSignalStrength($rssIndicator, $spreadF,$snr){
 	$signalStrength = 0;
 	$snrReachedMin = false;
-	$snr = (int)$snr;
+	$sf = (int)$spreadF;
 	if($snr > (-20) && $sf == 12){
 		$snrReachedMin = true;
 	}
