@@ -13,7 +13,7 @@ var gatewayPlaced = false;
 var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initTestCount = [], initNodeCount = [];
-var buttonArray = ["A001","A002","A003","A004","A005","A006"], testArray = [], oldCord = [];
+var buttonArray = ["A001","A002","A003","A004","A005","A006"], testArray = [], oldCord = [], manifestJsonArray = [];
 var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 var currentFloor = "";
 //Old Site Array format [[*Floor*,*NodeArrays[*nodes*]*],[*Floor*,*NodeArrays[*nodes*]*]]
@@ -24,7 +24,25 @@ var divWidth = 0;
 var divHeight = 0;
  //'../Image/dummyButSmaller.jpg';
 var img = new Image();
-img.src = '../Image/F5.jpg';
+img.src = '../Image/F1.jpeg';
+$(document).ready( function(){
+	var jsonFilePath = "http://www.localhost/manifest.json"; //which file to look at 
+	var mall = "IMM";
+	$.getJSON(jsonFilePath, function(data){
+    //console.log(data);
+    for (var i in data){ //IMM, bla,bla
+		//console.log(i);
+		if(i == mall){
+			var mallData = data[i]; //data in Test0,1,2,3
+			var floorArrayData = mallData["floorInfo"];
+			manifestJsonArray = floorArrayData;
+			//console.log(floorArrayData);
+		}
+    }
+  });
+	
+});
+
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//
@@ -32,13 +50,10 @@ $(document).ready( function(){
   var newFloorArray = [];
   //var imgSrc = $("#con").css('background-image');
   //imgSrc = imgSrc.replace('url(','').replace(')','');
-
-  imageWidth = img.naturalWidth;
-  imageHeight = img.naturalHeight;
   var container = document.querySelector("#imageSource");
   divWidth = document.getElementById("imageSource").offsetWidth;
   divHeight = document.getElementById("imageSource").offsetHeight;
-
+  
   $("#inputInfo").hide();
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
@@ -55,9 +70,17 @@ $(document).ready( function(){
       gatewayFloor = testData["gatewayFloor"];
       floors = testData["floorArray"];
       $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
-      posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
-      posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
-      initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+	  for(var m = 0; m<manifestJsonArray.length; m++){
+		if(manifestJsonArray[m]["floor"] == gatewayFloor){
+		  imageWidth =	manifestJsonArray[m]["size"]["width"];
+		  imageHeight =	manifestJsonArray[m]["size"]["height"];
+		  posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+		  posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
+		  initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+		}
+	  }
+	  
+      
       for (var j in floors){ //j == Floor'floorNo'
         var floorData = floors[j];
         nodeList = floorData["nodeList"];
@@ -85,7 +108,7 @@ $(document).ready( function(){
             //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
 			console.log("ArEA: "+area);	
             if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
-              $("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
+              //$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
             }
             n.updatePosition(posLeft, posTop);
 
@@ -123,32 +146,41 @@ $(document).ready( function(){
     //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
 
     for (i =0 ; i <testArray.length;i++){ //Test
+	    //posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+      //posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
+      //initPlaceMarker($("#"+gatewayID)[0],posX,posY);
 	  if(testArray[i].floorArray != null){
 		for(j = 0; j<testArray[i].floorArray.length;j++){ //floors
 			var nodes = testArray[i].floorArray[j][1];
+			for(var m = 0; m<manifestJsonArray.length; m++){
+				if(manifestJsonArray[m]["floor"] == testArray[i].floorArray[j][0]){
+					imageWidth = manifestJsonArray[m]["size"]["width"];
+					imageHeight = manifestJsonArray[m]["size"]["height"];
+				}
+			}
 			for(k = 0; k<nodes.length;k++){    //nodes
-			//console.log("|||||||||||||3||||||||||||||");
 				var node = testArray[i].floorArray[j][1][k]; //1 node class
 				var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
 				var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
 				node.updatePosition(left,top);
 				initMarker(node.markerID, left, top);
+				
 			}
 		}
+		switchSites(testArray[i].gatewayFloor);
 	  }
-      
     }
-
-    if (testArray[0] != undefined){ //check if there is any site added
+	
+    /*if (testArray[0] != undefined){ //check if there is any site added
 		if (testArray[0]['floorArray'][0] != undefined){ //check if there is any site added
 			currentFloor = testArray[0]['floorArray'][0][0];
 			switchSites(currentFloor);
 		}
     }
     else{
-      currentFloor = "Floor1";
-        $("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
-    }
+        currentFloor = "Floor1";
+        //$("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
+    }*/
     //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
     /*for (i = 0; i< floorArray.length;i++){
       var siteNodes = [];
@@ -180,7 +212,6 @@ $(document).ready( function(){
   });
 
 });
-
 
 
 
@@ -266,7 +297,6 @@ function removeUnwantedMarker(){
 
 function addGatewayPressed(){
   addGatewayButtonPressed = true;
-  //currentFloor = "Floor1";
   testCounter++;
   var testNo = "Test"+testCounter;
   var gatewayID = "gateway"+testCounter;
@@ -915,7 +945,7 @@ function addNode(markerID, infoID)
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));*/
     var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
-  $.post("./createConfigHTML.php",
+    $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
@@ -1025,41 +1055,17 @@ function getRelativeImageHeight(top){
 
 //Sites Related Functinos
 function switchSites(newSite){ //Toggle between Sites
-  var jsonFilePath = "http://www.localhost/manifest.json"; //which file to look at 
+
   var mall = "IMM";
   var imagePath;
+  var newImgWidth, newImg;
   console.log("Previous Site: "+ currentFloor);
-  $.getJSON(jsonFilePath, function(data){
-    console.log(data);
-    for (var i in data){ //IMM, bla,bla
-		console.log(i);
-		if(i == mall){
-			var mallData = data[i]; //data in Test0,1,2,3
-
-			var floorArrayData = mallData["floorInfo"];  //floorArray in Test
-			console.log(floorArrayData);
-			for(j = 0; j < floorArrayData.length; j++){
-				if (floorArrayData[j]["floor"] == newSite){
-				console.log("Floor found");
-				imagePath = floorArrayData[j]["imagePath"];
-				if(imagePath != undefined){
-					console.log("Not undefined");
-					$("#con").css('background-image','url('+imagePath+')');
-					//img.src = imagePath;
-					//imageHeight = image.naturalHeight;
-					//imageWidth = image.naturalWidth;
-					console.log("new img height: " + imageHeight); 
-					console.log("new img width: " + imageWidth);
-					}
-				}
-			}
-		}
-    }
-  });
-
+  
   clearSite(currentFloor);
   remapMarkers(newSite);
   console.log("Current Site: "+ currentFloor);
+  
+
 }
 function remapMarkers(newSite){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
