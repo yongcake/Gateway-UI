@@ -2,22 +2,39 @@
 	"IMM": {
 		"floorInfo": [{
 			"floor": "Floor1",
-			"imagePath": "../Image/F1.jpg"
+			"imagePath": "../Image/F1.jpeg",
+			"size": {
+				"width": 1068,
+				"height": 657
+			}
 		}, {
 			"floor": "Floor2",
-			"imagePath": "../Image/F2.jpg"
+			"imagePath": "../Image/F2.jpeg",
+			"size": {
+				"width": 1014,
+				"height": 654
+			}
 		}, {
 			"floor": "Floor3",
-			"imagePath": "../Image/F3.jpg"
+			"imagePath": "../Image/F3.jpeg",
+			"size": {
+				"width": 1045,
+				"height": 656
+			}
 		}, {
 			"floor": "Floor4",
-			"imagePath": "../Image/F4.jpg"
+			"imagePath": "../Image/F4.jpeg",
+			"size": {
+				"width": 1600,
+				"height": 1144
+			}
 		}, {
 			"floor": "Floor5",
-			"imagePath": "../Image/F5.jpg"
-		}, {
-			"floor": "Floor6",
-			"imagePath": "../Image.jpg"
+			"imagePath": "../Image/F5.jpg",
+			"size": {
+				"width": 3285,
+				"height": 1921
+			}
 		}],
 		"nodeList": ["A001", "A002"]
 	}

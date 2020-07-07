@@ -24,7 +24,6 @@ if (file_exists('./trace.json')){
 				if($infoID == $nodeInfo){
 					$traceJsonArray[$testNo]['nodes'][$nodeInfo]['active'] = false;	
 				}
-
 				//echo($nodeInfo." has been set to false \n");
 			}
 		}
