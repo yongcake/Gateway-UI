@@ -901,21 +901,6 @@ function addNode(markerID, infoID)
     removeMarker(markerID);
     return;
   }
-<<<<<<< HEAD
-
-  var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
-  n.updatePosition(xPosition, yPosition);
-  createNodeContainer(n);
-  getActiveNodeListByFloor(currentFloor).push(n);
-  console.log("Marker ID: " + n.markerID);
-  console.log("Node Location: " + n.location);
-  console.log("Node ID: " + n.nodeID);
-	console.log("Node Top: " + n.posTop);
-	console.log("Node Left: " + n.posLeft);	
-	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
-	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));
-  var pointID = n.pointID;
-=======
   else{ //this is supposed to be the else statement
     var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
     n.updatePosition(xPosition, yPosition);
@@ -929,7 +914,6 @@ function addNode(markerID, infoID)
 	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));*/
     var pointID = n.pointID;
->>>>>>> 885c177962272286d9c242f1ee09ee98888b3714
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
   $.post("./createConfigHTML.php",
   {
