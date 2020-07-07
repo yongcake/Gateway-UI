@@ -72,6 +72,10 @@ $(document).ready( function(){
       $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
 	  for(var m = 0; m<manifestJsonArray.length; m++){
 		if(manifestJsonArray[m]["floor"] == gatewayFloor){
+		  imagePath = manifestJsonArray[m]["imagePath"];
+   		  if(imagePath != undefined){
+			$("#con").css('background-image','url('+imagePath+')');
+		  }
 		  imageWidth =	manifestJsonArray[m]["size"]["width"];
 		  imageHeight =	manifestJsonArray[m]["size"]["height"];
 		  posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
@@ -1060,12 +1064,19 @@ function switchSites(newSite){ //Toggle between Sites
   var imagePath;
   var newImgWidth, newImg;
   console.log("Previous Site: "+ currentFloor);
-  
   clearSite(currentFloor);
   remapMarkers(newSite);
   console.log("Current Site: "+ currentFloor);
-  
-
+  for(var m = 0; m<manifestJsonArray.length; m++){
+	if(manifestJsonArray[m]["floor"] == newSite){
+		imagePath = manifestJsonArray[m]["imagePath"];
+   		if(imagePath != undefined){
+			$("#con").css('background-image','url('+imagePath+')');
+		}
+		imageWidth =	manifestJsonArray[m]["size"]["width"];
+		imageHeight =	manifestJsonArray[m]["size"]["height"];
+		}
+	}
 }
 function remapMarkers(newSite){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
