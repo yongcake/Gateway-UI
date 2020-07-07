@@ -915,7 +915,7 @@ function addNode(markerID, infoID)
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));*/
     var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
-    $.post("./createConfigHTML.php",
+  $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
