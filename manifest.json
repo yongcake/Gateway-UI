@@ -1,0 +1,24 @@
+{
+	"IMM": {
+		"floorInfo": [{
+			"floor": "Floor1",
+			"imagePath": "../Image/F1.jpg"
+		}, {
+			"floor": "Floor2",
+			"imagePath": "../Image/F2.jpg"
+		}, {
+			"floor": "Floor3",
+			"imagePath": "../Image/F3.jpg"
+		}, {
+			"floor": "Floor4",
+			"imagePath": "../Image/F4.jpg"
+		}, {
+			"floor": "Floor5",
+			"imagePath": "../Image/F5.jpg"
+		}, {
+			"floor": "Floor6",
+			"imagePath": "../Image.jpg"
+		}],
+		"nodeList": ["A001", "A002"]
+	}
+}

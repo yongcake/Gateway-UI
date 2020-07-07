@@ -24,10 +24,10 @@ var divWidth = 0;
 var divHeight = 0;
  //'../Image/dummyButSmaller.jpg';
 var img = new Image();
-img.src = '../Image/image19.jpg';
+img.src = '../Image/F5.jpg';
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
-  var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//floorArray, nodeList,
+  var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//
   var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at
   var newFloorArray = [];
   //var imgSrc = $("#con").css('background-image');
@@ -123,17 +123,20 @@ $(document).ready( function(){
     //alert("imageWIDTH:" +imageWidth +" imageHEIGHT:"+imageHeight);
 
     for (i =0 ; i <testArray.length;i++){ //Test
-      for(j = 0; j<testArray[i].floorArray.length;j++){ //floors
-        var nodes = testArray[i].floorArray[j][1];
-        for(k = 0; k<nodes.length;k++){    //nodes
-          //console.log("|||||||||||||3||||||||||||||");
-          var node = testArray[i].floorArray[j][1][k]; //1 node class
-          var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
-          var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
-          node.updatePosition(left,top);
-          initMarker(node.markerID, left, top);
-        }
-      }
+	  if(testArray[i].floorArray != null){
+		for(j = 0; j<testArray[i].floorArray.length;j++){ //floors
+			var nodes = testArray[i].floorArray[j][1];
+			for(k = 0; k<nodes.length;k++){    //nodes
+			//console.log("|||||||||||||3||||||||||||||");
+				var node = testArray[i].floorArray[j][1][k]; //1 node class
+				var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
+				var left = node.posLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+				node.updatePosition(left,top);
+				initMarker(node.markerID, left, top);
+			}
+		}
+	  }
+      
     }
 
     if (testArray[0] != undefined){ //check if there is any site added
@@ -221,6 +224,7 @@ function changeSelectedNode(newNode){
   $("#"+newNode).addClass("addBorder");
   selectiveDisableNodeButton(); //disable those selected ones
 
+
 }
 
 function disableAllNodeButton(){  //disable all node buttons 
@@ -235,12 +239,7 @@ function enableAllNodeButton(){
   }
 }
 
-var allNodeUsed = false;
 function selectiveDisableNodeButton(){ //only disable those that are selected 
-  if (allNodeUsed == true){
-    enableAllNodeButton();
-    return;
-  }
   var nodeList = getAllActiveNode();
   for (var i = 0; i<nodeList.length; i++){
     for (var j = 0; j<buttonArray.length; j++){
@@ -367,7 +366,6 @@ function createNewMarker(){ //add or move a a marker
   if (count == 6){
     var ans  = confirm("All node has been used, would you like to reuse the node? (Press 'OK' to continue)");
     if (ans == true) {
-      allNodeUsed = true; 
       enableAllNodeButton();
     } 
     else {
@@ -418,26 +416,28 @@ function displayCurrentMarker(markerID){ //function runs when a marker is clicke
 function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
   //if(markerID != "None"){ //doesn't run when there isn't a marker selected
   var node = getNodeByMarkerID(markerID);
-  removeFromArray(markerID); //Function to remove marker,
+
   removeUnwantedMarker();
   modeArray.viewingMode =false;
   modeArray.addingMode =true;
   if(!modeArray.movingMode){
-    unset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]);
+    //unset($jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]);
     $.post("deleteJsonObj.php",
     {
       test: "Test"+(testCounter),
       area: node.area,
-      pointID: node.pointID
+      pointID: node.pointID,
+	  infoID: node.infoID
     },
     function(){
-      console.log("Info Sent to ConfigHTML");
+      console.log("Info Sent to deleteJson php");
     });
     
 
     $("#errorText").hide(); // remove if unnecessary 
-    
+    removeFromArray(markerID); //Function to remove marker,
   }
+  
   else{
     alert("Exit from Editing to delete");
   }
@@ -682,49 +682,6 @@ function moveGateway(){
 }
 
 function testComplete(){
-  /*var jsonFilePath = "./nodeSetting.json"; //which file to look at
-  var textToWrite ="===========Start============", nodename;
-  $.getJSON(jsonFilePath, function(data){
-    for (var i =0; i<nodeList.length;i++){
-      nodename = nodeList[i].nodeName;
-      if(data[nodename] != undefined){
-        //console.log("==========================" + JSON.stringify(subData["nodeName"]) + "==========================");
-        textToWrite += "Node Name: "+nodename + "\r\n";
-        textToWrite += "Suitable TX Setting: " + data[nodename]["TX"]+"\r\n";
-        textToWrite += "Suitable SF Setting: " + data[nodename]["SF"]+"\r\n";
-        textToWrite += "Location: " + data[nodename]["location"]+"\r\n";
-        textToWrite += "Highest Strength Obtain: " + data[nodename]["strength"]+"\r\n";
-        textToWrite += "Floor Test: " + data[nodename]["area"]+"\r\n";
-        textToWrite += "============NEXT NODE===========\r\n";
-      }
-    }
-  }).done(function(d) {
-    textToWrite += "=========END=========";
-    var textFileAsBlob = new Blob([textToWrite], {type:'text/plain'});
-    var fileNameToSaveAs = "";
-    var downloadLink = document.createElement("a");
-    downloadLink.download = fileNameToSaveAs;
-    downloadLink.innerHTML = "Download File";
-    if (window.webkitURL != null)
-    {
-      // Chrome allows the link to be clicked
-      // without actually adding it to the DOM.
-      downloadLink.href = window.webkitURL.createObjectURL(textFileAsBlob);
-    }
-    else
-    {
-      // Firefox requires the link to be added to the DOM
-      // before it can be clicked.
-      downloadLink.href = window.URL.createObjectURL(textFileAsBlob);
-      downloadLink.onclick = destroyClickedElement;
-      downloadLink.style.display = "none";
-      document.body.appendChild(downloadLink);
-    }
-    downloadLink.click();
-  }).fail(function(d) {
-    alert("nodeSetting.json Not Found");
-  });
- */
   var testCleared = false;
   for(i = 0; i<testArray.length;i++){
 	  console.log(testArray[i].testCompleted);
@@ -740,6 +697,7 @@ function testComplete(){
       addGatewayButtonPressed = false;
       gatewayPlaced = false;
       gatewayMarkerAdded = false;
+	  removeUnwantedMarker();
   }
   //document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
@@ -938,25 +896,12 @@ function addNode(markerID, infoID)
   }
 
   if(nodeExist){
-    //alert("Node ID already exist and is active, please select a differnt node");
-    var repeatedNode = getNodeByMarkerID(markerID);
-    repeatedNode.active = false; 
-    console.log("there MIGHT be issues with the test id you pass into the php")
-    $.post("updateJson.php",
-    {
-      test: "Test"+(testCounter),
-      area: getNodeByMarkerID(markerID).area,
-      pointID: upperCaseFirstLetter(getNodeByMarkerID(markerID).pointID),
-      active: repeatedNode.active
-    },
-    function(){
-      console.log("Info Sent to ConfigHTML");
-    });
-    //set the current selected one to active: false 
-    //continue with the else statement 
+    document.getElementById("formStatus").innerHTML = "";
+    alert("Node ID already exist and is active, please select a differnt node"); 
     removeMarker(markerID);
-    //return;
+    return;
   }
+<<<<<<< HEAD
 
   var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
   n.updatePosition(xPosition, yPosition);
@@ -970,6 +915,21 @@ function addNode(markerID, infoID)
 	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));
   var pointID = n.pointID;
+=======
+  else{ //this is supposed to be the else statement
+    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
+    n.updatePosition(xPosition, yPosition);
+    createNodeContainer(n);
+    getActiveNodeListByFloor(currentFloor).push(n);
+    /*console.log("Marker ID: " + n.markerID);
+    console.log("Node Location: " + n.location);
+    console.log("Node ID: " + n.nodeID);
+	console.log("Node Top: " + n.posTop);
+	console.log("Node Left: " + n.posLeft);	
+	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
+	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));*/
+    var pointID = n.pointID;
+>>>>>>> 885c177962272286d9c242f1ee09ee98888b3714
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
   $.post("./createConfigHTML.php",
   {
@@ -989,6 +949,7 @@ function addNode(markerID, infoID)
     console.log("Info Sent to ConfigHTML");
   });
   
+  }
   nodeCount++;
 }
 
@@ -1011,8 +972,10 @@ function getNodeByMarkerID(markerID){
           if(testArray[i].floorArray[j][0]== currentFloor){
             for(var k = 0;k< testArray[i].floorArray[j][1].length; k++){ //Loop the nodes in that site
               if(testArray[i].floorArray[j][1][k].active){
+				if(testArray[i].floorArray[j][1][k].markerID == markerID){
+				  return(testArray[i].floorArray[j][1][k]);
+				}
                 //console.log("NODE FOUND "+testArray[i].floorArray[j][1][k].markerID);
-                return(testArray[i].floorArray[j][1][k]);
               }
             }
           }
@@ -1034,7 +997,7 @@ function getActiveNodeListByFloor(floor){//Get or Create new floor
       }
     }
   }
-  //Create a new Floor
+  //Create a new Floor if it does not exist
   for(i = 0; i < testArray.length; i++){
     if(!testArray.testCompleted){
         floorNo = testArray[i]['floorArray'].length;//index of empty floor
@@ -1049,17 +1012,19 @@ function getAllActiveNode(){
   var allNodes = [];
     for(var i = 0;i<testArray.length;i++){ //loop all the sites
       if(!testArray[i].testCompleted){
-        for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
-          if(testArray[i]['floorArray'][floor][1] != undefined){ //in case site is created but no markers was added
-            for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
-              if(testArray[i].floorArray[floor][1][k].active){
-                allNodes.push(testArray[i]['floorArray'][floor][1][k]);
-              }
-            }
-          }
-        }
+		if(testArray[i]['floorArray'] != undefined){
+			for(floor = 0; floor <testArray[i]['floorArray'].length;floor++){ // all floor
+				if(testArray[i]['floorArray'][floor][1] != undefined){ //in case site is created but no markers was added
+					for(k = 0;k<testArray[i]['floorArray'][floor][1].length; k++){
+						if(testArray[i].floorArray[floor][1][k].active){
+							allNodes.push(testArray[i]['floorArray'][floor][1][k]);
+						}		
+					}
+				}
+			}
+		}
       }
-    }
+  }
   //console.log(allNodes);
   return allNodes;
 }
@@ -1076,7 +1041,38 @@ function getRelativeImageHeight(top){
 
 //Sites Related Functinos
 function switchSites(newSite){ //Toggle between Sites
+  var jsonFilePath = "http://www.localhost/manifest.json"; //which file to look at 
+  var mall = "IMM";
+  var imagePath;
   console.log("Previous Site: "+ currentFloor);
+  $.getJSON(jsonFilePath, function(data){
+    console.log(data);
+    for (var i in data){ //IMM, bla,bla
+		console.log(i);
+		if(i == mall){
+			var mallData = data[i]; //data in Test0,1,2,3
+
+			var floorArrayData = mallData["floorInfo"];  //floorArray in Test
+			console.log(floorArrayData);
+			for(j = 0; j < floorArrayData.length; j++){
+				if (floorArrayData[j]["floor"] == newSite){
+				console.log("Floor found");
+				imagePath = floorArrayData[j]["imagePath"];
+				if(imagePath != undefined){
+					console.log("Not undefined");
+					$("#con").css('background-image','url('+imagePath+')');
+					//img.src = imagePath;
+					//imageHeight = image.naturalHeight;
+					//imageWidth = image.naturalWidth;
+					console.log("new img height: " + imageHeight); 
+					console.log("new img width: " + imageWidth);
+					}
+				}
+			}
+		}
+    }
+  });
+
   clearSite(currentFloor);
   remapMarkers(newSite);
   console.log("Current Site: "+ currentFloor);
@@ -1093,7 +1089,7 @@ function remapMarkers(newSite){
             for(var k = 0;k< testArray[i].floorArray[j][1].length; k++){ //Loop the nodes in that site
               $("#"+testArray[i].floorArray[j][1][k].markerID).show();
               $("#"+testArray[i].floorArray[j][1][k].nodeID).show();  
-              console.log(testArray[i].floorArray[j][1][k].markerID+" shown");
+              //console.log(testArray[i].floorArray[j][1][k].markerID+" shown");
             }
           }
         }
@@ -1116,7 +1112,7 @@ function clearSite(currentFloor){
             for(var k = 0;k< testArray[i].floorArray[j][1].length; k++){ //Loop the nodes in that site
               $("#"+testArray[i].floorArray[j][1][k].markerID).hide();
               $("#"+testArray[i].floorArray[j][1][k].nodeID).hide();  
-              console.log(testArray[i].floorArray[j][1][k].markerID+" hidden");
+              //console.log(testArray[i].floorArray[j][1][k].markerID+" hidden");
             }
           }
         }
@@ -1139,12 +1135,13 @@ class Test{
   }
   
   stopTest(){
-    console.log("Test Completed");
     if(!this.testCompleted){
+	  var testNo = this.testNo;
 	  $("#"+this.gatewayID).remove();
       this.testCompleted =true;
-      if(this.floorArray.length!= undefined){
+      if(this.floorArray != undefined){
         for(i = 0; i < this.floorArray.length;i++){//Floors
+		if(this.floorArray[i][1].length> 0){
           for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
             var node = this.floorArray[i][1][j];
             node.active =false;
@@ -1153,7 +1150,15 @@ class Test{
             $("#"+node.infoID).remove();
           }
         }
-      }  
+		}
+      }
+	  $.post("./completeTest.php",
+      {
+        test: this.testNo
+      },
+      function(){
+        console.log(testNo+" status has been updated in JSON");
+      });
     }
   }
 
@@ -1176,13 +1181,12 @@ class Test{
 //===================================================== Update Config =============================================================
 //node constructor(markerID, nodeID, location, nodeName, infoID, area,pointID,active)
 function updateSignal(){
-  console.log("letting u know this is going through")
-  var jsonFilePath = "http://192.168.43.144/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at 
   var searchKey = "signal"; //what to search for
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     //console.log(data);
-    var nodeList = getAllActiveNode();
+    var nodeList = getActiveNodeListByFloor(currentFloor);
     for (var i in data){ //Test0,1,2,3
       var testData = data[i]; //data in Test0,1,2,3
       var floorArrayData = testData["floorArray"];  //floorArray in Test
@@ -1193,14 +1197,15 @@ function updateSignal(){
           //console.log(nodeListData); 
           for (var k = 0; k<nodeList.length; k++){
             for (l in nodeListData){
-              //console.log(l.toLowerCase());
-              if (nodeList[k].pointID == l.toLowerCase()){
-                getNodeByMarkerID(nodeList[k].markerID).signal = nodeListData[l]["signal"];
+              if (nodeList[k].pointID == l){
+				//console.log(getNodeByMarkerID(nodeList[k].markerID).signal);
+                nodeList[k].signal = nodeListData[l]["signal"];
+				//console.log(getNodeByMarkerID(nodeList[k].markerID).signal);
                 //console.log(nodeList[k].signal);
 				if (nodeList[k].signal != 0){
-                getNodeByMarkerID(nodeList[k].markerID).statusChange();
+					nodeList[k].statusChange();
 				}
-                $("#"+ getNodeByMarkerID(nodeList[k].markerID).infoID).html(getNodeByMarkerID(nodeList[k].markerID).print());
+                $("#"+ nodeList[k].infoID).html(nodeList[k].print());
                 changeSignalStrengthNotation(nodeList[k].markerID);
                 //console.log("reading from json and printing info out");
               }
