@@ -69,9 +69,8 @@ $(document).ready( function(){
       gatewayTop = testData["gatewayTop"];
       gatewayFloor = testData["gatewayFloor"];
       floors = testData["floorArray"];
-	  if(!testCompleted){
-		 $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
-	  }
+	  $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
+	  
 	  for(var m = 0; m<manifestJsonArray.length; m++){
 		if(manifestJsonArray[m]["floor"] == gatewayFloor){
 		  imagePath = manifestJsonArray[m]["imagePath"];
@@ -80,11 +79,10 @@ $(document).ready( function(){
 		  }
 		  imageWidth =	manifestJsonArray[m]["size"]["width"];
 		  imageHeight =	manifestJsonArray[m]["size"]["height"];
-		  if(!testCompleted){
-		    posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
-			posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
-			initPlaceMarker($("#"+gatewayID)[0],posX,posY);
-		  }
+		  posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+		  posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
+		  initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+
 		}
 	  }
 	  
@@ -117,14 +115,12 @@ $(document).ready( function(){
             if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
               //$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
             }
-			if(!testCompleted){
-				n.updatePosition(posLeft, posTop);
-				createNodeContainer(n); // create node container (info) according to json
-				$("#"+n.nodeID).hide();
-				newNodeList.push(n); // add node to nodeList
-				//console.log(n);
-			}
-           
+            n.updatePosition(posLeft, posTop);
+
+            createNodeContainer(n); // create node container (info) according to json
+            $("#"+n.nodeID).hide();
+            newNodeList.push(n); // add node to nodeList
+            //console.log(n);
 
             var nCount = parseInt(nodeID.slice(4, nodeID.length));
             initNodeCount.push(nCount);
@@ -136,22 +132,19 @@ $(document).ready( function(){
           }
 
       }
-	  if(!testCompleted){
-		newFloorArray.push([j,newNodeList]);
-	  }
+      newFloorArray.push([j,newNodeList]);
       //console.log("New Floor added: "+j);
     }
     var newTest = new Test(i,gatewayID,gatewayLeft,gatewayTop,gatewayFloor,newFloorArray);
     var mCount = parseInt(i.slice(4, i.length));
     initTestCount.push(mCount);
-	if(!testCompleted){
-		testArray.push(newTest);
-		gatewayPlaced =true;
-		$("#addGateway").hide();
-		$("#inputInfo").show();
-	}
+    testArray.push(newTest);
     //console.log("new Test created"+newTest.testNo);
+
     newFloorArray = null;
+    gatewayPlaced =true;
+    $("#addGateway").hide();
+    $("#inputInfo").show();
   }
 
     //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
@@ -194,6 +187,16 @@ $(document).ready( function(){
         //$("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
     }*/
     //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
+    /*for (i = 0; i< floorArray.length;i++){
+      var siteNodes = [];
+      for (j = 0; j< nodeList.length;j++){
+        if(floorArray[i][0] == nodeList[j].area){
+          siteNodes.push(nodeList[j]);
+        }
+      }
+      floorArray[i][1] = siteNodes;
+    }*/
+
     var mLargest = 0;
     var nLargest = 0;
     for (var i = 0; i<initTestCount.length; i++){
