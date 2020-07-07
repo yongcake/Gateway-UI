@@ -958,20 +958,20 @@ function addNode(markerID, infoID)
     //return;
   }
 
-    var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
-    n.updatePosition(xPosition, yPosition);
-    createNodeContainer(n);
-    getActiveNodeListByFloor(currentFloor).push(n);
-    console.log("Marker ID: " + n.markerID);
-    console.log("Node Location: " + n.location);
-    console.log("Node ID: " + n.nodeID);
+  var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
+  n.updatePosition(xPosition, yPosition);
+  createNodeContainer(n);
+  getActiveNodeListByFloor(currentFloor).push(n);
+  console.log("Marker ID: " + n.markerID);
+  console.log("Node Location: " + n.location);
+  console.log("Node ID: " + n.nodeID);
 	console.log("Node Top: " + n.posTop);
 	console.log("Node Left: " + n.posLeft);	
 	console.log("Node Relative Top: " + getRelativeImageHeight(n.posTop));
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));
-    var pointID = n.pointID;
+  var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
-    $.post("./createConfigHTML.php",
+  $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
     markerID: markerID,
