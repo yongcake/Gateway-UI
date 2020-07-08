@@ -30,6 +30,7 @@ img.src = '../Image/F1.jpeg';
 
 
 $(document).ready( function(){
+<<<<<<< HEAD
   //var mall = "IMM";
   //console.log(url);
   var jsonFilePath = "manifest.json"; //which file to look at 
@@ -43,6 +44,29 @@ $(document).ready( function(){
 	    manifestJsonArray = floorArrayData;
 	    //console.log(floorArrayData);
 	  }
+=======
+	var jsonFilePath = "manifest.json"; //which file to look at 
+	var mall = "IMM";
+	$.getJSON(jsonFilePath, function(data){
+    //console.log(data);
+    for (var i in data){ //IMM, bla,bla
+		//console.log(i);
+		if(i == mall){
+			var mallData = data[i]; //data in that mall
+			var floorArrayData = mallData["floorInfo"];
+			manifestJsonArray = floorArrayData;
+			var selectSite = false;
+			for(var k in floorArrayData){ //k = {"floor": v, "imagePath": v, "size":{"width": v,"height": v}}
+				var area = floorArrayData[k]["floor"];
+				if(!selectSite){
+					switchSites(area);
+					selectSite = true;
+				}
+				$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
+			}
+			//console.log(floorArrayData);
+		}
+>>>>>>> cd4e4470b8119162a93fa5abcb3961116a24e0d5
     }
   });
 });
@@ -50,7 +74,7 @@ $(document).ready( function(){
 $(document).ready( function(){
   console.log("~~~~~~~~~~~~~~~~~~~~~~ Initializing ~~~~~~~~~~~~~~~~~~~~~~")
   var testCompleted, testNo, gatewayID, gatewayLeft, gatewayTop, gatewayFloor, infoID, location, markerID, nodeID, nodeName, posLeft, posTop, signal, status, area, test,pointID,active;//
-  var jsonFilePath = "http://www.localhost/getActiveItems.php"; //which file to look at
+  var jsonFilePath = "http://www.localhost/config.json"; //which file to look at
   var newFloorArray = [];
   //var imgSrc = $("#con").css('background-image');
   //imgSrc = imgSrc.replace('url(','').replace(')','');
@@ -67,34 +91,35 @@ $(document).ready( function(){
       console.log("==========================" + JSON.stringify(i) + "==========================");
       console.log(data);
       testCompleted = testData["testCompleted"];
-      testNo = testData["testNo"];
-      gatewayID = testData["gatewayID"];
-      gatewayLeft = testData["gatewayLeft"];
-      gatewayTop = testData["gatewayTop"];
+	  testNo = testData["testNo"];
+	  gatewayID = testData["gatewayID"];
+	  gatewayLeft = testData["gatewayLeft"];
+	  gatewayTop = testData["gatewayTop"];
       gatewayFloor = testData["gatewayFloor"];
-      floors = testData["floorArray"];
-      $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
-	  for(var m = 0; m<manifestJsonArray.length; m++){
-		if(manifestJsonArray[m]["floor"] == gatewayFloor){
-		  imagePath = manifestJsonArray[m]["imagePath"];
-   		  if(imagePath != undefined){
-			$("#con").css('background-image','url('+imagePath+')');
-		  }
-		  imageWidth =	manifestJsonArray[m]["size"]["width"];
-		  imageHeight =	manifestJsonArray[m]["size"]["height"];
-		  posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
-		  posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
-		  initPlaceMarker($("#"+gatewayID)[0],posX,posY);
-		}
+	  floors = testData["floorArray"];
+	  $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
+	  if(!testCompleted){	
+		for(var m = 0; m<manifestJsonArray.length; m++){
+			if(manifestJsonArray[m]["floor"] == gatewayFloor){
+				imagePath = manifestJsonArray[m]["imagePath"];
+				if(imagePath != undefined){
+					$("#con").css('background-image','url('+imagePath+')');
+				}
+				imageWidth =	manifestJsonArray[m]["size"]["width"];
+				imageHeight =	manifestJsonArray[m]["size"]["height"];
+				posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
+				posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
+				initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+			}
+		}	
 	  }
-	  
-      
+        
       for (var j in floors){ //j == Floor'floorNo'
         var floorData = floors[j];
         nodeList = floorData["nodeList"];
         //console.log(floorData);
         var newNodeList = [];
-        for (var k in nodeList){
+        for (var k in nodeList){ //k = pointID
           var nodeData = nodeList[k];
          // console.log(nodeData);
           markerID = nodeData["markerID"];
@@ -114,19 +139,19 @@ $(document).ready( function(){
             var n = new Node(markerID, nodeID, location, nodeName, infoID,area,pointID,active); //create new node according to json
             n.status = status;
             //posLeft = posLeft *(divWidth/imageWidth) +container.getBoundingClientRect().left -15  ; //Downscale to where it should be on the container
-			console.log("ArEA: "+area);	
-            if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
-              //$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
-            }
+            /*if($("#"+area).length == 0 && area != undefined){ //Create the floorSelect button if it doesn't already exist
+              
+            }*/
             n.updatePosition(posLeft, posTop);
-
-            createNodeContainer(n); // create node container (info) according to json
-            $("#"+n.nodeID).hide();
-            newNodeList.push(n); // add node to nodeList
+			
+			if(!testCompleted){
+				createNodeContainer(n); // create node container (info) according to json
+				$("#"+n.nodeID).hide();
+				newNodeList.push(n); // add node to nodeList
+			}
             //console.log(n);
-
             var nCount = parseInt(nodeID.slice(4, nodeID.length));
-            initNodeCount.push(nCount);
+            initNodeCount.push(nCount); //Needed to get unique Node/Point ID
             nodeCount++;
 
           }
@@ -135,19 +160,23 @@ $(document).ready( function(){
           }
 
       }
-      newFloorArray.push([j,newNodeList]);
+	  if(!testCompleted){
+		newFloorArray.push([j,newNodeList]); 
+	  }
       //console.log("New Floor added: "+j);
     }
     var newTest = new Test(i,gatewayID,gatewayLeft,gatewayTop,gatewayFloor,newFloorArray);
     var mCount = parseInt(i.slice(4, i.length));
-            initTestCount.push(mCount);
-    testArray.push(newTest);
+    initTestCount.push(mCount); //Needed to get unique Test ID
+	if(!testCompleted){
+		testArray.push(newTest);
+		gatewayPlaced =true;
+		$("#addGateway").hide();
+		$("#inputInfo").show();
+	}
     //console.log("new Test created"+newTest.testNo);
+	newFloorArray = null;
 
-    newFloorArray = null;
-    gatewayPlaced =true;
-    $("#addGateway").hide();
-    $("#inputInfo").show();
   }
 
     //alert("divWIDTH:" +divWidth +" DIVHEIGHT:"+divHeight);
@@ -166,6 +195,7 @@ $(document).ready( function(){
 					imageHeight = manifestJsonArray[m]["size"]["height"];
 				}
 			}
+			
 			for(k = 0; k<nodes.length;k++){    //nodes
 				var node = testArray[i].floorArray[j][1][k]; //1 node class
 				var top = node.posTop * (divHeight/imageHeight) +container.getBoundingClientRect().top + window.pageYOffset;
@@ -187,7 +217,7 @@ $(document).ready( function(){
     }
     else{
         currentFloor = "Floor1";
-        //$("#floorSelectionWrapper").append("<input type='button' class='button' id='Floor1' onclick=switchSites('Floor1') value='Floor1'></input>"); //Remove this after modifying
+        
     }*/
     //Site Array format [[*SiteName*,*NodeArrays[*nodes*]*],[*SiteName*,*NodeArrays[*nodes*]*]]
     /*for (i = 0; i< floorArray.length;i++){
@@ -310,7 +340,11 @@ function addGatewayPressed(){
   var gatewayID = "gateway"+testCounter;
   var container = document.querySelector("#imageSource");
   if(addGatewayButtonPressed == true){
-      var test = new Test(testNo, "gateway1", parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, [currentFloor,[]]); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
+	  var newFloorArray = [];
+	  for(var m = 0; m<manifestJsonArray.length; m++){
+	      newFloorArray.push([manifestJsonArray[m]["floor"],[]])
+	  }
+      var test = new Test(testNo, "gateway1", parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, newFloorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
       testArray.push(test);
       //gatewayUniqueMarker = document.getElementById(gatewayID);
       //gatewayUniqueContainer = $("#imageSource")[0];
@@ -736,6 +770,7 @@ function testComplete(){
       gatewayPlaced = false;
       gatewayMarkerAdded = false;
 	  removeUnwantedMarker();
+	  //testArray = [];
   }
   //document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
@@ -1011,7 +1046,7 @@ function getActiveNodeListByFloor(floor){//Get or Create new floor
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
       for(j = 0; j <testArray[i].floorArray.length;j++){
-        if(testArray[i].floorArray[i][1] !== undefined){ //in case site is created but no markers was added
+        if(testArray[i].floorArray[i][1] != undefined){ //in case site is created but no markers was added
           if(testArray[i].floorArray[j][0]== floor){
             return (testArray[i].floorArray[j][1]);
           }
@@ -1109,6 +1144,7 @@ function clearSite(currentFloor){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
 		if(testArray[i].gatewayFloor == currentFloor){
+			console.log(testArray[i].gatewayID);
 			$("#"+testArray[i].gatewayID).hide();
 		}
       for(j = 0; j <testArray[i].floorArray.length;j++){
@@ -1146,24 +1182,26 @@ class Test{
       this.testCompleted =true;
       if(this.floorArray != undefined){
         for(i = 0; i < this.floorArray.length;i++){//Floors
-		if(this.floorArray[i][1].length> 0){
-          for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
-            var node = this.floorArray[i][1][j];
-            node.active =false;
-            $("#"+node.markerID).remove();
-            $("#"+node.nodeID).remove();
-            $("#"+node.infoID).remove();
-          }
-        }
+		if(this.floorArray[i][1]!= undefined){
+		  if(this.floorArray[i][1].length> 0){
+			for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
+				var node = this.floorArray[i][1][j];
+				node.active =false;
+				$("#"+node.markerID).remove();
+				$("#"+node.nodeID).remove();
+				$("#"+node.infoID).remove();
+				}
+			}
+		}
 		}
       }
-	  $.post("./completeTest.php",
+	  /*$.post("./completeTest.php",
       {
         test: this.testNo
       },
       function(){
         console.log(testNo+" status has been updated in JSON");
-      });
+      });*/
     }
   }
 
