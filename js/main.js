@@ -1,10 +1,12 @@
 //Global varibles
+var url = window.location.href;
+var mall = sliceURL(url);
 var xPosition,yPosition;
 var newMarker;
 var nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
-var addButtonPressed  = false;  
+var addButtonPressed  = false;
 var addGatewayButtonPressed = false;
 var gatewayMarkerAdded = false;
 var gatewayUniqueMarker;
@@ -25,9 +27,10 @@ var divHeight = 0;
  //'../Image/dummyButSmaller.jpg';
 var img = new Image();
 img.src = '../Image/F1.jpeg';
+
+
 $(document).ready( function(){
 	var jsonFilePath = "manifest.json"; //which file to look at 
-	var mall = "IMM";
 	$.getJSON(jsonFilePath, function(data){
     //console.log(data);
     for (var i in data){ //IMM, bla,bla
@@ -49,7 +52,6 @@ $(document).ready( function(){
 		}
     }
   });
-	
 });
 
 $(document).ready( function(){
@@ -1268,4 +1270,19 @@ setInterval(updateSignal, 1000);
 
 function upperCaseFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function sliceURL(url){
+	var delimiter = "#";
+	var counter = 0;
+	for (var i = 0; i<url.length;i++){
+		counter++;
+		if (url[i] == delimiter)
+		{
+			break;
+		}
+	}
+
+	//here u shd have the delimiter count 
+	return url.slice(counter, url.length);
 }
