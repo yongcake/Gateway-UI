@@ -30,23 +30,7 @@ img.src = '../Image/F1.jpeg';
 
 
 $(document).ready( function(){
-<<<<<<< HEAD
-  //var mall = "IMM";
-  //console.log(url);
-  var jsonFilePath = "manifest.json"; //which file to look at 
-  $.getJSON(jsonFilePath, function(data){
-  //console.log(data);
-    for (var i in data){ //IMM, bla,bla
-      //console.log(i);
-	  if(i == mall){
-  	    var mallData = data[i]; //data in Test0,1,2,3
-	    var floorArrayData = mallData["floorInfo"];
-	    manifestJsonArray = floorArrayData;
-	    //console.log(floorArrayData);
-	  }
-=======
 	var jsonFilePath = "manifest.json"; //which file to look at 
-	var mall = "IMM";
 	$.getJSON(jsonFilePath, function(data){
     //console.log(data);
     for (var i in data){ //IMM, bla,bla
@@ -66,7 +50,6 @@ $(document).ready( function(){
 			}
 			//console.log(floorArrayData);
 		}
->>>>>>> cd4e4470b8119162a93fa5abcb3961116a24e0d5
     }
   });
 });
