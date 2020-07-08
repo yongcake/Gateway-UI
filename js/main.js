@@ -125,7 +125,7 @@ $(document).ready( function(){
             }*/
             n.updatePosition(posLeft, posTop);
 			
-			if(!testCompleted){
+			if(!testCompleted && active == "true"){
 				createNodeContainer(n); // create node container (info) according to json
 				$("#"+n.nodeID).hide();
 				newNodeList.push(n); // add node to nodeList
@@ -155,8 +155,7 @@ $(document).ready( function(){
 		$("#addGateway").hide();
 		$("#inputInfo").show();
 	}
-    //console.log("new Test created"+newTest.testNo);
-	newFloorArray = null;
+	newFloorArray = [];
 
   }
 
@@ -325,7 +324,7 @@ function addGatewayPressed(){
 	  for(var m = 0; m<manifestJsonArray.length; m++){
 	      newFloorArray.push([manifestJsonArray[m]["floor"],[]])
 	  }
-      var test = new Test(testNo, "gateway1", parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, newFloorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
+      var test = new Test(testNo, gatewayID, parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, newFloorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
       testArray.push(test);
       //gatewayUniqueMarker = document.getElementById(gatewayID);
       //gatewayUniqueContainer = $("#imageSource")[0];
@@ -335,7 +334,8 @@ function addGatewayPressed(){
         posLeft: (test.gatewayLeft - container.getBoundingClientRect().left) *(imageWidth/divWidth),
         posTop:  (test.gatewayTop - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
         area: currentFloor,
-        test: testNo
+        test: testNo,
+		floorArray: newFloorArray
       },
       function(){
         console.log("Gateway Info Sent to ConfigHTML");
@@ -693,8 +693,7 @@ function cancelEdit(){
 }
 
 function cancelPressed(){
-  //document.getElementById("formStatus").innerHTML = "Selection Cancelled";
-  //removeMarker(newMarker.id);
+
   removeFromArray(newMarker.id); //Function to remove marker,
   removeUnwantedMarker();
   modeArray.viewingMode =false;
@@ -737,7 +736,6 @@ function moveGateway(){
 function testComplete(){
   var testCleared = false;
   for(i = 0; i<testArray.length;i++){
-	  console.log(testArray[i].testCompleted);
     if(!testArray[i].testCompleted){
       testArray[i].stopTest();
 	  testCleared= true;
@@ -746,7 +744,6 @@ function testComplete(){
   if(testCleared){
 	  $("#addGateway").show();
       $("#inputInfo").hide();
-      testCounter++;
       addGatewayButtonPressed = false;
       gatewayPlaced = false;
       gatewayMarkerAdded = false;
@@ -941,18 +938,34 @@ function addNode(markerID, infoID)
   selectiveDisableNodeButton();
   $("#addNode").hide();
   $("#cancel").hide();
-
-  for (var i = 0; i<getActiveNodeListByFloor(currentFloor).length; i++){
-    var node = getActiveNodeListByFloor(currentFloor)[i];
-    if (nodeName == node.nodeName && node.active){
-      nodeExist = true;
-    }
+  for (var i = 0; i<testArray.length; i++){
+	if(!testArray[i].testCompleted){
+		for(var j = 0;j<testArray[i].floorArray.length;j++){
+			for(var k = 0;k<testArray[i].floorArray[j][1].length;k++){
+				if(testArray[i].floorArray[j][1][k].nodeName == nodeName){
+					var node = testArray[i].floorArray[j][1][k];
+					var testNo = testArray[i].testNo;
+					$.post("./completeNodeTest.php",
+					{
+						test: testArray[i].testNo,
+						infoID: node.infoID
+					},
+					function(){
+					console.log(testNo+node.infoID+" status has been updated in JSON");
+					});
+					node.active = false;
+					$("#"+node.nodeID).remove();
+					$("#"+node.infoID).remove();
+					$("#"+node.markerID).remove();
+					}
+				}
+			}
+		}
   }
-
   if(nodeExist){
     document.getElementById("formStatus").innerHTML = "";
     alert("Node ID already exist and is active, please select a differnt node"); 
-    removeMarker(markerID);
+    removeUnwantedMarker();
     return;
   }
   else{ //this is supposed to be the else statement
@@ -1101,6 +1114,7 @@ function switchSites(newSite){ //Toggle between Sites
 function remapMarkers(newSite){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+		console.log(testArray[i].testNo);
 		if(testArray[i].gatewayFloor == newSite){
 			$("#"+testArray[i].gatewayID).show();
 		}
@@ -1124,6 +1138,7 @@ function remapMarkers(newSite){
 function clearSite(currentFloor){
   for(var i = 0;i<testArray.length;i++){ //loop all the sites
     if(!testArray[i].testCompleted){
+		console.log(testArray[i].testNo);
 		if(testArray[i].gatewayFloor == currentFloor){
 			console.log(testArray[i].gatewayID);
 			$("#"+testArray[i].gatewayID).hide();
@@ -1158,15 +1173,16 @@ class Test{
   
   stopTest(){
     if(!this.testCompleted){
+	  console.log("START:" + this.floorArray);
 	  var testNo = this.testNo;
 	  $("#"+this.gatewayID).remove();
-      this.testCompleted =true;
-      if(this.floorArray != undefined){
         for(i = 0; i < this.floorArray.length;i++){//Floors
+		//console.log(this.floorArray);
 		if(this.floorArray[i][1]!= undefined){
 		  if(this.floorArray[i][1].length> 0){
 			for(j = 0 ; j <this.floorArray[i][1].length;j++){ //Nodes
 				var node = this.floorArray[i][1][j];
+				console.log(node)
 				node.active =false;
 				$("#"+node.markerID).remove();
 				$("#"+node.nodeID).remove();
@@ -1174,15 +1190,16 @@ class Test{
 				}
 			}
 		}
-		}
       }
-	  /*$.post("./completeTest.php",
+	  $.post("./completeTest.php",
       {
-        test: this.testNo
+        test: testNo
       },
       function(){
         console.log(testNo+" status has been updated in JSON");
-      });*/
+      });
+	  this.testCompleted =true;
+	  console.log(this.floorArray);
     }
   }
 
@@ -1210,7 +1227,8 @@ function updateSignal(){
   $.ajaxSetup({cache:false}); //disable cache so it can update 
   $.getJSON(jsonFilePath, function(data){
     //console.log(data);
-    var nodeList = getActiveNodeListByFloor(currentFloor);
+	if(data != ""){
+	var nodeList = getActiveNodeListByFloor(currentFloor);
     for (var i in data){ //Test0,1,2,3
       var testData = data[i]; //data in Test0,1,2,3
       var floorArrayData = testData["floorArray"];  //floorArray in Test
@@ -1229,15 +1247,18 @@ function updateSignal(){
 				if (nodeList[k].signal != 0){
 					nodeList[k].statusChange();
 				}
-                $("#"+ nodeList[k].infoID).html(nodeList[k].print());
-                changeSignalStrengthNotation(nodeList[k].markerID);
-                //console.log("reading from json and printing info out");
+        $("#"+ nodeList[k].infoID).html(nodeList[k].print());
+				if(nodeList[k].active =="true"){
+					changeSignalStrengthNotation(nodeList[k].markerID);
+				}
+        //console.log("reading from json and printing info out");
               }
             }
           }
         }
       }
     }
+	}
   });
 }
 
