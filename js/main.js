@@ -544,14 +544,7 @@ function noSignal(markerID){
 
 
 function addPressed(){
-  var location = $("#locationName").val(); //.value
-  location = "ahh";
   var nodeID = selectedNode; 
-  if (location == "" || nodeID == ""){
-    alert("Please make sure both fields are filled before adding node.");
-    return;
-  }
-  else{
     addButtonPressed = true;
     $("#" +selectedNode).removeClass("addBorder"); //remove the border on the button
     addNode(newMarker.id, ("nodeInfo"+nodeCount));
@@ -564,7 +557,7 @@ function addPressed(){
     
     //document.getElementById("locationName").value = "";
     //document.getElementById("nodeID").value = "";
-  }
+  
 }
 
 function resetNodeDiv(){
@@ -933,10 +926,10 @@ function createNodeContainer(newNode){ //Used to create a new container
 
 function addNode(markerID, infoID)
 {
-  var location = "Not Relavent";
   var nodeID = "node"+nodeCount;
   var pointID ="point"+nodeCount;
-  var nodeName = selectedNode;
+  var nodeName = selectedNode;     
+  var location ="useless";
   nodeExist = false;
   selectedNode = "";
   disableAllNodeButton();
@@ -947,9 +940,11 @@ function addNode(markerID, infoID)
 	if(!testArray[i].testCompleted){
 		for(var j = 0;j<testArray[i].floorArray.length;j++){
 			for(var k = 0;k<testArray[i].floorArray[j][1].length;k++){
-				if(testArray[i].floorArray[j][1][k].nodeName == nodeName){
+				if(testArray[i].floorArray[j][1][k].nodeName == nodeName && (testArray[i].floorArray[j][1][k].active || testArray[i].floorArray[j][1][k].active == "true")){
 					var node = testArray[i].floorArray[j][1][k];
 					var testNo = testArray[i].testNo;
+					//alert(node.infoID);
+					
 					$.post("./completeNodeTest.php",
 					{
 						test: testArray[i].testNo,
@@ -987,6 +982,7 @@ function addNode(markerID, infoID)
 	console.log("Node Relative Left: " + getRelativeImageWidth(n.posLeft));*/
     var pointID = n.pointID;
     //testArray[x][0] = TestNo, [1] = testCompleted, [2] = floorArray 
+	console.log(n);
     $.post("./createConfigHTML.php",
   {
     nodeName: nodeName,
@@ -995,7 +991,6 @@ function addNode(markerID, infoID)
     infoID: infoID,
     posLeft: getRelativeImageWidth(n.posLeft),
     posTop:  getRelativeImageHeight(n.posTop),
-    location: location,
     area: currentFloor,
     test: "Test"+(testCounter),
     pointID: pointID,
@@ -1003,6 +998,7 @@ function addNode(markerID, infoID)
   },
   function(){
     console.log("Info Sent to ConfigHTML");
+
   });
   
   }
