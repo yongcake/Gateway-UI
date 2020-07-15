@@ -35,7 +35,14 @@
 				"width": 3285,
 				"height": 1921
 			}
+		}, {
+			"floor": "Roof",
+			"imagePath": "../Image/dummy.png",
+			"size": {
+				"width": 1068,
+				"height": 657
+			}
 		}],
-		"nodeList": ["A001", "A002"]
+		"nodeList": ["A001", "A002","A003","A004","A005","A006"]
 	}
 }
