@@ -2,7 +2,7 @@
 
 
 $testID =  $_POST["test"];
-$testID =  "Test1";
+
 
 /*$nodeJson= file_get_contents('./packetInfo.json');
 $nodeArray = json_decode($nodeJson,true);*/
@@ -38,11 +38,11 @@ if (file_exists('./trace.json')){
 		}
 	}
 	//echo "trace Found";
+	$myfile = fopen("trace.json", "w");
+	fwrite($myfile, json_encode($traceJsonArray));
+	fclose($myfile); 
 }
 
-$myfile = fopen("trace.json", "w");
-fwrite($myfile, json_encode($traceJsonArray));
-fclose($myfile); 
 
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));

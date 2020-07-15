@@ -9,7 +9,7 @@ $area =  $_POST["area"];
 $test =  $_POST["test"];
 $pointID =  $_POST["pointID"];
 $active =  $_POST["active"];
-
+$floorArr = $_POST["floorArray"];
 /*$nodeJson= file_get_contents('./packetInfo.json');
 $nodeArray = json_decode($nodeJson,true);*/
 
@@ -38,13 +38,19 @@ if(!isset($jsonArray[$test]) && $test != ""){ //For Geteway
 	$jsonArray[$test]['gatewayLeft'] = $posLeft;
 	$jsonArray[$test]['gatewayTop'] = $posTop;
 	$jsonArray[$test]['gatewayFloor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]['floor'] = $area;
-	$jsonArray[$test]['floorArray']["$area"]['nodeList']= array();
-
-	//$nodeArray[$test]['testCompleted'] = false;
-	$nodeArray[$test]['gatewayLeft'] = $posLeft;
-	$nodeArray[$test]['gatewayTop'] = $posTop;
-	$nodeArray[$test]['gatewayFloor'] = $area;
+	for ($i = 0; $i < count($floorArr);$i++){
+		$jsonArray[$test]['floorArray'][$floorArr[$i][0]] = array("floor"=>$floorArr[$i][0],"nodeList"=>array());
+	}
+	if(count($floorArr)<= 0){
+		$jsonArray[$test]['floorArray'] ="BUGGED";
+	}
+	if(count($nodeID)!= 0){
+		$jsonArray[$test]['nodeID'] =$nodeID;
+	}
+	
+	if(count($pointID)!= 0){
+		$jsonArray[$test]['point'] =$pointID;
+	}
 	//$jsonArray[$test]['floorArray']["$area"]= ;
 }
 else { //For Nodes
@@ -65,20 +71,11 @@ else { //For Nodes
 	$node['active'] =$active;
 	$jsonArray[$test]["floorArray"][$area]['nodeList'][$pointID] = $node;
 
-	//packetInfo.json
-	/*$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['pointID'] =$pointID;
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['nodeID'] =$nodeName;
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posLeft'] = $posLeft;
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['posTop'] = $posTop;
-	$nodeArray[$test]['floorArray'][$area]['Point'.$pointNo]['trace'] = array();*/
 }
 
 
-
-/*$myfile = fopen("packetInfo.json", "w");
-fwrite($myfile, json_encode($nodeArray));
-fclose($myfile); */
 $myfile = fopen("config.json", "w");
+chmod("config.json",0777);
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
 

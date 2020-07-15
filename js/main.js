@@ -1,12 +1,10 @@
 //Global varibles
-var url = window.location.href;
-var mall = sliceURL(url);
 var xPosition,yPosition;
 var newMarker;
 var nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
 var nodeExist = false;
-var addButtonPressed  = false;
+var addButtonPressed  = false;  
 var addGatewayButtonPressed = false;
 var gatewayMarkerAdded = false;
 var gatewayUniqueMarker;
@@ -27,10 +25,9 @@ var divHeight = 0;
  //'../Image/dummyButSmaller.jpg';
 var img = new Image();
 img.src = '../Image/F1.jpeg';
-
-
 $(document).ready( function(){
 	var jsonFilePath = "manifest.json"; //which file to look at 
+	var mall = "IMM";
 	$.getJSON(jsonFilePath, function(data){
     //console.log(data);
     for (var i in data){ //IMM, bla,bla
@@ -52,6 +49,7 @@ $(document).ready( function(){
 		}
     }
   });
+	
 });
 
 $(document).ready( function(){
@@ -80,8 +78,8 @@ $(document).ready( function(){
 	  gatewayTop = testData["gatewayTop"];
       gatewayFloor = testData["gatewayFloor"];
 	  floors = testData["floorArray"];
-	  $("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
-	  if(!testCompleted){	
+	  if(!testCompleted){
+		$("#imageSource").append("<div class='gateway' id='" + gatewayID + "'></div>");
 		for(var m = 0; m<manifestJsonArray.length; m++){
 			if(manifestJsonArray[m]["floor"] == gatewayFloor){
 				imagePath = manifestJsonArray[m]["imagePath"];
@@ -714,24 +712,33 @@ function cancelPressed(){
 
 function moveGateway(){
   //reset the HTML 
-  document.getElementById("imageSource").innerHTML = ""; 
+  var testCleared = false;
+  for(i = 0; i<testArray.length;i++){
+    if(!testArray[i].testCompleted){
+      testArray[i].stopTest();
+	  testCleared= true;
+    }
+  }
+  if(testCleared){
+	  $("#addGateway").show();
+      $("#inputInfo").hide();
+      addGatewayButtonPressed = false;
+      gatewayPlaced = false;
+      gatewayMarkerAdded = false;
+	  removeUnwantedMarker();
+	  markerAdded = false;
+	  nodeExist = false;
+      addButtonPressed  = false;  
+	  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+	  //testArray = [];
+  }
+  //document.getElementById("imageSource").innerHTML = ""; 
   //document.getElementById("formStatus").innerHTML = ""; 
-  document.getElementById("scrollInfoContainer").innerHTML = ""; 
+  //document.getElementById("scrollInfoContainer").innerHTML = ""; 
 
-  // reset the arrays
-
-  // reset the buttons
-  $("#addGateway").show();
-  $("#inputInfo").hide();
 
   // reset all the bool stuff 
-  markerAdded = false;
-  nodeExist = false;
-  addButtonPressed  = false;  
-  addGatewayButtonPressed = false;
-  gatewayMarkerAdded = false;
-  gatewayPlaced = false;
-  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+
 
 }
 
@@ -750,6 +757,10 @@ function testComplete(){
       gatewayPlaced = false;
       gatewayMarkerAdded = false;
 	  removeUnwantedMarker();
+	  markerAdded = false;
+	  nodeExist = false;
+      addButtonPressed  = false;  
+	  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
 	  //testArray = [];
   }
   //document.getElementById("imageSource").innerHTML = ""; 
@@ -778,41 +789,33 @@ function changeSignalStrengthNotation(markerID){
   //console.log("function is invoked");
   //console.log(markerID);
   var node = getNodeByMarkerID(markerID);
-  var element = document.getElementById("signal-strength" + node.markerID);
+  //var element = $("#signal-strength" + node.markerID);
+  $("#signal-strength" + node.markerID).removeClass();
+  $("#signal-strength" + node.markerID).addClass("signal-strength");
   if (node.signal == 1){
-    
+    //var element = document.getElementById("signal-strength" + markerID);
     //console.log(element);
-    element.className = "";
-    element.classList.add("signal-strength");
-    element.classList.add("signal-strength-1");
+    $("#signal-strength" + node.markerID).addClass("signal-strength-1");
   }
 
   if (node.signal == 2){
     //var element = document.getElementById("signal-strength" + markerID);
-    element.className = "";
-    element.classList.add("signal-strength");
-    element.classList.add("signal-strength-2");
+    $("#signal-strength" + node.markerID).addClass("signal-strength-2");
   }
 
   if (node.signal == 3){
     //var element = document.getElementById("signal-strength" + markerID);
-    element.className = "";
-    element.classList.add("signal-strength");
-    element.classList.add("signal-strength-3");
+    $("#signal-strength" + node.markerID).addClass("signal-strength-3");
   }
 
   if (node.signal == 4){
     //var element = document.getElementById("signal-strength" + markerID);
-    element.className = "";
-    element.classList.add("signal-strength");
-    element.classList.add("signal-strength-4");
+    $("#signal-strength" + node.markerID).addClass("signal-strength-4");
   }
 
   if (node.signal == 5){
     //var element = document.getElementById("signal-strength" + markerID);
-    element.className = "";
-    element.classList.add("signal-strength");
-    element.classList.add("signal-strength-5");
+    $("#signal-strength" + node.markerID).addClass("signal-strength-5");
   }
 }
 
@@ -1246,14 +1249,15 @@ function updateSignal(){
                 nodeList[k].signal = nodeListData[l]["signal"];
 				//console.log(getNodeByMarkerID(nodeList[k].markerID).signal);
                 //console.log(nodeList[k].signal);
+				$("#"+ nodeList[k].infoID).html(nodeList[k].print());
 				if (nodeList[k].signal != 0){
 					nodeList[k].statusChange();
-				}
-        $("#"+ nodeList[k].infoID).html(nodeList[k].print());
-				if(nodeList[k].active =="true"){
 					changeSignalStrengthNotation(nodeList[k].markerID);
 				}
-        //console.log("reading from json and printing info out");
+				if(nodeList[k].active =="true" || nodeList[k].active){
+					//changeSignalStrengthNotation(nodeList[k].markerID);
+				}
+                //console.log("reading from json and printing info out");
               }
             }
           }
@@ -1265,24 +1269,9 @@ function updateSignal(){
 }
 
 $("document").ready(function(){
-setInterval(updateSignal, 1000);
+  setInterval(updateSignal, 1000);
 }); 
 
 function upperCaseFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
-}
-
-function sliceURL(url){
-	var delimiter = "#";
-	var counter = 0;
-	for (var i = 0; i<url.length;i++){
-		counter++;
-		if (url[i] == delimiter)
-		{
-			break;
-		}
-	}
-
-	//here u shd have the delimiter count 
-	return url.slice(counter, url.length);
 }

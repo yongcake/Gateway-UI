@@ -1,8 +1,8 @@
 <?php
 
 
-$testID =  $_POST["test"];
-$infoID =  $_POST["infoID"];
+$testID =  $_POST["test"]; //TestX
+$infoID =  $_POST["infoID"]; //nodeInfoX
 if (file_exists('./config.json')){
 
 	$json= file_get_contents('./config.json');//encoded json
@@ -18,33 +18,40 @@ if (file_exists('./config.json')){
 			}
 		}
 	}
+	$myfile = fopen("./config.json", "w");
+	fwrite($myfile, json_encode($jsonArray));
+	fclose($myfile);
 }
 
-if (file_exists('./trace.json')){
+/*if (file_exists('./trace.json')){
 	$json= file_get_contents('./trace.json');//encoded json
 	$traceJsonArray = json_decode($json,true);
+	//$infoID = "nodeInfo0";
+	//$testID = "Test1";
 	foreach($traceJsonArray as $testNo =>$test){ // Loop through all the test
-		if($testID == $testNo){
+		if($testID == $testNo ){
 			foreach($test['nodes'] as $nodeInfo =>$node){ //loop all the floors
 				//echo($traceJsonArray[$testNo]['nodes'][$nodeInfo]['active']);
 				if($nodeInfo == $infoID){
-				   $traceJsonArray[$testNo]['nodes'][$nodeInfo]['active'] = false;	
-				   echo($nodeInfo." has been set to false \n");
+				   //echo(json_encode($node));
+				   $traceJsonArray[$testNo]['nodes'][$nodeInfo]["active"] =false;	
+				   //echo(json_encode($traceJsonArray[$testNo]['nodes'][$nodeInfo]));
+				   echo($nodeInfo." has been set to false\n");
+
 				}
 				
 			}
 		}
+		
 	}
+	$myfile = fopen("./trace.json", "w");
+	fwrite($myfile, json_encode($traceJsonArray));
+	fclose($myfile); 
 	//echo "trace Found";
-}
 
-$myfile = fopen("trace.json", "w");
-fwrite($myfile, json_encode($traceJsonArray));
-fclose($myfile); 
+}*/
+//echo(json_encode($traceJsonArray));
 
-$myfile = fopen("config.json", "w");
-fwrite($myfile, json_encode($jsonArray));
-fclose($myfile);
 
 	
 ?>
