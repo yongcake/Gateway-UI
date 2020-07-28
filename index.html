@@ -13,51 +13,64 @@
 </head>
 
 <body>
+		
 	<div class="bodyContainer">
 		<div class="topContainer">
-			<h2>Gateway Signal Test Kit</h2>
-	
-			<div class="complete">
+			<!--<h2>Gateway Signal Test Kit</h2>-->
+			<select id="FloorLists" class ="FloorLists"> </select>
+			<div class="markerStatusWrapper" hidden>
+				<b>Current Marker selected:</b> <a id="selectedMarker">None</a>
+			</div>
+			<input type="button" class="plus" id ="plus" disabled value="+" onclick="enableMark()">
+			
+				
+				<input type="button" class="moveGatewayButton" id="MoveGatewayButton" value="Gateway" ondblclick="moveGateway()">
+				<!--
 				<input type="button" class="moveGatewayButton" id="MoveGatewayButton" value="Move Gateway" ondblclick="moveGateway()">
+				-->
 				<input type="button" class="testCompleteButton" id="TestCompleteButton" value="Test Complete" ondblclick="testComplete()">
-			</div>	
+				
+			
 		</div>
-
+		<br>	
 		<!--
-		<label><i>*Insert Area*</i></label>
-		-->
-		<br>
 		
+		<label><i>*Insert Area*</i></label>
 	
 		<div class="floor">
 			<div class="floorSelectionWrapper" id="floorSelectionWrapper">
-				<!--<input type="button" class="button" id="Floor1" onclick="switchSites('Floor1')" value="Floor1">
-				<input type="button" class="button" id="Floor2" onclick="switchSites('Floor2')" value="Floor2">
-				<input type="button" class="button" id="Floor3" onclick="switchSites('Floor3')" value="Floor3">
-				<input type="button" class="button" id="Floor4" onclick="switchSites('Floor4')" value="Floor4">
-				<input type="button" class="button" id="Floor5" onclick="switchSites('Floor5')" value="Floor5">
-				<!--<input type="button" class="button" id="Test1" onclick="switchSites('Test1')" value="Test1">
-				-->
+				
 			</div>
 			
-			<div class="markerStatusWrapper" hidden>
-				<b>Current Marker selected:</b> <a id="selectedMarker">None</a>, <b>Mode: </b> <a id="Mode">Adding</a>
-			</div>
+
 		</div>
 		
-		<br>
+			-->
+
 
 		<div class="floorPlanZoneContainer">
 			<div class="con" id="con">
 			<div class="imageContainer" id="imageSource" onclick="createNewMarker(); "><!--showCoords(event);-->
+				<div class="inputWrapper" id="inputInfo">
+				</div>
+				<!--<div class="scrollInfoContainer"  id="scrollInfoContainer">
+						<div class="nodeInfoContainer" id="nodeInfoContainer">
+						<div class="nodeButtonWrapper" id="nodeButton">
+							<input type="button" class="nodeButton" id="editNode" onclick = "editSelectedNode()" value="Edit">
+							<input type="button" class="nodeButton" id="cancelEdit" onclick = "cancelEdit()" value="Cancel Edit" hidden>
+							<input type="button" class="nodeButton" id="deleteNode" value="Delete" onclick="removeMarker()">
+							<input type="button" class="nodeButton" id="noSignalNode" value="No Signal" onclick="noSignal()"
+						</div>
+					</div>	
+				</div>>-->
 			</div>
-			</div>
-			
+
+			<!--
 			<div class="informationContainer" id ="informationContainerTest">
 				<div class="formContainer" id="formContainerID" style="display: flex;">
 					<input type="button"  class="addNode" id="addGateway" disabled value="Place Gateway" onclick=addGatewayPressed()>
 					<div class="inputWrapper" id="inputInfo">
-						<input type="button"  class="addNode" id="A001" disabled value="A001" onclick="changeSelectedNode('A001')"> 
+					<!-- <input type="button"  class="addNode" id="A001" disabled value="A001" onclick="changeSelectedNode('A001')"> 
 						<input type="button"  class="addNode" id="A002" disabled value="A002" onclick="changeSelectedNode('A002')">
 						<input type="button"  class="addNode" id="A003" disabled value="A003" onclick="changeSelectedNode('A003')">
 						<input type="button"  class="addNode" id="A004" disabled value="A004" onclick="changeSelectedNode('A004')">
@@ -77,27 +90,17 @@
 				
 				<div class="formStatusWrapper" id="formStatus">
 					 <br>
-				</div>
-				<div class="scrollInfoContainer" id="scrollInfoContainer">
-						<!--<div class="nodeInfoContainer" id="nodeInfoContainer">
-						<div class="nodeButtonWrapper" id="nodeButton">
-							<input type="button" class="nodeButton" id="editNode" onclick = "editSelectedNode()" value="Edit">
-							<input type="button" class="nodeButton" id="cancelEdit" onclick = "cancelEdit()" value="Cancel Edit" hidden>
-							<input type="button" class="nodeButton" id="deleteNode" value="Delete" onclick="removeMarker()">
-							<input type="button" class="nodeButton" id="noSignalNode" value="No Signal" onclick="noSignal()">
-						</div>
-					</div>	-->
-				</div>
+				</div>-->
+
 
 			</div>
 		</div>
-		<div id="instructions">
+	<!--	<div id="instructions">
 			- Tap on a new location to place gateway/node location <br>
 			- Tap on the buttons to confirm placement
 		</div>
-	
+	-->
 	</div>
-	<hr>
 
 </body>
 

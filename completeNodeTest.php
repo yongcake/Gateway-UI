@@ -8,13 +8,15 @@ if (file_exists('./config.json')){
 	$json= file_get_contents('./config.json');//encoded json
 	$jsonArray = json_decode($json,true);
 	foreach($jsonArray as $testNo =>$test){ // Loop through all the test
-		if($testID == $testNo && !$test['testCompleted'] ){
-			foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
-				foreach($floorNode['nodeList'] as $pointNo =>$point){
-					if($point["infoID"] == $infoID){
-						$jsonArray[$testNo]['floorArray'][$floor]['nodeList'][$pointNo]['active'] ="false";
-					}	
-				}		
+		if ($testNo != "shutdown"){	
+			if($testID == $testNo && !$test['testCompleted'] ){
+				foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
+					foreach($floorNode['nodeList'] as $pointNo =>$point){
+						if($point["infoID"] == $infoID){
+							$jsonArray[$testNo]['floorArray'][$floor]['nodeList'][$pointNo]['active'] ="false";
+						}	
+					}		
+				}
 			}
 		}
 	}

@@ -22,11 +22,15 @@ img{
 .topContainer{
 	display: flex;
 	height: 3vw;
+	justify-content: space-between;
+	align-items: flex-start;
 }
 
+
+
 .complete {
-	display: flex;
-	flex-direction: row;
+	/*display: flex;
+	flex-direction: row;*/
 	float: right;	
 	margin-right: 1%;
 }
@@ -54,17 +58,20 @@ img{
 
 }
 .con{
-	background-image: url('../Image/image19.jpg');
+	background-image: url('../Image/F1.jpeg');
 	background-repeat: no-repeat;
 	background-size: contain;
-	width: 	678px;
-	max-width: 100%;
-	margin-right: 3%;
-	
+	height: 100%;
+	width: 90%;
+	max-width: 90%;
+	max-height: 550px;
+	margin-left: auto;
+	margin-right: auto;
 }
 .imageContainer{
 	padding-top: 62.5%;
-
+	height: 100%;
+	width: 100%;
 }
 
 .alert{
@@ -94,11 +101,23 @@ img{
 }
 
 .inputWrapper{
-	width: inherit;
-	display: flex;
+	width: 12vw;
 	flex-wrap: wrap;
-	
+	background-color: gray;
+	z-index: 10;
 }
+
+.addNode{
+	padding: 5px;
+	font-size: 2vw;
+	float: left;
+	align-self: flex-end;
+	width: 90%;
+	height: 90%;
+	margin: 5px;
+	flex: 1 0 25%;
+}
+
 
 .formButtonContainer{
 	display: flex;
@@ -149,13 +168,16 @@ img{
 
 .nodeInfoContainer{
 	font-size: 16px;
-	width: inherit;
+	width: 21vw;
 	border: black solid 1px;
-	padding: 2%;
+	padding: 1%;
 	margin-bottom: 2%;
 	display: flex;
+	position: absolute;
 	justify-content: space-between;
-	
+	opacity: 0.95;
+	background-color:white;
+	z-index: 9;
 }
 
 .nodeInfoWrapper{
@@ -165,17 +187,18 @@ img{
 
 .nodeButtonWrapper{
 	width: 35%;
-	height: 100%;
 	flex-grow: 1;
 	display: flex;
-	flex-direction: row;
+	flex-direction: column;
 	justify-content: center;
-	/* padding-right: 2%; */
+	/* 
+	height: 100%;
+	padding-right: 2%; */
 }
 
 .nodeButton{
 	width: 5vw;
-	margin: 1%;
+	margin: 1% 1% 5%;
 	padding: 0.2vw;
 }
 
@@ -194,9 +217,21 @@ img{
 	margin-right: 7px;
 }
 
-.addNode, .moveGatewayButton, .testCompleteButton{
-	font-size: 24px;
+.moveGatewayButton, .testCompleteButton{
+	font-size: 22px;
 }
+
+.FloorLists, .plus{
+	font-size: 24px;
+	font-weight: bold;
+	width: 14vw;
+	height: 5vw;
+	margin-right: 2vw;
+	float: left;
+	text-align: center;
+	padding: 10px 15px;
+}	
+
 
 #addSiteButton{
 	border-radius: 50%;
@@ -208,24 +243,25 @@ img{
 }
 
 
+
 #TestCompleteButton {
-	padding: 15px 24px;
+	padding: 10px 15px;
 	text-align: center;
 	text-decoration: none;
 	opacity: 0.6;
-	height: 6vw;
-	/*cursor: not-allowed;*/
-	margin: 1%
+	height: 5vw;/*
+	cursor: not-allowed;*/
+
 }
 
 #MoveGatewayButton{
-	padding: 15px 24px;
+	padding: 10px 15px;
 	text-align: center;
 	text-decoration: none;
 	opacity: 0.6;
-	height: 6vw;
-	/*cursor: not-allowed;*/
-	margin: 1%;
+	height: 5vw;/*
+	cursor: not-allowed;*/
+
 }
 
 
@@ -238,15 +274,7 @@ img{
 	width: 9vw;
 	height: 5vw;
 }
-.addNode{
-	padding: 20px;
-	float: left;
-	align-self: flex-end;
-	width: 100%;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	flex: 1 0 25%;
-}
+
 #cancel{
 	font-size: 24px;
 	padding: 5px;
@@ -271,6 +299,14 @@ img{
 	width: 100%;
 	/* margin-left: 5%; */
 }
+#closeNode{
+	font-size: 16px;
+	background-color: blue;
+	border: none;
+	color: white;
+	width: 100%;
+	/* margin-left: 5%; */
+}
 
 #noSignalNode{
 	background-color: blue;
@@ -288,12 +324,11 @@ img{
 }
 
 .gateway{
-	position: absolute;
-	width: 15px;
-	height: 15px;
-	left: 15px;
-	top: 15px;
-	background-color: green;
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 15px solid #7FFF00;
+ 
 }
 
 .addBorder{ /*adds border around an element */

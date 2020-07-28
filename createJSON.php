@@ -7,7 +7,7 @@ $snr =  htmlspecialchars($_POST["SNR"]);
 
 $activeJson= file_get_contents('http://127.0.0.1/getActiveItems.php');//encoded json
 $json= file_get_contents('./config.json'); //encoded json
-$nodeJson= file_get_contents('./packetInfo.json');
+
 
 $nodeArray = json_decode($nodeJson,true);
 $jsonArray = json_decode($json,true);
@@ -21,6 +21,7 @@ else{
 
 }
 $sigStrength =calculateSignalStrength($rssi, $sf,$snr);
+/*
 $infoFile = fopen('./nodeinfo/'.$nodeName.'Info.txt', "a"); 			//Used to find user input & The name that changes
 //$sigStrength =calculateSignalStrength($rssi);
 fwrite($infoFile, "~~~~Packet $sf"."_TX$txPower Recieved~~~~ \n");
@@ -30,20 +31,22 @@ fwrite($infoFile, "RSSI: $rssi \n");
 fwrite($infoFile, "SNR: $snr \n");
 fwrite($infoFile, "Signal Strength: ". $sigStrength ."\n");
 fwrite($infoFile, "~~~~End of Packet~~~~~~~~~~\n\n");
-fclose($infoFile);
+fclose($infoFile);*/
 
 if(count($activeJsonArray)>0){
 	foreach($activeJsonArray as $testNo =>$test){ // Loop through all the test
-		foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
-			$currentFloor = $floor;
-			//echo($floor['floor']."<hr></hr>");
-			foreach($floorNode['nodeList'] as $pointNo =>$point){
-				if($point['nodeName']==$nodeName){
-					$point['signal'] =$sigStrength;
-					$point['status'] ="Connected";
-					$jsonArray[$testNo]['floorArray'][$currentFloor]['nodeList'][$pointNo] = $point; 
-				}
-			}		
+		if($testNo != "shutdown"){
+			foreach($test['floorArray'] as $floor =>$floorNode){ //loop all the floors
+				$currentFloor = $floor;
+				//echo($floor['floor']."<hr></hr>");
+				foreach($floorNode['nodeList'] as $pointNo =>$point){
+					if($point['nodeName']==$nodeName){
+						$point['signal'] =$sigStrength;
+						$point['status'] ="Connected";
+						$jsonArray[$testNo]['floorArray'][$currentFloor]['nodeList'][$pointNo] = $point; 
+					}
+				}		
+			}			
 		}
 	}
 }

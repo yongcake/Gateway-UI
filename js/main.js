@@ -5,9 +5,8 @@ var xPosition,yPosition;
 var newMarker;
 var nodeCount = 0 ,testCounter = 0;;
 var markerAdded = false;
-var nodeExist = false;
 var addButtonPressed  = false;  
-var addGatewayButtonPressed = false;
+var addGatewayButtonPressed = false, editPressed = false;
 var gatewayMarkerAdded = false;
 var gatewayUniqueMarker;
 var gatewayUniqueContainer;
@@ -16,7 +15,7 @@ var selectedNode, selectedMarkerID = "";
 var signalStrength = 1; //1 to 5 
 var initTestCount = [], initNodeCount = [];
 var buttonArray = [], testArray = [], oldCord = [], manifestJsonArray = [];
-var modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
+var modeArray ={enabled:true, addingMode:false, movingMode:false, viewingMode:false};
 var currentFloor = "";
 //New Site Array format [ [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] , [*TestNO*,true,[GatewayID,GatewayLeft,GatewayTop,[*Floor*,*NodeArrays[*nodes*]*]*]] ]
 var imageWidth = 0;
@@ -43,15 +42,23 @@ $(document).ready( function(){
 					switchSites(area);
 					selectSite = true;
 				}
-				$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
+				$("#FloorLists").append($('<option>',{
+					value: area,
+					text: area
+				}));
+				//$("#floorSelectionWrapper").append("<input type='button' class='button' id='" + area + "' onclick=switchSites('"+area+"') value='" +area+ "'></input>");
 			}
 			console.log(mallData);
 			for(var j in mallData["nodeList"]){
 				var nodeN = mallData["nodeList"][j];
-				$("#inputInfo").append("<input type='button' class='addNode' id='" + nodeN + "' onclick=changeSelectedNode('"+nodeN+"') value='" +nodeN+ "' disabled ></input>");
+				$("#inputInfo").append("<input type='button' class='addNode' id='" + nodeN + "' onclick=changeSelectedNode('"+nodeN+"') value='" +nodeN+ "'></input>");
 				buttonArray.push(nodeN);
 			}
 			//console.log(floorArrayData);
+			//$("#FloorLists").change(switchSites(this.value));
+			$("#FloorLists").change(function(){
+				switchSites(this.value);
+			});
 		}
     }
   });
@@ -72,6 +79,7 @@ $(document).ready( function(){
   $.getJSON(jsonFilePath, function(data){
     //console.log(Object.keys(data).length);
     for (var i in data){     //i = TestID
+	  if (i != "shutdown"){
       var testData = data[i]; //info inside "testn"
       console.log("==========================" + JSON.stringify(i) + "==========================");
       console.log(data);
@@ -95,6 +103,7 @@ $(document).ready( function(){
 				posX = gatewayLeft * (divWidth/imageWidth) +container.getBoundingClientRect().left ;
 				posY = gatewayTop * (divHeight/imageHeight) +container.getBoundingClientRect().top  + window.pageYOffset;
 				initPlaceMarker($("#"+gatewayID)[0],posX,posY);
+				$("#plus").attr('disabled',false); 
 			}
 		}	
 	  }
@@ -123,7 +132,7 @@ $(document).ready( function(){
           if (markerID != null && posLeft != null && posTop != null){
             var n = new Node(markerID, nodeID, location, nodeName, infoID,area,pointID,active); //create new node according to json
             n.status = status;
-
+			$("#"+nodeName).attr("disabled",true);
             n.updatePosition(posLeft, posTop);
 			
 			if(!testCompleted && active == "true"){
@@ -154,12 +163,12 @@ $(document).ready( function(){
 		testArray.push(newTest);
 		gatewayPlaced =true;
 		$("#addGateway").hide();
-		$("#inputInfo").show();
+		$("#inputInfo").hide();
 	}
 	newFloorArray = [];
-
+	}
   }
-
+	
 
     for (i =0 ; i <testArray.length;i++){ //Test
 	  if(testArray[i].floorArray != null){
@@ -182,6 +191,7 @@ $(document).ready( function(){
 			}
 		}
 		switchSites(testArray[i].gatewayFloor);
+		$("#FloorLists").val(testArray[i].gatewayFloor).change();
 	  }
     }
 	
@@ -203,7 +213,6 @@ $(document).ready( function(){
     nodeCount = nLargest + 1;
     console.log("~~~~~~~~~~~~~~~~~~~~~~~ Finished ~~~~~~~~~~~~~~~~~~~~~~~~~")
   });
-
 });
 
 
@@ -211,15 +220,18 @@ $(document).ready( function(){
 //================================================================================
 function initMarker(markerID, xPos, yPos){ //add or move a marker
   if(modeArray.enabled){
-    if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
+    if(!modeArray.movingMode){ //Create marker if not in moving mode
       var container = document.querySelector("#imageSource");
       var initMarker = document.createElement("div");
       container.append(initMarker); //create new div in #imageSource
       initMarker.classList.toggle("marker"); // give .marker class css to the new div
       initMarker.id = markerID;
       $("#"+markerID).hide();
+	  $("#"+markerID).click(function(){
+		displayInfo(markerID);
+	  });
       initPlaceMarker(initMarker, xPos, yPos);
-      console.log("Maker is added");
+      console.log("Marker is added");
     }
   }
 }
@@ -230,9 +242,6 @@ function initPlaceMarker(initMarkerDiv, xPos, yPos){ //Used to move a Marker aro
 }
 var prevSelectedNode;
 function changeSelectedNode(newNode){
-  var count = 0;
-  $("#addNode").show();
-  $("#cancel").show();
   prevSelectedNode = selectedNode;
   selectedNode = newNode;
 
@@ -246,8 +255,8 @@ function changeSelectedNode(newNode){
   }
 
   $("#"+newNode).addClass("addBorder");
-  selectiveDisableNodeButton(); //disable those selected ones
-
+  addPressed();
+  
 
 }
 
@@ -298,12 +307,12 @@ function addGatewayPressed(){
 	  for(var m = 0; m<manifestJsonArray.length; m++){
 	      newFloorArray.push([manifestJsonArray[m]["floor"],[]])
 	  }
-      var test = new Test(testNo, gatewayID, parseInt(gatewayUniqueMarker.style.left), parseInt(gatewayUniqueMarker.style.top), currentFloor, newFloorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
+      var test = new Test(testNo, gatewayID, parseInt(gatewayUniqueMarker.style.left) , parseInt(gatewayUniqueMarker.style.top), currentFloor, newFloorArray); //testNo, gatewayID, gatewayLeft, gatewayTop, area,
       testArray.push(test);
       $.post("./createConfigHTML.php",
       {
         markerID: gatewayID,
-        posLeft: (test.gatewayLeft - container.getBoundingClientRect().left) *(imageWidth/divWidth),
+        posLeft: (test.gatewayLeft - container.getBoundingClientRect().left ) *(imageWidth/divWidth),
         posTop:  (test.gatewayTop - container.getBoundingClientRect().top -window.pageYOffset) *(imageHeight/divHeight),
         area: currentFloor,
         test: testNo,
@@ -317,8 +326,9 @@ function addGatewayPressed(){
       gatewayUniqueContainer = null;
 
     }
+  $("#plus").prop('disabled',false);
   $("#addGateway").hide();
-  $("#inputInfo").show();
+  $("#inputInfo").hide();
   return;
 }
 
@@ -331,35 +341,46 @@ function createNewMarker(){ //add or move a a marker
       gatewayUniqueMarker = document.getElementById(gatewayID);
       gatewayUniqueContainer = $("#imageSource")[0];
       gatewayMarkerAdded = true;
+	  moveMarker(gatewayUniqueMarker);
+	  gatewayUniqueMarker.style.left = (xPosition - 15)+"px";
+	  gatewayUniqueMarker.style.top = (yPosition - 15)+"px";  
+	  addGatewayPressed();
     }
 
-    if(addGatewayButtonPressed == false){
+    /*if(addGatewayButtonPressed == false){
       moveMarker(gatewayUniqueMarker);
       console.log('still moving gateway maker');
     }
-    
-    
+	*/
     return;
   }
 
   if (addButtonPressed == true){ //if "add" is pressed, reset modes.
-    modeArray.addingMode = true;
+    modeArray.addingMode = false;
     addButtonPressed = false;
   }
   
   if(modeArray.enabled){
     if (modeArray.viewingMode){
-      if(modeArray.movingMode){
-        var marker = document.getElementById(selectedMarkerID);
-        moveMarker(marker);
+      if(modeArray.movingMode){//editting
+		var marker = document.getElementById(selectedMarkerID);
+		var n = getNodeByMarkerID(selectedMarkerID);
+		$("#"+n.nodeID).hide();
+		if(editPressed){
+          moveMarker(marker);
+		  saveEdit();
+		}
+		else{
+		  alert("Place the marker at a new location");
+		}
+		editPressed =true;
       }
       return;
     }
-    if(modeArray.addingMode && !modeArray.movingMode){ //Create marker if not in moving mode
+    if(modeArray.addingMode && !modeArray.movingMode ){ //Create marker if not in moving mode
       for (i = 0; i<buttonArray.length;i++){
         $("#"+buttonArray[i]).attr('disabled',false);
       }
-      selectiveDisableNodeButton();
       $("#addNode").attr("value","Add");
       $("#addNode").attr("onclick", "addPressed()")
       console.log("change to addPressed");
@@ -369,34 +390,70 @@ function createNewMarker(){ //add or move a a marker
       newMarker.classList.toggle("marker"); // give .marker class css to the new div
       newMarker.id = "marker" + (nodeCount);
       moveMarker(newMarker);
+	  var id = newMarker.id;
+	  //console.log(newMarker.id);
+	  $("#"+ newMarker.id).attr("onclick", "displayInfo('"+newMarker.id+"')");
+	  $("#inputInfo").show();
+	  //$("#inputInfo").parent().css({position: 'relative'});
+	  $("#inputInfo").css({top: $("#"+newMarker.id).position().top + 7.5, 
+	  left: $("#"+newMarker.id).position().left + 7.5, position:'absolute'});
+	  //newMarker.addEventListener("click", displayInfo(newMarker));
       modeArray.addingMode = false;
-      console.log("maker is added");
+      console.log("marker is added");
     }
     else if (!addButtonPressed && !modeArray.movingMode){
       moveMarker(newMarker);
+	  if(newMarker != null){
+		$("#inputInfo").css({top: $("#"+newMarker.id).position().top + 7.5, 
+		left: $("#"+newMarker.id).position().left + 7.5, position:'absolute'});
+	  }
     }
   }
-  console.log("this is created" + newMarker.id);
-
-  //check if all node have been used
-  var count = 0;
-  for(i = 0; i<buttonArray.length;i++){
-    if (document.getElementById(buttonArray[i]).hasAttribute("disabled")){
-      count++;
-    }
-  }
-  if (count == buttonArray.length){
-    var ans  = confirm("All node has been used, would you like to reuse the node? (Press 'OK' to continue)");
-    if (ans == true) {
-      enableAllNodeButton();
-    } 
-    else {
-		
-      return;
-    }
+  if(newMarker != null){
+	console.log("this is created" + newMarker.id);
   }
 }
+function enableMark(){
+	//check if all node have been used
+	var count = 0;
+	for(i = 0; i<buttonArray.length;i++){
+    if (document.getElementById(buttonArray[i]).hasAttribute("disabled")){
+      count++;
+      }
+    }
+    if (count == buttonArray.length){
+		var ans  = confirm("All node has been used, would you like to reuse the node? (Press 'OK' to continue)");
+    if (ans == true) {
+      enableAllNodeButton();
+      } 
+    else {	
+      return;
+      }
+    }
+	modeArray.addingMode = true;
+	$("#plus").attr("disabled", true);
+	nodeList = getAllActiveNode();
+	for(i =0; i< nodeList.length;i++){
+		$("#"+nodeList[i].nodeID).hide();
+		console.log(nodeList);
+	}
+}
+function displayInfo(markerID){
+	//console.log(markerID);
+	if(!modeArray.movingMode && !modeArray.addingMode){
+		var n = getNodeByMarkerID(markerID);
+		$("#"+n.nodeID).show();
+		nodeList = getAllActiveNode();
+		for(i =0; i< nodeList.length;i++){
+			if(nodeList[i].nodeID != n.nodeID){
+				$("#"+nodeList[i].nodeID).hide();
+			}
+		}
+		$("#"+n.nodeID).css({top: $("#"+markerID).position().top + 15, 
+			left: $("#"+markerID).position().left + 7.5, position:'absolute'});
+	}
 
+}
 function showAlert(){
   document.getElementById("formContainerID").style.display = "none";
   document.getElementById("alertForm").style.display = "flex";
@@ -415,7 +472,6 @@ function removeMarker(markerID){  //Runs when btnDeleteMarker is clicked
 
   removeUnwantedMarker();
   modeArray.viewingMode =false;
-  modeArray.addingMode =true;
   if(!modeArray.movingMode){
     $.post("deleteJsonObj.php",
     {
@@ -459,13 +515,16 @@ function moveMarker(marker){ //Used to move a Marker around
     alert("Enable marker to move markers");
     return;
   }
-  var container = document.querySelector("#imageSource");
-  xPosition = event.clientX  - container.scrollLeft - (marker.clientWidth); //container.scrollLeft is for when the div is scrollable
-  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
-  marker.style.left = xPosition + "px";
-  marker.style.top = yPosition + "px";  
-  console.log("marker is moving" + container.scrollTop +"||" +container.scrollLeft);
-  return true;
+  if(marker != undefined){
+	  var container = document.querySelector("#imageSource");
+	  xPosition = event.clientX  - container.scrollLeft - (marker.clientWidth ); //container.scrollLeft is for when the div is scrollable
+	  yPosition = event.clientY - container.scrollTop + window.pageYOffset - (marker.clientHeight); //container.scrollTop is for when the div is scrollable
+	  marker.style.left = xPosition + "px";
+	  marker.style.top = yPosition + "px";  
+	  console.log("marker is moving" + container.scrollTop +"||" +container.scrollLeft);
+	  return true;
+  }
+
 
 }
 
@@ -486,15 +545,13 @@ function noSignal(markerID){ //Not Used
 
 function addPressed(){
   var nodeID = selectedNode; 
-    addButtonPressed = true;
-    $("#" +selectedNode).removeClass("addBorder"); //remove the border on the button
-    addNode(newMarker.id, ("nodeInfo"+nodeCount));
-    selectiveDisableNodeButton();
-    if (nodeExist == false){
-    }
-    newMarker = null; 
-    
-  
+  addButtonPressed = true;
+  $("#" +selectedNode).removeClass("addBorder"); //remove the border on the button
+  addNode(newMarker.id, ("nodeInfo"+nodeCount));
+  selectiveDisableNodeButton();
+  newMarker = null; 
+  $("#inputInfo").hide();
+  $("#plus").attr("disabled",false);
 }
 
 function resetNodeDiv(){
@@ -511,12 +568,13 @@ function editSelectedNode(markerID){
       var node = getNodeByMarkerID(markerID);
       modeArray.viewingMode = true;
       modeArray.movingMode =true;
+	  editPressed = false;
       selectedMarkerID = markerID;
       $("#selectedMarker").text(markerID);
       var marker = document.getElementById(selectedMarkerID);
       oldCord= [marker.style.left,marker.style.top];
-      document.getElementById("Mode").innerText = "Moving"; //Update mode text
       var nodeList = getAllActiveNode();
+	  /*document.getElementById("Mode").innerText = "Moving"; //Update mode text
       for (var i = 0; i<nodeList.length; i++){
         if(nodeList[i].markerID == selectedMarkerID){
           var formStatus = "Editing Node '" + nodeList[i].nodeName + "'";
@@ -531,8 +589,9 @@ function editSelectedNode(markerID){
       document.getElementById("addNode").style.display = "block";
       $("#cancel").hide();
       document.getElementById("addNode").onclick = saveEdit;
-      
-      console.log("change to saveEdit");
+	  console.log("change to saveEdit");
+      */
+
     }
 
   return true;
@@ -554,8 +613,8 @@ function saveEdit(){
   var node = getNodeByMarkerID(markerID);
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
-  var newLocation = $("#locationName").val();
-  var newID = $("#nodeID").val();
+  //var newLocation = $("#locationName").val();
+  //var newID = $("#nodeID").val();
   
   
   if (xPosition != null && yPosition != null){
@@ -576,22 +635,11 @@ function saveEdit(){
   });
   var nodeList = getAllActiveNode();
   $("#addNode").hide();
-  document.getElementById("addNode").value = "Add";
-/*   for (var i = 0; i<nodeList.length; i++){
-    if (nodeList[i].markerID == selectedMarkerID){
-      nodeList[i].editNode(newLocation, newID);
-      $("#"+ node.nodeID +" #"+node.infoID).html(nodeList[i].print());
-      document.getElementById("nodeInfo").innerHTML = nodeList[i].print();
-      var formStatus = "Node '" + nodeList[i].nodeName + "' changes saved "
-      document.getElementById("formStatus").innerHTML = formStatus;
-    }
-  } */
-
+  //document.getElementById("addNode").value = "Add";
 
   modeArray.movingMode =false; //Swap back to Adding
   modeArray.viewingMode =false; 
-  modeArray.addingMode = true;
-  document.getElementById("Mode").innerText = "Adding";
+  //document.getElementById("Mode").innerText = "Adding";
 
 }
 
@@ -608,11 +656,8 @@ function cancelEdit(){
   $("#"+ node.nodeID +" #editNode").attr("value", "Edit");
   $("#"+ node.nodeID +" #editNode").attr("onclick", 'editSelectedNode("'+markerID+'")');
   $("#addNode").hide();
-  document.getElementById("locationName").value = "";
-  document.getElementById("nodeID").value = "";
   modeArray.movingMode =false; //Swap back to Adding
   modeArray.viewingMode =false; 
-  modeArray.addingMode = true;
 }
 
 function cancelPressed(){
@@ -620,7 +665,6 @@ function cancelPressed(){
   removeFromArray(newMarker.id); //Function to remove marker,
   removeUnwantedMarker();
   modeArray.viewingMode =false;
-  modeArray.addingMode =true;
 
   disableAllNodeButton();
   for (i = 0; i<buttonArray.length;i++){ //remove all border
@@ -635,30 +679,14 @@ function moveGateway(){
   var testCleared = false;
   for(i = 0; i<testArray.length;i++){
     if(!testArray[i].testCompleted){
-      testArray[i].stopTest();
+      testArray[i].stopTest(false);
 	  testCleared= true;
     }
   }
   if(testCleared){
-	  $("#addGateway").show();
-      $("#inputInfo").hide();
-      addGatewayButtonPressed = false;
-      gatewayPlaced = false;
-      gatewayMarkerAdded = false;
-	  removeUnwantedMarker();
-	  markerAdded = false;
-	  nodeExist = false;
-      addButtonPressed  = false;  
-	  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-	  //testArray = [];
+	resetBools();
+	alert("Place a new gateway");
   }
-  //document.getElementById("imageSource").innerHTML = ""; 
-  //document.getElementById("formStatus").innerHTML = ""; 
-  //document.getElementById("scrollInfoContainer").innerHTML = ""; 
-
-
-  // reset all the bool stuff 
-
 
 }
 
@@ -666,11 +694,17 @@ function testComplete(){
   var testCleared = false;
   for(i = 0; i<testArray.length;i++){
     if(!testArray[i].testCompleted){
-      testArray[i].stopTest();
+      testArray[i].stopTest(true);
 	  testCleared= true;
     }
   }
   if(testCleared){
+	resetBools();
+	alert("System will shutdown in the next few minutes");
+  }
+}
+
+function resetBools(){
 	  $("#addGateway").show();
       $("#inputInfo").hide();
       addGatewayButtonPressed = false;
@@ -678,18 +712,10 @@ function testComplete(){
       gatewayMarkerAdded = false;
 	  removeUnwantedMarker();
 	  markerAdded = false;
-	  nodeExist = false;
       addButtonPressed  = false;  
 	  modeArray ={enabled:true, addingMode:true, movingMode:false, viewingMode:false};
-	  //testArray = [];
-  }
-  //document.getElementById("imageSource").innerHTML = ""; 
-  //document.getElementById("formStatus").innerHTML = ""; 
-  //document.getElementById("scrollInfoContainer").innerHTML = ""; 
-
+	  $("#plus").prop('disabled',true);
 }
-
-
 
 function changeSignalStrengthNotation(markerID){
   //console.log("function is invoked");
@@ -783,7 +809,7 @@ class Node{
     +     '<div class="bar bar-4"></div>'
     +     '<div class="bar bar-5"></div>'
     +'</div>';
-    return "Name: " + this.nodeName + "<div style='display:flex; flex-direction:row; justify-content:flex-start; align-items:center;'> Signal Strength: " + /*this.signal*/ signalStrenghtBar + "</div> Status: " + this.status;
+    return "Name: " + this.nodeName + "<div style='display:flex; flex-direction:column; justify-content:flex-start; align-items:left;'>Signal Strength:" + signalStrenghtBar + "</div> Status: " + this.status;
 
   }
 }
@@ -793,7 +819,7 @@ var nodeList = [];
 
 function createNodeContainer(newNode){ //Used to create a new container
   
-  $("#scrollInfoContainer").prepend('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
+  $("#imageSource").prepend('<div id="' +newNode.nodeID +'" class="nodeInfoContainer"</div>'); //Div to store all other div
   $("#"+newNode.nodeID).append('<div id="' +newNode.infoID +'" class="nodeInfoWrapper"</div>');//Div that showcase node info
   $("#"+newNode.infoID).html(newNode.print());
 
@@ -801,7 +827,7 @@ function createNodeContainer(newNode){ //Used to create a new container
   //Buttons
   $("#"+newNode.nodeID).append('<div id="Temp" class="nodeButtonWrapper"</div>'); //Div container the buttons
 
-  for (var i = 0; i<2;i++){
+  for (var i = 0; i<3;i++){
     var buttonID;
     var onclickFunction;
     var text;
@@ -816,6 +842,11 @@ function createNodeContainer(newNode){ //Used to create a new container
         onclickFunction ='onclick="removeMarker(\''+newNode.markerID+'\')"';
         text ="Delete"
         break;
+	  case 2: //Delete
+        buttonID = "closeNode"
+        onclickFunction ='onclick="closeInfo(\''+newNode.markerID+'\')"';
+        text ="Hide Info"
+        break;
       /* case 2: //No Signal
         buttonID = "noSignalNode"
         onclickFunction ='onclick="noSignal(\''+newNode.markerID+'\')"';
@@ -829,18 +860,20 @@ function createNodeContainer(newNode){ //Used to create a new container
     
   }
   $("#Temp").removeAttr("id");
+  $("#"+newNode.nodeID).hide();
   console.log("All Done");
 }
-
+function closeInfo(markerID){
+	var n = getNodeByMarkerID(markerID);
+	$("#"+n.nodeID).hide();
+}
 function addNode(markerID, infoID)
 {
   var nodeID = "node"+nodeCount;
   var pointID ="point"+nodeCount;
   var nodeName = selectedNode;     
   var location ="useless";
-  nodeExist = false;
   selectedNode = "";
-  disableAllNodeButton();
   selectiveDisableNodeButton();
   $("#addNode").hide();
   $("#cancel").hide();
@@ -870,13 +903,6 @@ function addNode(markerID, infoID)
 			}
 		}
   }
-  if(nodeExist){
-    document.getElementById("formStatus").innerHTML = "";
-    alert("Node ID already exist and is active, please select a differnt node"); 
-    removeUnwantedMarker();
-    return;
-  }
-  else{ //this is supposed to be the else statement
     var n = new Node(markerID, nodeID, location, nodeName, infoID,currentFloor,pointID,true); //Last 2 = pointId , Active
     n.updatePosition(xPosition, yPosition);
     createNodeContainer(n);
@@ -908,7 +934,6 @@ function addNode(markerID, infoID)
 
   });
   
-  }
   nodeCount++;
 }
 
@@ -1011,10 +1036,13 @@ function switchSites(newSite){ //Toggle between Sites
 	if(manifestJsonArray[m]["floor"] == newSite){
 		imagePath = manifestJsonArray[m]["imagePath"];
    		if(imagePath != undefined){
+			imageWidth =	manifestJsonArray[m]["size"]["width"];
+			imageHeight =	manifestJsonArray[m]["size"]["height"];
 			$("#con").css('background-image','url('+imagePath+')');
+			$("#imageContainer").css('width', getRelativeImageWidth(manifestJsonArray[m]["size"]["width"])+"px");
+			$("#imageContainer").css('height', getRelativeImageHeight(manifestJsonArray[m]["size"]["height"])+"px");
 		}
-		imageWidth =	manifestJsonArray[m]["size"]["width"];
-		imageHeight =	manifestJsonArray[m]["size"]["height"];
+
 		}
 	}
 }
@@ -1030,7 +1058,7 @@ function remapMarkers(newSite){
           if(testArray[i].floorArray[j][0]== newSite){
             for(var k = 0;k< testArray[i].floorArray[j][1].length; k++){ //Loop the nodes in that site
               $("#"+testArray[i].floorArray[j][1][k].markerID).show();
-              $("#"+testArray[i].floorArray[j][1][k].nodeID).show();  
+              //$("#"+testArray[i].floorArray[j][1][k].nodeID).show();  
               //console.log(testArray[i].floorArray[j][1][k].markerID+" shown");
             }
           }
@@ -1078,7 +1106,7 @@ class Test{
     console.log("Test created");
   }
   
-  stopTest(){
+  stopTest(shutdown){
     if(!this.testCompleted){
 	  console.log("START:" + this.floorArray);
 	  var testNo = this.testNo;
@@ -1100,7 +1128,8 @@ class Test{
       }
 	  $.post("./completeTest.php",
       {
-        test: testNo
+        test: testNo,
+		shutdown: shutdown
       },
       function(){
         console.log(testNo+" status has been updated in JSON");

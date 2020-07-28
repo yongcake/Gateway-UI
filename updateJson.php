@@ -11,9 +11,10 @@ $location =  $_POST["location"];
 $area =  $_POST["area"];
 $test =  $_POST["test"];
 $pointID = $_POST["pointID"];
-$active =  $_POST["active"];
-$nodeJson= file_get_contents('./nodeSetting.json');
-$nodeArray = json_decode($nodeJson,true);
+/*$nodeJson= file_get_contents('./nodeSetting.json');
+$nodeArray = json_decode($nodeJson,true);*/
+
+
 
 if (file_exists('./config.json')){
 	$json= file_get_contents('./config.json');//encoded json
@@ -22,17 +23,44 @@ if (file_exists('./config.json')){
 else{
 	$jsonArray = array();
 }
-if(isset($active)) {
-	$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['active'] = $active;
-}
-else{
-	$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posTop'] = $posTop;
-	$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posLeft'] = $posLeft;
-}
 
+$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posTop'] = $posTop;
+$jsonArray[$test]["floorArray"][$area]["nodeList"][$pointID]['posLeft'] = $posLeft;
+
+/* if(isset($jsonArray[$oldNodeName])){
+	if($nodeName != $oldNodeName){
+		$jsonArray[$nodeName] = $jsonArray[$oldNodeName];
+		$jsonArray[$nodeName]['nodeName'] = $nodeName;
+		$jsonArray[$nodeName]['posLeft'] = $posLeft;
+		$jsonArray[$nodeName]['posTop'] = $posTop;
+		$jsonArray[$nodeName]['location'] = $location;
+		unset($jsonArray[$oldNodeName]);
+		
+		$nodeArray[$nodeName] = $nodeArray[$oldNodeName];
+		$nodeArray[$nodeName]['location'] = $location;
+		unset($nodeArray[$oldNodeName]);
+	}
+	//else if($nodeName == $oldNodeName && $location == $oldLocation){
+	//	return;
+	//}
+	else{
+		$jsonArray[$nodeName]['posLeft'] = $posLeft;
+		$jsonArray[$nodeName]['posTop'] = $posTop;
+		$jsonArray[$nodeName]['location'] = $location;
+		
+		$nodeArray[$nodeName]['location'] = $location;
+	}
+	}
+else{
+	$jsonArray[$nodeName] =array('markerID'=>$markerID,'nodeID'=>$nodeID,
+	'infoID'=>$infoID,'signal' =>1,'status'=>"Not Connected",
+	'nodeName'=>$nodeName, 'posLeft'=>$posLeft,'posTop'=>$posTop,'location' =>$location,'area' =>$area);
+}
+ 
+}*//*
 $myfile = fopen("nodeSetting.json", "w");
 fwrite($myfile, json_encode($nodeArray));
-fclose($myfile);
+fclose($myfile);*/
 
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));

@@ -2,7 +2,7 @@
 
 
 $testID =  $_POST["test"];
-
+$shutdown =  $_POST["shutdown"];
 
 /*$nodeJson= file_get_contents('./packetInfo.json');
 $nodeArray = json_decode($nodeJson,true);*/
@@ -22,6 +22,9 @@ if (file_exists('./config.json')){
 			$jsonArray[$testNo]['testCompleted'] = true;
 		}
 	}
+	if(shutdown){
+		$jsonArray["shutdown"] = true;
+	}
 }
 
 if (file_exists('./trace.json')){
@@ -37,8 +40,8 @@ if (file_exists('./trace.json')){
 			}
 		}
 	}
-	//echo "trace Found";
-	$myfile = fopen("trace.json", "w");
+	//echo json_encode($traceJsonArray);
+	$myfile = fopen("./trace.json", "w");
 	fwrite($myfile, json_encode($traceJsonArray));
 	fclose($myfile); 
 }
@@ -47,7 +50,7 @@ if (file_exists('./trace.json')){
 $myfile = fopen("config.json", "w");
 fwrite($myfile, json_encode($jsonArray));
 fclose($myfile);
-
-	
+$json= file_get_contents('./config.json');//encoded json
+echo $json;
 ?>
 
